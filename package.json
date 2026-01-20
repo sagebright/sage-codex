@@ -7,7 +7,10 @@
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test:coverage",
+    "test:watch": "pnpm -r --parallel test:watch",
     "lint": "pnpm -r lint",
+    "lint:ci": "pnpm -r --parallel exec eslint . --max-warnings 0",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean && rm -rf node_modules"
   },
@@ -15,5 +18,9 @@
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@9.15.4",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.17",
+    "vitest": "^4.0.17"
+  }
 }
