@@ -107,6 +107,81 @@ Object.defineProperty(globalThis, 'crypto', {
 export { randomUUIDMock };
 
 // =============================================================================
+// WebSocket Mock
+// =============================================================================
+
+/**
+ * Mock WebSocket class for testing real-time communication
+ * Provides test helpers to simulate server messages and connection events
+ */
+export class MockWebSocket {
+  static instances: MockWebSocket[] = [];
+  static CONNECTING = 0;
+  static OPEN = 1;
+  static CLOSING = 2;
+  static CLOSED = 3;
+
+  url: string;
+  readyState: number = MockWebSocket.CONNECTING;
+
+  onopen: ((event: Event) => void) | null = null;
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  onclose: ((event: CloseEvent) => void) | null = null;
+  onerror: ((event: Event) => void) | null = null;
+
+  send: (data: string | ArrayBufferLike | Blob | ArrayBufferView) => void = vi.fn();
+  close: (code?: number, reason?: string) => void = vi.fn(() => {
+    this.readyState = MockWebSocket.CLOSED;
+    this.onclose?.({ code: 1000, reason: 'Normal closure' } as CloseEvent);
+  });
+
+  constructor(url: string) {
+    this.url = url;
+    MockWebSocket.instances.push(this);
+
+    // Simulate async connection (like real WebSocket)
+    setTimeout(() => {
+      this.readyState = MockWebSocket.OPEN;
+      this.onopen?.({} as Event);
+    }, 0);
+  }
+
+  /** Test helper: simulate receiving a message from the server */
+  simulateMessage(data: unknown): void {
+    this.onmessage?.({
+      data: JSON.stringify(data),
+    } as MessageEvent);
+  }
+
+  /** Test helper: simulate server closing the connection */
+  simulateClose(code = 1000, reason = 'Normal closure'): void {
+    this.readyState = MockWebSocket.CLOSED;
+    this.onclose?.({ code, reason } as CloseEvent);
+  }
+
+  /** Test helper: simulate connection error */
+  simulateError(): void {
+    this.onerror?.({} as Event);
+  }
+
+  /** Reset all mock instances (call in afterEach) */
+  static reset(): void {
+    MockWebSocket.instances = [];
+  }
+
+  /** Get the most recent WebSocket instance */
+  static getLastInstance(): MockWebSocket | undefined {
+    return MockWebSocket.instances[MockWebSocket.instances.length - 1];
+  }
+}
+
+// Replace global WebSocket
+Object.defineProperty(globalThis, 'WebSocket', {
+  value: MockWebSocket,
+  writable: true,
+});
+
+// =============================================================================
 // Reset Mocks Between Tests
 // =============================================================================
 
@@ -120,4 +195,7 @@ afterEach(() => {
 
   // Clear randomUUID mock
   randomUUIDMock.mockClear();
+
+  // Reset WebSocket mock instances
+  MockWebSocket.reset();
 });
