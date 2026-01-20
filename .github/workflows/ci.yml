@@ -1,0 +1,170 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+
+jobs:
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm build
+      - uses: actions/cache/save@v4
+        with:
+          path: |
+            packages/shared-types/dist
+            apps/mcp-bridge/dist
+            apps/web/dist
+          key: build-artifacts-${{ github.sha }}
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            packages/shared-types/dist
+            apps/mcp-bridge/dist
+            apps/web/dist
+          key: build-artifacts-${{ github.sha }}
+      - run: pnpm typecheck
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            packages/shared-types/dist
+            apps/mcp-bridge/dist
+            apps/web/dist
+          key: build-artifacts-${{ github.sha }}
+      - run: pnpm lint:ci
+
+  test:
+    name: Test (${{ matrix.package }})
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: true
+      matrix:
+        package: [shared-types, mcp-bridge, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            packages/shared-types/dist
+            apps/mcp-bridge/dist
+            apps/web/dist
+          key: build-artifacts-${{ github.sha }}
+      - run: pnpm --filter @dagger-app/${{ matrix.package }} test
+        env:
+          NODE_ENV: test
+
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, test]
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.typecheck.result }}" != "success" ]] || \
+             [[ "${{ needs.lint.result }}" != "success" ]] || \
+             [[ "${{ needs.test.result }}" != "success" ]]; then
+            echo "CI failed"
+            exit 1
+          fi
+          echo "All CI checks passed!"

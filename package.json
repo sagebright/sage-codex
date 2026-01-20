@@ -10,6 +10,7 @@
     "test:coverage": "pnpm -r test:coverage",
     "test:watch": "pnpm -r --parallel test:watch",
     "lint": "pnpm -r lint",
+    "lint:ci": "pnpm -r --parallel exec eslint . --max-warnings 0",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean && rm -rf node_modules"
   },
