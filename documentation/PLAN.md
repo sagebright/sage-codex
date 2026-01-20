@@ -97,43 +97,341 @@ Chat-based interface with split panel:
 
 ## Implementation Order
 
-### Phase 1: Foundation
-1. Initialize pnpm monorepo
-2. Set up Vite + React + TypeScript
-3. Configure Tailwind with fantasy theme
-4. Set up MCP Bridge Server skeleton
-5. Connect to Supabase JMK
+### Phase 1: Foundation ✅ READY
 
-### Phase 2: Core Chat + Dials
+#### 1.1 Initialize pnpm Monorepo
+**Label:** `infrastructure`
+
+**Tasks:**
+- [ ] Create root `package.json` with workspace scripts (`dev`, `build`, `test`, `lint`)
+- [ ] Create `pnpm-workspace.yaml` with `apps/*` and `packages/*` patterns
+- [ ] Create `apps/web/package.json` with React 18, Vite 5, TypeScript 5.3+
+- [ ] Create `apps/mcp-bridge/package.json` with Express 4, ws 8, TypeScript
+- [ ] Create `packages/shared-types/package.json` for shared TypeScript types
+- [ ] Configure root `tsconfig.json` with project references
+- [ ] Add `.nvmrc` specifying Node 20 LTS
+
+**Files:**
+| File | Action |
+|------|--------|
+| `package.json` | Create |
+| `pnpm-workspace.yaml` | Create |
+| `tsconfig.json` | Create |
+| `apps/web/package.json` | Create |
+| `apps/web/tsconfig.json` | Create |
+| `apps/mcp-bridge/package.json` | Create |
+| `apps/mcp-bridge/tsconfig.json` | Create |
+| `packages/shared-types/package.json` | Create |
+| `packages/shared-types/src/index.ts` | Create |
+| `.nvmrc` | Create |
+
+**Acceptance Criteria:**
+- [ ] `pnpm install` succeeds from root
+- [ ] `pnpm -r build` builds all packages without errors
+- [ ] TypeScript project references resolve correctly
+- [ ] VS Code recognizes workspace packages for imports
+
+---
+
+#### 1.2 Set up Vite + React + TypeScript
+**Label:** `enhancement`
+
+**Tasks:**
+- [ ] Initialize Vite with React-TS template structure in `apps/web`
+- [ ] Configure `vite.config.ts` with proxy to MCP bridge (localhost:3001)
+- [ ] Set up path aliases (`@/` maps to `src/`)
+- [ ] Enable TypeScript strict mode
+- [ ] Create basic `App.tsx` with React Router placeholder
+- [ ] Add `index.html` with proper meta tags
+
+**Files:**
+| File | Action |
+|------|--------|
+| `apps/web/vite.config.ts` | Create |
+| `apps/web/src/main.tsx` | Create |
+| `apps/web/src/App.tsx` | Create |
+| `apps/web/index.html` | Create |
+| `apps/web/tsconfig.json` | Modify |
+
+**Acceptance Criteria:**
+- [ ] `pnpm --filter web dev` starts dev server on port 5173
+- [ ] Hot module replacement works (edit App.tsx, see instant update)
+- [ ] TypeScript errors appear in browser overlay
+- [ ] `pnpm --filter web build` produces optimized bundle in `dist/`
+
+**Dependencies:** 1.1
+
+---
+
+#### 1.3 Configure Tailwind with Fantasy Theme
+**Label:** `enhancement`
+
+**Tasks:**
+- [ ] Install Tailwind CSS 3.4+, PostCSS, Autoprefixer
+- [ ] Create `tailwind.config.ts` with content paths
+- [ ] Define fantasy color palette (parchment, ink, gold, blood, shadow)
+- [ ] Add custom fonts (serif for headers, readable sans for body)
+- [ ] Create `src/styles/globals.css` with Tailwind directives
+- [ ] Add dark mode support (class-based)
+
+**Files:**
+| File | Action |
+|------|--------|
+| `apps/web/tailwind.config.ts` | Create |
+| `apps/web/postcss.config.js` | Create |
+| `apps/web/src/styles/globals.css` | Create |
+| `apps/web/src/main.tsx` | Modify (import styles) |
+
+**Acceptance Criteria:**
+- [ ] Tailwind classes work in components
+- [ ] Fantasy color palette available (`bg-parchment`, `text-ink`, etc.)
+- [ ] Dark mode toggles via class on `<html>`
+- [ ] Custom fonts load correctly
+
+**Dependencies:** 1.2
+
+---
+
+#### 1.4 Set up MCP Bridge Server Skeleton
+**Label:** `enhancement`
+
+**Tasks:**
+- [ ] Create Express server entry point with graceful shutdown
+- [ ] Set up WebSocket server on same port (upgrade handling)
+- [ ] Create health check endpoint (`GET /health`)
+- [ ] Configure environment variables via dotenv (PORT, NODE_ENV)
+- [ ] Add CORS configuration for frontend origin
+- [ ] Create basic request logging middleware
+
+**Files:**
+| File | Action |
+|------|--------|
+| `apps/mcp-bridge/src/index.ts` | Create |
+| `apps/mcp-bridge/src/config.ts` | Create |
+| `apps/mcp-bridge/src/routes/health.ts` | Create |
+| `apps/mcp-bridge/src/middleware/cors.ts` | Create |
+| `apps/mcp-bridge/src/middleware/logger.ts` | Create |
+| `apps/mcp-bridge/src/websocket/handler.ts` | Create |
+| `apps/mcp-bridge/.env.example` | Create |
+
+**Acceptance Criteria:**
+- [ ] `pnpm --filter mcp-bridge dev` starts server on port 3001
+- [ ] `GET /health` returns `{ status: "ok" }`
+- [ ] WebSocket connections accepted at `ws://localhost:3001`
+- [ ] Server shuts down gracefully on SIGTERM
+- [ ] CORS allows requests from localhost:5173
+
+**Dependencies:** 1.1
+
+---
+
+#### 1.5 Connect to Supabase JMK
+**Label:** `enhancement`
+
+**Tasks:**
+- [ ] Install `@supabase/supabase-js` in mcp-bridge
+- [ ] Create Supabase client singleton with env vars (URL, anon key)
+- [ ] Create type definitions for Daggerheart tables (from existing schema)
+- [ ] Add health check that verifies Supabase connection
+- [ ] Create basic query helper for table access
+
+**Files:**
+| File | Action |
+|------|--------|
+| `apps/mcp-bridge/src/services/supabase.ts` | Create |
+| `packages/shared-types/src/database.ts` | Create |
+| `apps/mcp-bridge/src/routes/health.ts` | Modify (add DB check) |
+| `apps/mcp-bridge/.env.example` | Modify (add Supabase vars) |
+
+**Acceptance Criteria:**
+- [ ] Supabase client initializes without errors
+- [ ] Health endpoint reports database connectivity
+- [ ] Can query `daggerheart_frames` table successfully
+- [ ] Types match existing Supabase schema
+
+**Dependencies:** 1.4
+
+---
+
+### Phase 2: Core Chat + Dials [REFINE]
+
+<!-- REFINEMENT NEEDED:
+- ChatContainer props/events API
+- Message bubble variants and streaming behavior
+- Zustand store shapes (adventure, chat, dials)
+- Dial component specifications (what props, what events)
+- MCP tool request/response contracts
+- Real-time update patterns (optimistic vs server-confirmed)
+-->
+
 1. ChatContainer component with streaming
 2. Zustand stores (adventure, chat, dials)
 3. Dial components (NumberStepper, ReferencePointPicker, MultiSelectChips)
 4. MCP tool for dial processing
 5. Dial summary panel
 
-### Phase 3: Content Generation
+---
+
+### Phase 3: Content Generation [REFINE]
+
+<!-- REFINEMENT NEEDED:
+- Frame data structure and selection UI patterns
+- Outline generation prompt structure
+- Feedback loop UX (inline editing vs separate panel)
+- Scene editor draft-revise workflow
+- NPC extraction and enrichment logic
+-->
+
 1. Frame selection/creation UI
 2. Outline generation with feedback
 3. Scene editor with draft-revise loop
 4. NPC compilation view
 
-### Phase 4: Game Content
+---
+
+### Phase 4: Game Content [REFINE]
+
+<!-- REFINEMENT NEEDED:
+- Adversary picker filtering logic and UI
+- Stat block display component
+- Item/reward tier mapping
+- Echo generation categories and prompts
+-->
+
 1. Adversary picker (Supabase queries with tier filter)
 2. Item/reward selection
 3. Echo generation
 
-### Phase 5: Export + Polish
+---
+
+### Phase 5: Export + Polish [REFINE]
+
+<!-- REFINEMENT NEEDED:
+- Markdown export template structure
+- File download mechanism (zip vs individual)
+- Session persistence strategy (localStorage vs Supabase)
+- Recovery UX for interrupted sessions
+- Fantasy theme specifics (colors, typography, animations)
+-->
+
 1. Markdown export matching CLI structure
 2. Local filesystem download
 3. Session persistence/recovery
 4. Fantasy theming polish
 
-### Phase 6: Documentation & Scaffolding
-1. CLAUDE.md - Project overview, architecture, patterns, dev workflow
-2. README.md - Setup instructions, usage, contributing
-3. .gitignore - Appropriate for TypeScript/React/Node
-4. Skills - Custom skills for common workflows (if needed)
-5. Agents - Project-specific agent configurations (if needed)
+---
+
+### Phase 6: Documentation & Scaffolding ✅ READY
+
+#### 6.1 Create CLAUDE.md
+**Label:** `documentation`
+
+**Tasks:**
+- [ ] Write project overview section
+- [ ] Document architecture (frontend ↔ bridge ↔ Claude)
+- [ ] List key patterns (Zustand stores, MCP tools, component conventions)
+- [ ] Document development workflow (branch → implement → test → PR)
+- [ ] Add common commands section
+
+**Files:**
+| File | Action |
+|------|--------|
+| `CLAUDE.md` | Create |
+
+**Acceptance Criteria:**
+- [ ] New developer can understand project from CLAUDE.md alone
+- [ ] All key architectural decisions documented
+- [ ] Commands section matches actual scripts
+
+**Dependencies:** 1.1-1.5 (needs working project)
+
+---
+
+#### 6.2 Create README.md
+**Label:** `documentation`
+
+**Tasks:**
+- [ ] Write project description and purpose
+- [ ] Add quick start section (prerequisites, install, run)
+- [ ] Document environment variables
+- [ ] Add usage examples with screenshots (placeholder)
+- [ ] Include contributing guidelines
+
+**Files:**
+| File | Action |
+|------|--------|
+| `README.md` | Create |
+
+**Acceptance Criteria:**
+- [ ] User can go from clone to running app following README
+- [ ] All prerequisites listed
+- [ ] Environment setup documented
+
+**Dependencies:** 1.1-1.5
+
+---
+
+#### 6.3 Create .gitignore
+**Label:** `infrastructure`
+
+**Tasks:**
+- [ ] Add Node.js patterns (node_modules, .npm, .yarn)
+- [ ] Add build output patterns (dist, build, .vite)
+- [ ] Add environment patterns (.env, .env.local)
+- [ ] Add IDE patterns (.idea, .vscode/settings.json)
+- [ ] Add OS patterns (.DS_Store, Thumbs.db)
+
+**Files:**
+| File | Action |
+|------|--------|
+| `.gitignore` | Create |
+
+**Acceptance Criteria:**
+- [ ] `git status` doesn't show generated files
+- [ ] Environment files excluded
+- [ ] IDE settings excluded (except shared configs)
+
+**Dependencies:** None
+
+---
+
+#### 6.4 Project-Specific Skills (Optional)
+**Label:** `enhancement`, `refine`
+
+**Tasks:**
+- [ ] Evaluate need for custom skills based on workflow patterns
+- [ ] If needed: create skill definitions in `.claude/skills/`
+
+**Files:**
+| File | Action |
+|------|--------|
+| `.claude/skills/*.md` | Create (if needed) |
+
+**Acceptance Criteria:**
+- [ ] Skills improve common workflows (if created)
+- [ ] Skills documented in CLAUDE.md
+
+**Dependencies:** Phases 2-5 (need to see patterns emerge)
+
+---
+
+#### 6.5 Project-Specific Agents (Optional)
+**Label:** `enhancement`, `refine`
+
+**Tasks:**
+- [ ] Evaluate need for custom agents based on project complexity
+- [ ] If needed: create agent configurations
+
+**Files:**
+| File | Action |
+|------|--------|
+| `.claude/agents/*.yaml` | Create (if needed) |
+
+**Acceptance Criteria:**
+- [ ] Agents improve complex multi-step workflows (if created)
+- [ ] Agent usage documented
+
+**Dependencies:** Phases 2-5
 
 ## Critical Files
 
