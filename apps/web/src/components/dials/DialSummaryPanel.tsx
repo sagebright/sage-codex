@@ -8,11 +8,12 @@
  * Fantasy-themed styling.
  */
 
-import { useState, memo, type ReactNode } from 'react';
+import { useState, memo, useMemo, type ReactNode } from 'react';
 import type { DialId } from '@dagger-app/shared-types';
 import {
   CONCRETE_DIAL_METADATA,
   CONCEPTUAL_DIAL_METADATA,
+  ALL_DIAL_METADATA,
 } from '@dagger-app/shared-types';
 import { DialProgressBar } from './DialProgressBar';
 import { DialSummaryItem } from './DialSummaryItem';
@@ -97,6 +98,16 @@ function DialSummaryPanelComponent({
   const confirmedCount = dials.confirmedDials.size;
   const allConfirmed = confirmedCount === TOTAL_DIALS;
 
+  // Pre-compute all selectors once when renderSelector changes
+  // This prevents inline function creation on every render
+  const selectorMap = useMemo(() => {
+    const map = new Map<DialId, ReactNode>();
+    for (const meta of ALL_DIAL_METADATA) {
+      map.set(meta.id, renderSelector(meta.id));
+    }
+    return map;
+  }, [renderSelector]);
+
   return (
     <div
       data-testid="dial-summary-panel"
@@ -126,7 +137,7 @@ function DialSummaryPanelComponent({
               label={meta.label}
               isConfirmed={dials.confirmedDials.has(meta.id)}
               onConfirmToggle={() => onConfirmToggle(meta.id)}
-              renderSelector={() => renderSelector(meta.id)}
+              selector={selectorMap.get(meta.id)}
             />
           ))}
         </CollapsibleSection>
@@ -140,7 +151,7 @@ function DialSummaryPanelComponent({
               label={meta.label}
               isConfirmed={dials.confirmedDials.has(meta.id)}
               onConfirmToggle={() => onConfirmToggle(meta.id)}
-              renderSelector={() => renderSelector(meta.id)}
+              selector={selectorMap.get(meta.id)}
             />
           ))}
         </CollapsibleSection>

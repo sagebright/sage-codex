@@ -12,7 +12,7 @@ describe('DialSummaryItem', () => {
     label: 'Party Size',
     isConfirmed: false,
     onConfirmToggle: vi.fn(),
-    renderSelector: () => <div data-testid="selector-widget">Selector</div>,
+    selector: <div data-testid="selector-widget">Selector</div>,
   };
 
   it('renders dial label', () => {

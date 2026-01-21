@@ -20,8 +20,8 @@ export interface DialSummaryItemProps {
   isConfirmed: boolean;
   /** Callback to toggle confirmation state */
   onConfirmToggle: () => void;
-  /** Render function for the selector component (always visible) */
-  renderSelector: () => ReactNode;
+  /** Pre-rendered selector component (always visible) */
+  selector: ReactNode;
   /** Additional CSS classes */
   className?: string;
 }
@@ -30,7 +30,7 @@ export function DialSummaryItem({
   label,
   isConfirmed,
   onConfirmToggle,
-  renderSelector,
+  selector,
   className = '',
 }: DialSummaryItemProps) {
   return (
@@ -60,7 +60,7 @@ export function DialSummaryItem({
 
       {/* Selector component - always visible */}
       <div className="mt-1">
-        {renderSelector()}
+        {selector}
       </div>
     </div>
   );
