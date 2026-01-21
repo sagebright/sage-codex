@@ -482,17 +482,8 @@ describe('OutlinePanel', () => {
       expect(screen.getByText(/outline confirmed/i)).toBeInTheDocument();
     });
 
-    it('shows continue to scenes button', () => {
-      render(
-        <OutlinePanel
-          onGenerateOutline={mockOnGenerateOutline}
-          onContinueToScenes={mockOnContinueToScenes}
-          onBackToFrame={mockOnBackToFrame}
-        />
-      );
-
-      expect(screen.getByRole('button', { name: /continue to scene writing/i })).toBeInTheDocument();
-    });
+    // Note: "Continue to Scene Writing" button removed - navigation now handled by PhaseNavigation
+    // See issue #66
 
     it('hides regenerate button when confirmed', () => {
       render(
@@ -533,20 +524,8 @@ describe('OutlinePanel', () => {
       expect(mockClearOutline).toHaveBeenCalled();
     });
 
-    it('calls onContinueToScenes when continue clicked', async () => {
-      const user = userEvent.setup();
-      render(
-        <OutlinePanel
-          onGenerateOutline={mockOnGenerateOutline}
-          onContinueToScenes={mockOnContinueToScenes}
-          onBackToFrame={mockOnBackToFrame}
-        />
-      );
-
-      await user.click(screen.getByRole('button', { name: /continue to scene writing/i }));
-
-      expect(mockOnContinueToScenes).toHaveBeenCalled();
-    });
+    // Note: "calls onContinueToScenes when continue clicked" test removed
+    // Navigation now handled by PhaseNavigation - see issue #66
   });
 
   describe('scene card interactions', () => {

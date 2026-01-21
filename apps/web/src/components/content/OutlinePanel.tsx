@@ -13,7 +13,6 @@ import {
   useContentStore,
   selectHasOutline,
   selectIsOutlineConfirmed,
-  selectCanProceedToScenes,
   selectSceneBriefs,
   selectOutlineTitle,
 } from '../../stores/contentStore';
@@ -41,7 +40,7 @@ export interface OutlinePanelProps {
 
 export function OutlinePanel({
   onGenerateOutline,
-  onContinueToScenes,
+  onContinueToScenes: _onContinueToScenes, // Kept for API compatibility; PhaseNavigation handles navigation
   onBackToFrame,
   onEditScene,
   frameName,
@@ -57,7 +56,6 @@ export function OutlinePanel({
   // Store state
   const hasOutline = useContentStore(selectHasOutline);
   const isOutlineConfirmed = useContentStore(selectIsOutlineConfirmed);
-  const canProceed = useContentStore(selectCanProceedToScenes);
   const sceneBriefs = useContentStore(selectSceneBriefs);
   const outlineTitle = useContentStore(selectOutlineTitle);
   const loading = useContentStore((state) => state.outlineLoading);
@@ -102,12 +100,6 @@ export function OutlinePanel({
   const handleChange = () => {
     clearOutline();
     setExpandedSceneId(null);
-  };
-
-  const handleContinue = () => {
-    if (canProceed) {
-      onContinueToScenes();
-    }
   };
 
   // Loading state
@@ -350,51 +342,33 @@ export function OutlinePanel({
         )}
 
         {isOutlineConfirmed ? (
-          <>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-gold-600 dark:text-gold-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span className="text-sm font-medium text-gold-700 dark:text-gold-400">
-                  Outline Confirmed
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleChange}
-                className="text-sm text-ink-500 hover:text-ink-700 dark:text-parchment-500 dark:hover:text-parchment-300 underline"
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-gold-600 dark:text-gold-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                Change
-              </button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="text-sm font-medium text-gold-700 dark:text-gold-400">
+                Outline Confirmed
+              </span>
             </div>
             <button
               type="button"
-              onClick={handleContinue}
-              className="
-                w-full py-3 px-4 rounded-fantasy border-2
-                bg-gold-500 border-gold-600 text-ink-900
-                font-serif font-semibold text-base
-                hover:bg-gold-400 hover:border-gold-500
-                dark:bg-gold-600 dark:border-gold-500 dark:text-ink-900
-                dark:hover:bg-gold-500 dark:hover:border-gold-400
-                shadow-gold-glow
-                transition-all duration-200
-              "
+              onClick={handleChange}
+              className="text-sm text-ink-500 hover:text-ink-700 dark:text-parchment-500 dark:hover:text-parchment-300 underline"
             >
-              Continue to Scene Writing →
+              Change
             </button>
-          </>
+          </div>
         ) : (
           <>
             <p className="text-sm text-ink-600 dark:text-parchment-400 mb-3">

@@ -17,7 +17,6 @@ import {
   useContentStore,
   selectHasSelectedFrame,
   selectIsFrameConfirmed,
-  selectCanProceedToOutline,
 } from '../../stores/contentStore';
 import { useAdventureStore } from '../../stores/adventureStore';
 
@@ -44,7 +43,7 @@ function generateNameSuggestion(frameName: string, themes?: string[]): string {
 
 export function FramePanel({
   onCreateCustom,
-  onContinueToOutline,
+  onContinueToOutline: _onContinueToOutline, // Kept for API compatibility; PhaseNavigation handles navigation
   className = '',
 }: FramePanelProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +62,6 @@ export function FramePanel({
   const framesError = useContentStore((state) => state.framesError);
   const hasSelectedFrame = useContentStore(selectHasSelectedFrame);
   const isFrameConfirmed = useContentStore(selectIsFrameConfirmed);
-  const canProceed = useContentStore(selectCanProceedToOutline);
 
   // Store actions
   const selectFrame = useContentStore((state) => state.selectFrame);
@@ -155,12 +153,6 @@ export function FramePanel({
   const handleChange = () => {
     clearFrame();
     setExpandedFrameId(null);
-  };
-
-  const handleContinue = () => {
-    if (canProceed) {
-      onContinueToOutline();
-    }
   };
 
   // Loading state
@@ -321,22 +313,22 @@ export function FramePanel({
           </div>
 
           {isFrameConfirmed ? (
-            <button
-              type="button"
-              onClick={handleContinue}
-              className="
-                w-full py-3 px-4 rounded-fantasy border-2
-                bg-gold-500 border-gold-600 text-ink-900
-                font-serif font-semibold text-base
-                hover:bg-gold-400 hover:border-gold-500
-                dark:bg-gold-600 dark:border-gold-500 dark:text-ink-900
-                dark:hover:bg-gold-500 dark:hover:border-gold-400
-                shadow-gold-glow
-                transition-all duration-200
-              "
-            >
-              Continue to Outline →
-            </button>
+            <div className="flex items-center gap-2 py-2 text-sm text-gold-700 dark:text-gold-400">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="font-medium">Frame Confirmed</span>
+            </div>
           ) : (
             <button
               type="button"
