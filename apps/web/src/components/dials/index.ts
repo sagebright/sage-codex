@@ -43,3 +43,9 @@ export { DialWrapper, type DialWrapperProps } from './DialWrapper';
 export { DialSummaryPanel, type DialSummaryPanelProps } from './DialSummaryPanel';
 export { DialSummaryItem, type DialSummaryItemProps } from './DialSummaryItem';
 export { DialProgressBar, type DialProgressBarProps } from './DialProgressBar';
+
+// Full-page dial tuning components
+export { DialCard, type DialCardProps } from './DialCard';
+export { DialGroup, type DialGroupProps } from './DialGroup';
+export { DialTuningPanel, type DialTuningPanelProps } from './DialTuningPanel';
+export { ConfirmDefaultsDialog, type ConfirmDefaultsDialogProps, type UnsetDial } from './ConfirmDefaultsDialog';
