@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import type { HealthResponse } from '@dagger-app/shared-types';
+import { AdventurePage } from '@/pages/AdventurePage';
 
 function DarkModeToggle() {
   const [isDark, setIsDark] = useState(() => {
@@ -24,7 +25,7 @@ function DarkModeToggle() {
       className="btn-secondary"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDark ? '☀️ Light Mode' : '🌙 Dark Mode'}
+      {isDark ? 'Light Mode' : 'Dark Mode'}
     </button>
   );
 }
@@ -81,33 +82,6 @@ function HomePage() {
               <span className="text-sm font-medium">Shadow</span>
             </div>
           </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
-function AdventurePage() {
-  return (
-    <div className="min-h-screen bg-parchment-100 dark:bg-shadow-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-8">
-        <header className="flex justify-between items-center mb-12">
-          <h1 className="font-serif text-4xl text-ink-950 dark:text-parchment-50">
-            Adventure Generator
-          </h1>
-          <DarkModeToggle />
-        </header>
-
-        <main className="max-w-2xl mx-auto">
-          <div className="card mb-8">
-            <p className="text-ink-600 dark:text-parchment-300">
-              Adventure creation workflow coming soon...
-            </p>
-          </div>
-
-          <Link to="/" className="btn-secondary">
-            ← Back to Home
-          </Link>
         </main>
       </div>
     </div>
