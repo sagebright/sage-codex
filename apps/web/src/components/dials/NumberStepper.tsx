@@ -1,6 +1,10 @@
 /**
  * NumberStepper Component
  *
+ * @deprecated This component is deprecated in favor of PartySizeSelect and SceneCountSelect
+ * which provide inline option buttons for single-click selection. This component may be
+ * removed in a future version. See issue #47 for migration details.
+ *
  * A stepper control with +/- buttons for numeric values.
  * Used for party_size and scene_count dials.
  * Fantasy-themed with gold accents.

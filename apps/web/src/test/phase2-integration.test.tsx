@@ -267,45 +267,50 @@ describe('Phase 2 Integration Tests', () => {
         };
       }
 
-      it('renders dial summary with current values', () => {
+      it('renders dial summary with selector widgets', () => {
         const mockDials = createMockDialsState({
           partySize: 5,
           partyTier: 3,
         });
+        const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
         render(
           <DialSummaryPanel
             dials={mockDials}
-            onEditDial={vi.fn()}
-            onConfirmDial={vi.fn()}
+            onConfirmToggle={vi.fn()}
             onContinue={vi.fn()}
+            renderSelector={mockRenderSelector}
           />
         );
 
-        // Verify dial values are displayed
-        expect(screen.getByText('5')).toBeInTheDocument(); // partySize
-        expect(screen.getByText('3')).toBeInTheDocument(); // partyTier
+        // Verify selector widgets are rendered
+        const selectorWidgets = screen.getAllByTestId('selector-widget');
+        expect(selectorWidgets.length).toBeGreaterThan(0);
       });
 
-      it('calls onEditDial when edit button is clicked', async () => {
+      it('calls onConfirmToggle when checkmark is clicked', async () => {
         const user = userEvent.setup();
-        const onEditDial = vi.fn();
+        const onConfirmToggle = vi.fn();
         const mockDials = createMockDialsState();
+        const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
         render(
           <DialSummaryPanel
             dials={mockDials}
-            onEditDial={onEditDial}
-            onConfirmDial={vi.fn()}
+            onConfirmToggle={onConfirmToggle}
             onContinue={vi.fn()}
+            renderSelector={mockRenderSelector}
           />
         );
 
-        // Find and click an edit button
-        const editButtons = screen.getAllByRole('button', { name: /edit/i });
-        if (editButtons.length > 0) {
-          await user.click(editButtons[0]);
-          expect(onEditDial).toHaveBeenCalled();
+        // Find and click a checkmark button
+        const checkmarkButtons = screen.getAllByRole('button', { pressed: false });
+        const confirmButtons = checkmarkButtons.filter(btn =>
+          btn.getAttribute('aria-label')?.includes('Confirm')
+        );
+        if (confirmButtons.length > 0) {
+          await user.click(confirmButtons[0]);
+          expect(onConfirmToggle).toHaveBeenCalled();
         }
       });
 
@@ -329,13 +334,14 @@ describe('Phase 2 Integration Tests', () => {
           emotionalRegister: 'tense',
           themes: ['redemption'],
         });
+        const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
         render(
           <DialSummaryPanel
             dials={mockDials}
-            onEditDial={vi.fn()}
-            onConfirmDial={vi.fn()}
+            onConfirmToggle={vi.fn()}
             onContinue={vi.fn()}
+            renderSelector={mockRenderSelector}
           />
         );
 

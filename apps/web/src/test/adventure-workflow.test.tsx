@@ -376,23 +376,23 @@ describe('Adventure Workflow Integration Tests', () => {
   // ===========================================================================
 
   describe('4. DialSummaryPanel Integration', () => {
-    const mockOnEditDial = vi.fn();
-    const mockOnConfirmDial = vi.fn();
+    const mockOnConfirmToggle = vi.fn();
     const mockOnContinue = vi.fn();
+    const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
     beforeEach(() => {
-      mockOnEditDial.mockClear();
-      mockOnConfirmDial.mockClear();
+      mockOnConfirmToggle.mockClear();
       mockOnContinue.mockClear();
+      mockRenderSelector.mockClear();
     });
 
     it('renders with mock dials state', () => {
       render(
         <DialSummaryPanel
           dials={createMockDialsState()}
-          onEditDial={mockOnEditDial}
-          onConfirmDial={mockOnConfirmDial}
+          onConfirmToggle={mockOnConfirmToggle}
           onContinue={mockOnContinue}
+          renderSelector={mockRenderSelector}
         />
       );
 
@@ -405,9 +405,9 @@ describe('Adventure Workflow Integration Tests', () => {
       render(
         <DialSummaryPanel
           dials={dials}
-          onEditDial={mockOnEditDial}
-          onConfirmDial={mockOnConfirmDial}
+          onConfirmToggle={mockOnConfirmToggle}
           onContinue={mockOnContinue}
+          renderSelector={mockRenderSelector}
         />
       );
 
@@ -423,9 +423,9 @@ describe('Adventure Workflow Integration Tests', () => {
       render(
         <DialSummaryPanel
           dials={dials}
-          onEditDial={mockOnEditDial}
-          onConfirmDial={mockOnConfirmDial}
+          onConfirmToggle={mockOnConfirmToggle}
           onContinue={mockOnContinue}
+          renderSelector={mockRenderSelector}
         />
       );
 
@@ -462,9 +462,9 @@ describe('Adventure Workflow Integration Tests', () => {
       render(
         <DialSummaryPanel
           dials={dials}
-          onEditDial={mockOnEditDial}
-          onConfirmDial={mockOnConfirmDial}
+          onConfirmToggle={mockOnConfirmToggle}
           onContinue={mockOnContinue}
+          renderSelector={mockRenderSelector}
         />
       );
 

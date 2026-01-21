@@ -23,13 +23,6 @@ import type {
   PartyTier,
   SessionLength,
   ThemeOption,
-  PartySize,
-  SceneCount,
-  ToneOption,
-  NPCDensityOption,
-  LethalityOption,
-  EmotionalRegisterOption,
-  PillarBalance,
 } from '@dagger-app/shared-types';
 import { THEME_OPTIONS } from '@dagger-app/shared-types';
 
@@ -44,11 +37,16 @@ import { restoreFromSnapshot } from '@/stores/persistence';
 import { ChatContainer } from '@/components/chat';
 import {
   DialSummaryPanel,
-  NumberStepper,
   TierSelect,
   SessionLengthSelect,
-  SpectrumSlider,
   MultiSelectChips,
+  PartySizeSelect,
+  SceneCountSelect,
+  ToneSelect,
+  NPCDensitySelect,
+  LethalitySelect,
+  EmotionalRegisterSelect,
+  PillarBalanceSelect,
 } from '@/components/dials';
 
 // Phase 3 components
@@ -454,9 +452,6 @@ export function AdventurePage() {
   const selectedItems = useContentStore((state) => state.selectedItems);
   const echoes = useContentStore((state) => state.echoes);
 
-  // Local state for editing dial in chat
-  const [editingDialId, setEditingDialId] = useState<DialId | undefined>();
-
   // Export state
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -531,28 +526,25 @@ export function AdventurePage() {
   // Dial Handlers
   // =============================================================================
 
-  const handleEditDial = useCallback((dialId: DialId) => {
-    setEditingDialId(dialId);
-  }, []);
-
-  const handleConfirmDial = useCallback((dialId: DialId) => {
-    dialsState.confirmDial(dialId);
-    setEditingDialId(undefined);
+  const handleConfirmToggle = useCallback((dialId: DialId) => {
+    if (dialsState.confirmedDials.has(dialId)) {
+      dialsState.unconfirmDial(dialId);
+    } else {
+      dialsState.confirmDial(dialId);
+    }
   }, [dialsState]);
 
   // =============================================================================
-  // Dial Edit Widget Renderer
+  // Dial Selector Renderer
   // =============================================================================
 
-  const renderEditWidget = useCallback((dialId: DialId): ReactNode => {
+  const renderSelector = useCallback((dialId: DialId): ReactNode => {
     switch (dialId) {
       case 'partySize':
         return (
-          <NumberStepper
+          <PartySizeSelect
             value={partySize}
-            min={2}
-            max={5}
-            onChange={(v) => setDial('partySize', v as PartySize)}
+            onChange={(v) => setDial('partySize', v)}
           />
         );
       case 'partyTier':
@@ -564,11 +556,9 @@ export function AdventurePage() {
         );
       case 'sceneCount':
         return (
-          <NumberStepper
+          <SceneCountSelect
             value={sceneCount}
-            min={3}
-            max={6}
-            onChange={(v) => setDial('sceneCount', v as SceneCount)}
+            onChange={(v) => setDial('sceneCount', v)}
           />
         );
       case 'sessionLength':
@@ -579,56 +569,38 @@ export function AdventurePage() {
           />
         );
       case 'tone':
-        // TODO: Replace with OptionButtonGroup in dial UI overhaul (#46)
         return (
-          <SpectrumSlider
-            value={tone as string | null}
-            endpoints={{ low: 'Grim', high: 'Whimsical' }}
-            onChange={(v) => setDial('tone', v as ToneOption)}
+          <ToneSelect
+            value={tone ?? 'balanced'}
+            onChange={(v) => setDial('tone', v)}
           />
         );
       case 'pillarBalance':
-        // TODO: Replace with PillarBalanceSelector in dial UI overhaul (#46)
         return (
-          <SpectrumSlider
-            value={pillarBalance ? `${pillarBalance.primary}-focused` : null}
-            endpoints={{ low: 'Combat', high: 'Exploration' }}
-            onChange={(v) => {
-              // Temporary: Create a pillar balance from the spectrum value
-              const balance: PillarBalance = v.includes('combat')
-                ? { primary: 'combat', secondary: 'exploration', tertiary: 'social' }
-                : v.includes('exploration')
-                  ? { primary: 'exploration', secondary: 'social', tertiary: 'combat' }
-                  : { primary: 'social', secondary: 'combat', tertiary: 'exploration' };
-              setDial('pillarBalance', balance);
-            }}
+          <PillarBalanceSelect
+            value={pillarBalance ?? { primary: 'combat', secondary: 'exploration', tertiary: 'social' }}
+            onChange={(v) => setDial('pillarBalance', v)}
           />
         );
       case 'npcDensity':
-        // TODO: Replace with OptionButtonGroup in dial UI overhaul (#46)
         return (
-          <SpectrumSlider
-            value={npcDensity as string | null}
-            endpoints={{ low: 'Sparse', high: 'Rich' }}
-            onChange={(v) => setDial('npcDensity', v as NPCDensityOption)}
+          <NPCDensitySelect
+            value={npcDensity ?? 'moderate'}
+            onChange={(v) => setDial('npcDensity', v)}
           />
         );
       case 'lethality':
-        // TODO: Replace with OptionButtonGroup in dial UI overhaul (#46)
         return (
-          <SpectrumSlider
-            value={lethality as string | null}
-            endpoints={{ low: 'Forgiving', high: 'Deadly' }}
-            onChange={(v) => setDial('lethality', v as LethalityOption)}
+          <LethalitySelect
+            value={lethality ?? 'standard'}
+            onChange={(v) => setDial('lethality', v)}
           />
         );
       case 'emotionalRegister':
-        // TODO: Replace with OptionButtonGroup in dial UI overhaul (#46)
         return (
-          <SpectrumSlider
-            value={emotionalRegister as string | null}
-            endpoints={{ low: 'Light', high: 'Heavy' }}
-            onChange={(v) => setDial('emotionalRegister', v as EmotionalRegisterOption)}
+          <EmotionalRegisterSelect
+            value={emotionalRegister ?? 'thrilling'}
+            onChange={(v) => setDial('emotionalRegister', v)}
           />
         );
       case 'themes':
@@ -856,11 +828,9 @@ export function AdventurePage() {
             <div className="w-[40%] overflow-y-auto">
               <DialSummaryPanel
                 dials={dialsState}
-                onEditDial={handleEditDial}
-                onConfirmDial={handleConfirmDial}
+                onConfirmToggle={handleConfirmToggle}
                 onContinue={handleContinue}
-                editingDialId={editingDialId}
-                renderEditWidget={renderEditWidget}
+                renderSelector={renderSelector}
               />
             </div>
           </div>
