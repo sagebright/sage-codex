@@ -14,6 +14,9 @@ export * from './dials.js';
 // Re-export MCP types
 export * from './mcp.js';
 
+// Re-export content types
+export * from './content.js';
+
 /**
  * API health check response
  */
