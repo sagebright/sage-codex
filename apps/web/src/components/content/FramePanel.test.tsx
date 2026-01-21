@@ -50,6 +50,9 @@ describe('FramePanel', () => {
   const mockSelectFrame = vi.fn();
   const mockConfirmFrame = vi.fn();
   const mockClearFrame = vi.fn();
+  const mockSetAvailableFrames = vi.fn();
+  const mockSetFramesLoading = vi.fn();
+  const mockSetFramesError = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -64,6 +67,9 @@ describe('FramePanel', () => {
         selectFrame: mockSelectFrame,
         confirmFrame: mockConfirmFrame,
         clearFrame: mockClearFrame,
+        setAvailableFrames: mockSetAvailableFrames,
+        setFramesLoading: mockSetFramesLoading,
+        setFramesError: mockSetFramesError,
       };
 
       if (typeof selector === 'function') {
@@ -131,6 +137,9 @@ describe('FramePanel', () => {
           selectFrame: mockSelectFrame,
           confirmFrame: mockConfirmFrame,
           clearFrame: mockClearFrame,
+          setAvailableFrames: mockSetAvailableFrames,
+          setFramesLoading: mockSetFramesLoading,
+          setFramesError: mockSetFramesError,
         };
 
         if (typeof selector === 'function') {
@@ -161,6 +170,9 @@ describe('FramePanel', () => {
           selectFrame: mockSelectFrame,
           confirmFrame: mockConfirmFrame,
           clearFrame: mockClearFrame,
+          setAvailableFrames: mockSetAvailableFrames,
+          setFramesLoading: mockSetFramesLoading,
+          setFramesError: mockSetFramesError,
         };
 
         if (typeof selector === 'function') {
