@@ -10,6 +10,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { Phase } from '@dagger-app/shared-types';
+import { useChatStore } from './chatStore';
 
 // =============================================================================
 // Types
@@ -59,6 +60,8 @@ export const useAdventureStore = create<AdventureState>()(
          */
         initSession: (name: string) => {
           const sessionId = crypto.randomUUID();
+          // Clear chat messages from previous sessions
+          useChatStore.getState().clearMessages();
           set(
             {
               sessionId,

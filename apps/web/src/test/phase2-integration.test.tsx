@@ -611,10 +611,11 @@ describe('Phase 2 Integration Tests', () => {
     describe('clearAllStorageData', () => {
       it('clears all persisted data and resets stores', () => {
         // Set up state in all stores
+        // Note: initSession clears chat messages, so we add the message after
         storeAction(() => {
+          useAdventureStore.getState().initSession('Test');
           useChatStore.getState().addMessage({ role: 'user', content: 'Test' });
           useDialsStore.getState().setDial('partySize', 5);
-          useAdventureStore.getState().initSession('Test');
         });
 
         // Verify data was set
@@ -635,11 +636,12 @@ describe('Phase 2 Integration Tests', () => {
     describe('resetAllStores', () => {
       it('resets all store state to initial values', () => {
         // Set up state
+        // Note: initSession clears chat messages, so we add the message after
         storeAction(() => {
+          useAdventureStore.getState().initSession('Test');
           useChatStore.getState().addMessage({ role: 'user', content: 'Test' });
           useDialsStore.getState().setDial('partySize', 5);
           useDialsStore.getState().confirmDial('partySize');
-          useAdventureStore.getState().initSession('Test');
         });
 
         // Reset

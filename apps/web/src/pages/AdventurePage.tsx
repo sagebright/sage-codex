@@ -58,6 +58,7 @@ import {
   selectHasActiveSession,
   selectCanGoBack,
 } from '@/stores/adventureStore';
+import { useChatStore } from '@/stores/chatStore';
 import {
   useDialsStore,
   selectRequiredDialsComplete,
@@ -313,6 +314,7 @@ export function AdventurePage() {
     resetAdventure();
     useDialsStore.getState().resetDials();
     useContentStore.getState().resetContent();
+    useChatStore.getState().clearMessages();
     setRecoveryState('none');
   }, [sessionId, resetAdventure]);
 
