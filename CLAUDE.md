@@ -182,6 +182,28 @@ Auto-activating skills provide scaffolding guidance when creating new code. See 
 | `new-component` | Creating React components | Props, ARIA, fantasy theme, tests |
 | `new-store` | Creating Zustand stores | Middleware, serialization, tests |
 
+## Project Agents
+
+Custom agents for complex multi-step workflows. Located in `.claude/agents/`.
+
+| Agent | Use When | Tools |
+|-------|----------|-------|
+| `daggerheart-content-expert` | Generating content, querying tables, validating tier-appropriate selections | Read, Glob, Grep, Bash |
+| `adventure-validator` | Validating coherence, checking alignment, reviewing before export | Read, Glob, Grep |
+| `mcp-tool-developer` | Creating MCP tools, extending tool registry | Read, Glob, Grep, Write, Edit, Bash |
+| `integration-test-writer` | Writing integration tests, analyzing workflows | Read, Glob, Grep, Write, Edit, Bash |
+
+### Invoking Agents
+
+Agents auto-activate based on task context, or invoke explicitly:
+
+```
+"Use the daggerheart-content-expert agent to recommend adversaries for tier 2"
+"Use the adventure-validator to check if the outline matches the dials"
+"Use the mcp-tool-developer to create a new tool for echo generation"
+"Use the integration-test-writer to add tests for the NPC compilation workflow"
+```
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` in `apps/mcp-bridge/`:
