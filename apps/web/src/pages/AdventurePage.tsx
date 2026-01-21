@@ -671,9 +671,8 @@ export function AdventurePage() {
 
   const handleCreateCustomFrame = useCallback(() => {
     // Switch back to dial-tuning to use chat for custom frame creation
-    // In a full implementation, this would trigger specific chat prompts
-    console.log('[AdventurePage] Create custom frame requested');
-  }, []);
+    setPhase('dial-tuning');
+  }, [setPhase]);
 
   const handleGenerateOutline = useCallback((_feedback?: string) => {
     // In full implementation, this would trigger MCP tool invocation
