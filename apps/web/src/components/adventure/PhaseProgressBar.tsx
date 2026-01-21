@@ -26,6 +26,9 @@ export interface PhaseProgressBarProps {
 // Component
 // =============================================================================
 
+/** Default display name when no adventure name is set */
+const UNTITLED_ADVENTURE = 'Untitled Adventure';
+
 export function PhaseProgressBar({
   currentPhase,
   adventureName,
@@ -39,18 +42,19 @@ export function PhaseProgressBar({
   const totalPhases = PHASES.length;
   const progressPercent = Math.round((currentIndex / (totalPhases - 1)) * 100);
 
+  // Display name with fallback to "Untitled Adventure"
+  const displayName = adventureName?.trim() || UNTITLED_ADVENTURE;
+
   return (
     <div className={`bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 ${className}`}>
       {/* Header with title and phase name */}
       <div className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center gap-3">
-          {adventureName && (
-            <h2 className="font-serif font-bold text-ink-800 dark:text-parchment-100 truncate max-w-[200px]">
-              {adventureName}
-            </h2>
-          )}
+          <h2 className="font-serif font-bold text-ink-800 dark:text-parchment-100 truncate max-w-[200px]">
+            {displayName}
+          </h2>
           <span className="text-sm text-ink-500 dark:text-parchment-500">
-            {adventureName && '|'}
+            |
           </span>
           <span className="text-sm font-medium text-gold-700 dark:text-gold-400">
             {currentPhaseInfo?.label ?? 'Unknown Phase'}

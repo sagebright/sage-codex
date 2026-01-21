@@ -10,12 +10,9 @@ describe('DialSummaryItem', () => {
   const defaultProps = {
     dialId: 'partySize' as const,
     label: 'Party Size',
-    value: 4,
     isConfirmed: false,
-    isEditing: false,
-    onEdit: vi.fn(),
-    onConfirm: vi.fn(),
-    renderEditWidget: () => <input data-testid="edit-widget" />,
+    onConfirmToggle: vi.fn(),
+    renderSelector: () => <div data-testid="selector-widget">Selector</div>,
   };
 
   it('renders dial label', () => {
@@ -23,56 +20,31 @@ describe('DialSummaryItem', () => {
     expect(screen.getByText('Party Size')).toBeInTheDocument();
   });
 
-  it('renders dial value', () => {
+  it('always renders selector widget inline', () => {
     render(<DialSummaryItem {...defaultProps} />);
-    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByTestId('selector-widget')).toBeInTheDocument();
   });
 
-  it('renders string values correctly', () => {
-    render(<DialSummaryItem {...defaultProps} value="Like The Witcher" />);
-    expect(screen.getByText('Like The Witcher')).toBeInTheDocument();
-  });
-
-  it('renders array values as comma-separated list', () => {
-    render(<DialSummaryItem {...defaultProps} value={['redemption', 'sacrifice']} />);
-    expect(screen.getByText('redemption, sacrifice')).toBeInTheDocument();
-  });
-
-  it('renders "Not set" for null values', () => {
-    render(<DialSummaryItem {...defaultProps} value={null} />);
-    expect(screen.getByText('Not set')).toBeInTheDocument();
-  });
-
-  it('renders Edit button when not editing', () => {
+  it('renders ConfirmCheckmark in header', () => {
     render(<DialSummaryItem {...defaultProps} />);
-    expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+    // ConfirmCheckmark renders a button with aria-pressed
+    expect(screen.getByRole('button', { pressed: false })).toBeInTheDocument();
   });
 
-  it('calls onEdit when Edit button is clicked', () => {
-    const onEdit = vi.fn();
-    render(<DialSummaryItem {...defaultProps} onEdit={onEdit} />);
-    fireEvent.click(screen.getByRole('button', { name: /edit/i }));
-    expect(onEdit).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders edit widget when isEditing is true', () => {
-    render(<DialSummaryItem {...defaultProps} isEditing={true} />);
-    expect(screen.getByTestId('edit-widget')).toBeInTheDocument();
-  });
-
-  it('does not render Edit button when isEditing is true', () => {
-    render(<DialSummaryItem {...defaultProps} isEditing={true} />);
-    expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
-  });
-
-  it('renders checkmark indicator when confirmed', () => {
+  it('shows gold checkmark when confirmed', () => {
     render(<DialSummaryItem {...defaultProps} isConfirmed={true} />);
-    expect(screen.getByTestId('confirmed-checkmark')).toBeInTheDocument();
+    const checkmark = screen.getByRole('button', { pressed: true });
+    expect(checkmark).toBeInTheDocument();
   });
 
-  it('does not render checkmark indicator when not confirmed', () => {
-    render(<DialSummaryItem {...defaultProps} isConfirmed={false} />);
-    expect(screen.queryByTestId('confirmed-checkmark')).not.toBeInTheDocument();
+  it('calls onConfirmToggle when checkmark is clicked', () => {
+    const onConfirmToggle = vi.fn();
+    render(<DialSummaryItem {...defaultProps} onConfirmToggle={onConfirmToggle} />);
+
+    const checkmark = screen.getByRole('button', { pressed: false });
+    fireEvent.click(checkmark);
+
+    expect(onConfirmToggle).toHaveBeenCalledTimes(1);
   });
 
   it('applies pending styling when not confirmed', () => {
@@ -81,15 +53,25 @@ describe('DialSummaryItem', () => {
     expect(container).toHaveClass('border-l-2');
   });
 
-  it('renders Confirm button when editing and not confirmed', () => {
-    render(<DialSummaryItem {...defaultProps} isEditing={true} isConfirmed={false} />);
-    expect(screen.getByRole('button', { name: /confirm/i })).toBeInTheDocument();
+  it('applies confirmed styling when confirmed', () => {
+    render(<DialSummaryItem {...defaultProps} isConfirmed={true} />);
+    const container = screen.getByTestId('dial-summary-item');
+    expect(container).not.toHaveClass('border-l-2');
   });
 
-  it('calls onConfirm when Confirm button is clicked', () => {
-    const onConfirm = vi.fn();
-    render(<DialSummaryItem {...defaultProps} isEditing={true} isConfirmed={false} onConfirm={onConfirm} />);
-    fireEvent.click(screen.getByRole('button', { name: /confirm/i }));
-    expect(onConfirm).toHaveBeenCalledTimes(1);
+  it('renders with custom className', () => {
+    render(<DialSummaryItem {...defaultProps} className="custom-class" />);
+    const container = screen.getByTestId('dial-summary-item');
+    expect(container).toHaveClass('custom-class');
+  });
+
+  it('provides accessible label for confirm checkmark', () => {
+    render(<DialSummaryItem {...defaultProps} />);
+    expect(screen.getByRole('button', { name: /confirm party size/i })).toBeInTheDocument();
+  });
+
+  it('provides accessible label for unconfirm when confirmed', () => {
+    render(<DialSummaryItem {...defaultProps} isConfirmed={true} />);
+    expect(screen.getByRole('button', { name: /unconfirm party size/i })).toBeInTheDocument();
   });
 });

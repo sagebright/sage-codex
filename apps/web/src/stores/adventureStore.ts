@@ -10,6 +10,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { Phase } from '@dagger-app/shared-types';
+import { useChatStore } from './chatStore';
 
 // =============================================================================
 // Types
@@ -26,7 +27,8 @@ export interface AdventureState {
   phaseHistory: Phase[];
 
   // Actions
-  initSession: (name: string) => void;
+  initSession: (name?: string) => void;
+  setAdventureName: (name: string) => void;
   setPhase: (phase: Phase) => void;
   goToPreviousPhase: () => void;
   reset: () => void;
@@ -56,9 +58,30 @@ export const useAdventureStore = create<AdventureState>()(
 
         /**
          * Initialize a new adventure session
+         * @param name - Optional adventure name (defaults to empty string)
          */
-        initSession: (name: string) => {
+        initSession: (name: string = '') => {
           const sessionId = crypto.randomUUID();
+          // Clear chat messages from previous sessions
+          useChatStore.getState().clearMessages();
+
+          // Add welcome message to guide the user
+          const welcomeMessage = `🎲 Welcome to Dagger-Gen!
+
+I'll help you create an exciting Daggerheart adventure. Let's start by configuring your adventure settings.
+
+✨ **To begin, tell me about your party:**
+- How many players will be adventuring?
+- What tier are they (1-4)?
+- How long is your session?
+
+You can also adjust settings in the **Adventure Dials** panel on the right. Once all dials are confirmed, we'll move on to selecting your adventure frame! 🗺️`;
+
+          useChatStore.getState().addMessage({
+            role: 'assistant',
+            content: welcomeMessage,
+          });
+
           set(
             {
               sessionId,
@@ -69,6 +92,20 @@ export const useAdventureStore = create<AdventureState>()(
             },
             false,
             'initSession'
+          );
+        },
+
+        /**
+         * Set or update the adventure name
+         * @param name - The adventure name (will be trimmed)
+         */
+        setAdventureName: (name: string) => {
+          set(
+            {
+              adventureName: name.trim(),
+            },
+            false,
+            'setAdventureName'
           );
         },
 

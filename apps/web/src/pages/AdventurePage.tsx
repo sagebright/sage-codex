@@ -17,7 +17,13 @@
 
 import { useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { DialId, CompiledNPC, PartyTier, SessionLength, ThemeOption } from '@dagger-app/shared-types';
+import type {
+  DialId,
+  CompiledNPC,
+  PartyTier,
+  SessionLength,
+  ThemeOption,
+} from '@dagger-app/shared-types';
 import { THEME_OPTIONS } from '@dagger-app/shared-types';
 
 // Adventure components
@@ -31,11 +37,16 @@ import { restoreFromSnapshot } from '@/stores/persistence';
 import { ChatContainer } from '@/components/chat';
 import {
   DialSummaryPanel,
-  NumberStepper,
   TierSelect,
   SessionLengthSelect,
-  SpectrumSlider,
   MultiSelectChips,
+  PartySizeSelect,
+  SceneCountSelect,
+  ToneSelect,
+  NPCDensitySelect,
+  LethalitySelect,
+  EmotionalRegisterSelect,
+  PillarBalanceSelect,
 } from '@/components/dials';
 
 // Phase 3 components
@@ -58,6 +69,7 @@ import {
   selectHasActiveSession,
   selectCanGoBack,
 } from '@/stores/adventureStore';
+import { useChatStore } from '@/stores/chatStore';
 import {
   useDialsStore,
   selectRequiredDialsComplete,
@@ -111,24 +123,20 @@ function DarkModeToggle() {
 
 interface SetupPhaseProps {
   onStart: (name: string) => void;
+  onSkip: () => void;
 }
 
-function SetupPhase({ onStart }: SetupPhaseProps) {
+function SetupPhase({ onStart, onSkip }: SetupPhaseProps) {
   const [adventureName, setAdventureName] = useState('');
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = adventureName.trim();
-    if (!trimmed) {
-      setError('Please enter an adventure name');
-      return;
-    }
-    if (trimmed.length < 3) {
-      setError('Adventure name must be at least 3 characters');
-      return;
-    }
     onStart(trimmed);
+  };
+
+  const handleSkip = () => {
+    onSkip();
   };
 
   return (
@@ -139,7 +147,7 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
             Create Your Adventure
           </h1>
           <p className="text-ink-600 dark:text-parchment-400">
-            Give your Daggerheart adventure a name to begin
+            Give your Daggerheart adventure a name to begin, or skip to name it later
           </p>
         </div>
 
@@ -149,6 +157,9 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
             className="block text-sm font-medium text-ink-700 dark:text-parchment-300 mb-2"
           >
             Adventure Name
+            <span className="text-ink-400 dark:text-parchment-500 font-normal ml-1">
+              (optional)
+            </span>
           </label>
           <input
             id="adventure-name"
@@ -156,7 +167,6 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
             value={adventureName}
             onChange={(e) => {
               setAdventureName(e.target.value);
-              setError(null);
             }}
             placeholder="e.g., The Hollow Vigil"
             autoFocus
@@ -170,24 +180,38 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
               transition-all
             "
           />
-          {error && (
-            <p className="mt-2 text-sm text-blood-600 dark:text-blood-400">{error}</p>
-          )}
-          <button
-            type="submit"
-            className="
-              w-full mt-4 py-3 px-4 rounded-fantasy border-2
-              bg-gold-500 border-gold-600 text-ink-900
-              font-serif font-semibold text-base
-              hover:bg-gold-400 hover:border-gold-500
-              dark:bg-gold-600 dark:border-gold-500
-              dark:hover:bg-gold-500 dark:hover:border-gold-400
-              shadow-gold-glow
-              transition-all duration-200
-            "
-          >
-            Begin Adventure
-          </button>
+          <div className="flex gap-3 mt-4">
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="
+                flex-1 py-3 px-4 rounded-fantasy border-2
+                bg-parchment-100 border-ink-300 text-ink-600
+                font-serif font-semibold text-base
+                hover:bg-parchment-200 hover:border-ink-400
+                dark:bg-shadow-700 dark:border-shadow-500 dark:text-parchment-300
+                dark:hover:bg-shadow-600 dark:hover:border-shadow-400
+                transition-all duration-200
+              "
+            >
+              Skip for now
+            </button>
+            <button
+              type="submit"
+              className="
+                flex-1 py-3 px-4 rounded-fantasy border-2
+                bg-gold-500 border-gold-600 text-ink-900
+                font-serif font-semibold text-base
+                hover:bg-gold-400 hover:border-gold-500
+                dark:bg-gold-600 dark:border-gold-500
+                dark:hover:bg-gold-500 dark:hover:border-gold-400
+                shadow-gold-glow
+                transition-all duration-200
+              "
+            >
+              Begin Adventure
+            </button>
+          </div>
         </form>
 
         <div className="text-center mt-6">
@@ -313,6 +337,7 @@ export function AdventurePage() {
     resetAdventure();
     useDialsStore.getState().resetDials();
     useContentStore.getState().resetContent();
+    useChatStore.getState().clearMessages();
     setRecoveryState('none');
   }, [sessionId, resetAdventure]);
 
@@ -322,7 +347,7 @@ export function AdventurePage() {
   const sceneCount = useDialsStore((state) => state.sceneCount);
   const sessionLength = useDialsStore((state) => state.sessionLength);
   const tone = useDialsStore((state) => state.tone);
-  const combatExplorationBalance = useDialsStore((state) => state.combatExplorationBalance);
+  const pillarBalance = useDialsStore((state) => state.pillarBalance);
   const npcDensity = useDialsStore((state) => state.npcDensity);
   const lethality = useDialsStore((state) => state.lethality);
   const emotionalRegister = useDialsStore((state) => state.emotionalRegister);
@@ -344,7 +369,7 @@ export function AdventurePage() {
     sceneCount,
     sessionLength,
     tone,
-    combatExplorationBalance,
+    pillarBalance,
     npcDensity,
     lethality,
     emotionalRegister,
@@ -363,7 +388,7 @@ export function AdventurePage() {
     sceneCount,
     sessionLength,
     tone,
-    combatExplorationBalance,
+    pillarBalance,
     npcDensity,
     lethality,
     emotionalRegister,
@@ -439,9 +464,6 @@ export function AdventurePage() {
   const selectedItems = useContentStore((state) => state.selectedItems);
   const echoes = useContentStore((state) => state.echoes);
 
-  // Local state for editing dial in chat
-  const [editingDialId, setEditingDialId] = useState<DialId | undefined>();
-
   // Export state
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -452,6 +474,10 @@ export function AdventurePage() {
 
   const handleStartAdventure = useCallback((name: string) => {
     initSession(name);
+  }, [initSession]);
+
+  const handleSkipNaming = useCallback(() => {
+    initSession('');
   }, [initSession]);
 
   const handleGoBack = useCallback(() => {
@@ -516,27 +542,24 @@ export function AdventurePage() {
   // Dial Handlers
   // =============================================================================
 
-  const handleEditDial = useCallback((dialId: DialId) => {
-    setEditingDialId(dialId);
-  }, []);
-
-  const handleConfirmDial = useCallback((dialId: DialId) => {
-    dialsState.confirmDial(dialId);
-    setEditingDialId(undefined);
+  const handleConfirmToggle = useCallback((dialId: DialId) => {
+    if (dialsState.confirmedDials.has(dialId)) {
+      dialsState.unconfirmDial(dialId);
+    } else {
+      dialsState.confirmDial(dialId);
+    }
   }, [dialsState]);
 
   // =============================================================================
-  // Dial Edit Widget Renderer
+  // Dial Selector Renderer
   // =============================================================================
 
-  const renderEditWidget = useCallback((dialId: DialId): ReactNode => {
+  const renderSelector = useCallback((dialId: DialId): ReactNode => {
     switch (dialId) {
       case 'partySize':
         return (
-          <NumberStepper
+          <PartySizeSelect
             value={partySize}
-            min={2}
-            max={6}
             onChange={(v) => setDial('partySize', v)}
           />
         );
@@ -549,10 +572,8 @@ export function AdventurePage() {
         );
       case 'sceneCount':
         return (
-          <NumberStepper
+          <SceneCountSelect
             value={sceneCount}
-            min={3}
-            max={6}
             onChange={(v) => setDial('sceneCount', v)}
           />
         );
@@ -565,41 +586,36 @@ export function AdventurePage() {
         );
       case 'tone':
         return (
-          <SpectrumSlider
-            value={tone}
-            endpoints={{ low: 'Grim', high: 'Whimsical' }}
+          <ToneSelect
+            value={tone ?? 'balanced'}
             onChange={(v) => setDial('tone', v)}
           />
         );
-      case 'combatExplorationBalance':
+      case 'pillarBalance':
         return (
-          <SpectrumSlider
-            value={combatExplorationBalance}
-            endpoints={{ low: 'Combat', high: 'Exploration' }}
-            onChange={(v) => setDial('combatExplorationBalance', v)}
+          <PillarBalanceSelect
+            value={pillarBalance ?? { primary: 'combat', secondary: 'exploration', tertiary: 'social' }}
+            onChange={(v) => setDial('pillarBalance', v)}
           />
         );
       case 'npcDensity':
         return (
-          <SpectrumSlider
-            value={npcDensity}
-            endpoints={{ low: 'Sparse', high: 'Rich' }}
+          <NPCDensitySelect
+            value={npcDensity ?? 'moderate'}
             onChange={(v) => setDial('npcDensity', v)}
           />
         );
       case 'lethality':
         return (
-          <SpectrumSlider
-            value={lethality}
-            endpoints={{ low: 'Forgiving', high: 'Deadly' }}
+          <LethalitySelect
+            value={lethality ?? 'standard'}
             onChange={(v) => setDial('lethality', v)}
           />
         );
       case 'emotionalRegister':
         return (
-          <SpectrumSlider
-            value={emotionalRegister}
-            endpoints={{ low: 'Light', high: 'Heavy' }}
+          <EmotionalRegisterSelect
+            value={emotionalRegister ?? 'thrilling'}
             onChange={(v) => setDial('emotionalRegister', v)}
           />
         );
@@ -639,7 +655,7 @@ export function AdventurePage() {
     sceneCount,
     sessionLength,
     tone,
-    combatExplorationBalance,
+    pillarBalance,
     npcDensity,
     lethality,
     emotionalRegister,
@@ -807,12 +823,12 @@ export function AdventurePage() {
   const renderPhaseContent = () => {
     // If no session and not in setup, show setup
     if (!hasActiveSession && currentPhase !== 'setup') {
-      return <SetupPhase onStart={handleStartAdventure} />;
+      return <SetupPhase onStart={handleStartAdventure} onSkip={handleSkipNaming} />;
     }
 
     switch (currentPhase) {
       case 'setup':
-        return <SetupPhase onStart={handleStartAdventure} />;
+        return <SetupPhase onStart={handleStartAdventure} onSkip={handleSkipNaming} />;
 
       case 'dial-tuning':
         return (
@@ -828,11 +844,9 @@ export function AdventurePage() {
             <div className="w-[40%] overflow-y-auto">
               <DialSummaryPanel
                 dials={dialsState}
-                onEditDial={handleEditDial}
-                onConfirmDial={handleConfirmDial}
+                onConfirmToggle={handleConfirmToggle}
                 onContinue={handleContinue}
-                editingDialId={editingDialId}
-                renderEditWidget={renderEditWidget}
+                renderSelector={renderSelector}
               />
             </div>
           </div>

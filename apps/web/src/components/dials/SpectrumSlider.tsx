@@ -1,6 +1,11 @@
 /**
  * SpectrumSlider Component
  *
+ * @deprecated This component is deprecated in favor of discrete selector components
+ * (ToneSelect, NPCDensitySelect, LethalitySelect, EmotionalRegisterSelect, PillarBalanceSelect)
+ * which provide clearer option buttons for single-click selection. This component may be
+ * removed in a future version. See issue #47 for migration details.
+ *
  * A slider for conceptual dials with endpoint labels.
  * Converts numeric position (0-100) to semantic values.
  * Fantasy-themed with gold accent track.

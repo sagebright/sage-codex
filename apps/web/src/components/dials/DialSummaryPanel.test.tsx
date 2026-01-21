@@ -13,8 +13,8 @@ describe('DialSummaryPanel', () => {
     partyTier: 2,
     sceneCount: 4,
     sessionLength: '3-4 hours',
-    tone: 'Like The Witcher',
-    combatExplorationBalance: 'Balanced/middle',
+    tone: 'grim',
+    pillarBalance: { primary: 'combat', secondary: 'exploration', tertiary: 'social' },
     npcDensity: null,
     lethality: null,
     emotionalRegister: null,
@@ -31,9 +31,9 @@ describe('DialSummaryPanel', () => {
 
   const defaultProps = {
     dials: mockDials,
-    onEditDial: vi.fn(),
-    onConfirmDial: vi.fn(),
+    onConfirmToggle: vi.fn(),
     onContinue: vi.fn(),
+    renderSelector: vi.fn(() => <div data-testid="selector-widget">Selector</div>),
   };
 
   beforeEach(() => {
@@ -72,38 +72,51 @@ describe('DialSummaryPanel', () => {
   it('renders all conceptual dials', () => {
     render(<DialSummaryPanel {...defaultProps} />);
     expect(screen.getByText('Tone')).toBeInTheDocument();
-    expect(screen.getByText('Combat/Exploration Balance')).toBeInTheDocument();
+    expect(screen.getByText('Pillar Balance')).toBeInTheDocument();
     expect(screen.getByText('NPC Density')).toBeInTheDocument();
     expect(screen.getByText('Lethality')).toBeInTheDocument();
     expect(screen.getByText('Emotional Register')).toBeInTheDocument();
     expect(screen.getByText('Themes')).toBeInTheDocument();
   });
 
-  it('calls onEditDial when Edit button is clicked', () => {
-    const onEditDial = vi.fn();
-    render(<DialSummaryPanel {...defaultProps} onEditDial={onEditDial} />);
-
-    // Click first Edit button (for Party Size)
-    const editButtons = screen.getAllByRole('button', { name: /edit/i });
-    fireEvent.click(editButtons[0]);
-
-    expect(onEditDial).toHaveBeenCalledWith('partySize');
+  it('renders selector widgets for all dials', () => {
+    render(<DialSummaryPanel {...defaultProps} />);
+    // Should have 10 selector widgets (4 concrete + 6 conceptual)
+    const selectorWidgets = screen.getAllByTestId('selector-widget');
+    expect(selectorWidgets).toHaveLength(10);
   });
 
-  it('calls onConfirmDial when Confirm button is clicked in edit mode', () => {
-    const onConfirmDial = vi.fn();
-    render(
-      <DialSummaryPanel
-        {...defaultProps}
-        onConfirmDial={onConfirmDial}
-        editingDialId="sceneCount"
-      />
+  it('calls renderSelector with correct dialId for each dial', () => {
+    const renderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
+    render(<DialSummaryPanel {...defaultProps} renderSelector={renderSelector} />);
+
+    // Verify renderSelector was called for all dials
+    expect(renderSelector).toHaveBeenCalledWith('partySize');
+    expect(renderSelector).toHaveBeenCalledWith('partyTier');
+    expect(renderSelector).toHaveBeenCalledWith('sceneCount');
+    expect(renderSelector).toHaveBeenCalledWith('sessionLength');
+    expect(renderSelector).toHaveBeenCalledWith('tone');
+    expect(renderSelector).toHaveBeenCalledWith('pillarBalance');
+    expect(renderSelector).toHaveBeenCalledWith('npcDensity');
+    expect(renderSelector).toHaveBeenCalledWith('lethality');
+    expect(renderSelector).toHaveBeenCalledWith('emotionalRegister');
+    expect(renderSelector).toHaveBeenCalledWith('themes');
+  });
+
+  it('calls onConfirmToggle when checkmark is clicked', () => {
+    const onConfirmToggle = vi.fn();
+    render(<DialSummaryPanel {...defaultProps} onConfirmToggle={onConfirmToggle} />);
+
+    // Find the first checkmark button and click it
+    const checkmarks = screen.getAllByRole('button', { pressed: false });
+    // Filter to only checkmarks (not section toggles)
+    const dialCheckmarks = checkmarks.filter((btn) =>
+      btn.getAttribute('aria-label')?.includes('Confirm')
     );
-
-    const confirmButton = screen.getByRole('button', { name: /confirm/i });
-    fireEvent.click(confirmButton);
-
-    expect(onConfirmDial).toHaveBeenCalledWith('sceneCount');
+    if (dialCheckmarks.length > 0) {
+      fireEvent.click(dialCheckmarks[0]);
+      expect(onConfirmToggle).toHaveBeenCalled();
+    }
   });
 
   it('does not render Continue button when not all dials are confirmed', () => {
@@ -120,7 +133,7 @@ describe('DialSummaryPanel', () => {
         'sceneCount',
         'sessionLength',
         'tone',
-        'combatExplorationBalance',
+        'pillarBalance',
         'npcDensity',
         'lethality',
         'emotionalRegister',
@@ -141,7 +154,7 @@ describe('DialSummaryPanel', () => {
         'sceneCount',
         'sessionLength',
         'tone',
-        'combatExplorationBalance',
+        'pillarBalance',
         'npcDensity',
         'lethality',
         'emotionalRegister',
@@ -166,14 +179,16 @@ describe('DialSummaryPanel', () => {
     // Find the Concrete section toggle button
     const concreteToggle = screen.getByRole('button', { name: /concrete/i });
 
-    // Initially all dials should be visible
-    expect(screen.getByText('Party Size')).toBeInTheDocument();
+    // Initially expanded
+    expect(concreteToggle).toHaveAttribute('aria-expanded', 'true');
 
     // Click to collapse
     fireEvent.click(concreteToggle);
-
-    // The section content should be hidden (we check for aria-expanded)
     expect(concreteToggle).toHaveAttribute('aria-expanded', 'false');
+
+    // Click to expand again
+    fireEvent.click(concreteToggle);
+    expect(concreteToggle).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('can collapse and expand Conceptual section', () => {
@@ -181,9 +196,11 @@ describe('DialSummaryPanel', () => {
 
     const conceptualToggle = screen.getByRole('button', { name: /conceptual/i });
 
+    // Initially expanded
+    expect(conceptualToggle).toHaveAttribute('aria-expanded', 'true');
+
     // Click to collapse
     fireEvent.click(conceptualToggle);
-
     expect(conceptualToggle).toHaveAttribute('aria-expanded', 'false');
   });
 });

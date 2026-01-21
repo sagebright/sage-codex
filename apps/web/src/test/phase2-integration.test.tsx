@@ -250,7 +250,7 @@ describe('Phase 2 Integration Tests', () => {
           sceneCount: 4,
           sessionLength: '3-4 hours',
           tone: null,
-          combatExplorationBalance: null,
+          pillarBalance: null,
           npcDensity: null,
           lethality: null,
           emotionalRegister: null,
@@ -267,52 +267,57 @@ describe('Phase 2 Integration Tests', () => {
         };
       }
 
-      it('renders dial summary with current values', () => {
+      it('renders dial summary with selector widgets', () => {
         const mockDials = createMockDialsState({
           partySize: 5,
           partyTier: 3,
         });
+        const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
         render(
           <DialSummaryPanel
             dials={mockDials}
-            onEditDial={vi.fn()}
-            onConfirmDial={vi.fn()}
+            onConfirmToggle={vi.fn()}
             onContinue={vi.fn()}
+            renderSelector={mockRenderSelector}
           />
         );
 
-        // Verify dial values are displayed
-        expect(screen.getByText('5')).toBeInTheDocument(); // partySize
-        expect(screen.getByText('3')).toBeInTheDocument(); // partyTier
+        // Verify selector widgets are rendered
+        const selectorWidgets = screen.getAllByTestId('selector-widget');
+        expect(selectorWidgets.length).toBeGreaterThan(0);
       });
 
-      it('calls onEditDial when edit button is clicked', async () => {
+      it('calls onConfirmToggle when checkmark is clicked', async () => {
         const user = userEvent.setup();
-        const onEditDial = vi.fn();
+        const onConfirmToggle = vi.fn();
         const mockDials = createMockDialsState();
+        const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
         render(
           <DialSummaryPanel
             dials={mockDials}
-            onEditDial={onEditDial}
-            onConfirmDial={vi.fn()}
+            onConfirmToggle={onConfirmToggle}
             onContinue={vi.fn()}
+            renderSelector={mockRenderSelector}
           />
         );
 
-        // Find and click an edit button
-        const editButtons = screen.getAllByRole('button', { name: /edit/i });
-        if (editButtons.length > 0) {
-          await user.click(editButtons[0]);
-          expect(onEditDial).toHaveBeenCalled();
+        // Find and click a checkmark button
+        const checkmarkButtons = screen.getAllByRole('button', { pressed: false });
+        const confirmButtons = checkmarkButtons.filter(btn =>
+          btn.getAttribute('aria-label')?.includes('Confirm')
+        );
+        if (confirmButtons.length > 0) {
+          await user.click(confirmButtons[0]);
+          expect(onConfirmToggle).toHaveBeenCalled();
         }
       });
 
       it('shows continue button when all dials are confirmed', () => {
         const dialIds: DialId[] = [
           'partySize', 'partyTier', 'sceneCount', 'sessionLength',
-          'tone', 'combatExplorationBalance', 'npcDensity',
+          'tone', 'pillarBalance', 'npcDensity',
           'lethality', 'emotionalRegister', 'themes'
         ];
 
@@ -322,20 +327,21 @@ describe('Phase 2 Integration Tests', () => {
           partyTier: 2,
           sceneCount: 4,
           sessionLength: '3-4 hours',
-          tone: 'Epic',
-          combatExplorationBalance: 'Balanced',
-          npcDensity: 'Moderate',
-          lethality: 'Challenging',
-          emotionalRegister: 'Tense',
+          tone: 'balanced',
+          pillarBalance: { primary: 'combat', secondary: 'exploration', tertiary: 'social' },
+          npcDensity: 'moderate',
+          lethality: 'dangerous',
+          emotionalRegister: 'tense',
           themes: ['redemption'],
         });
+        const mockRenderSelector = vi.fn(() => <div data-testid="selector-widget">Selector</div>);
 
         render(
           <DialSummaryPanel
             dials={mockDials}
-            onEditDial={vi.fn()}
-            onConfirmDial={vi.fn()}
+            onConfirmToggle={vi.fn()}
             onContinue={vi.fn()}
+            renderSelector={mockRenderSelector}
           />
         );
 
@@ -392,7 +398,7 @@ describe('Phase 2 Integration Tests', () => {
           sceneCount: 5,
           sessionLength: '4-5 hours',
           tone: 'dark and mysterious',
-          combatExplorationBalance: null,
+          pillarBalance: null,
           npcDensity: null,
           lethality: null,
           emotionalRegister: null,
@@ -486,17 +492,17 @@ describe('Phase 2 Integration Tests', () => {
           () => useDialsStore.getState().setDial('partyTier', 2),
           () => useDialsStore.getState().setDial('sceneCount', 4),
           () => useDialsStore.getState().setDial('sessionLength', '3-4 hours'),
-          () => useDialsStore.getState().setDial('tone', 'Mysterious and haunting'),
-          () => useDialsStore.getState().setDial('combatExplorationBalance', 'exploration-focused'),
+          () => useDialsStore.getState().setDial('tone', 'grim'),
+          () => useDialsStore.getState().setDial('pillarBalance', { primary: 'exploration', secondary: 'combat', tertiary: 'social' }),
           () => useDialsStore.getState().setDial('npcDensity', 'moderate'),
-          () => useDialsStore.getState().setDial('lethality', 'challenging'),
+          () => useDialsStore.getState().setDial('lethality', 'dangerous'),
           () => useDialsStore.getState().setDial('emotionalRegister', 'tense'),
           () => useDialsStore.getState().setDial('themes', ['redemption', 'found-family'] as const),
         ];
 
         const dialIds: DialId[] = [
           'partySize', 'partyTier', 'sceneCount', 'sessionLength',
-          'tone', 'combatExplorationBalance', 'npcDensity',
+          'tone', 'pillarBalance', 'npcDensity',
           'lethality', 'emotionalRegister', 'themes'
         ];
 
@@ -523,10 +529,10 @@ describe('Phase 2 Integration Tests', () => {
           useDialsStore.getState().setDial('partyTier', 2);
           useDialsStore.getState().setDial('sceneCount', 5);
           useDialsStore.getState().setDial('sessionLength', '3-4 hours');
-          useDialsStore.getState().setDial('tone', 'Epic fantasy');
-          useDialsStore.getState().setDial('combatExplorationBalance', 'balanced');
+          useDialsStore.getState().setDial('tone', 'balanced');
+          useDialsStore.getState().setDial('pillarBalance', { primary: 'social', secondary: 'combat', tertiary: 'exploration' });
           useDialsStore.getState().setDial('npcDensity', 'rich');
-          useDialsStore.getState().setDial('lethality', 'moderate');
+          useDialsStore.getState().setDial('lethality', 'standard');
           useDialsStore.getState().setDial('emotionalRegister', 'thrilling');
           useDialsStore.getState().setDial('themes', ['redemption', 'sacrifice', 'found-family']);
         });
@@ -540,10 +546,10 @@ describe('Phase 2 Integration Tests', () => {
         expect(state.sessionLength).toBe('3-4 hours');
 
         // Verify conceptual dials
-        expect(state.tone).toBe('Epic fantasy');
-        expect(state.combatExplorationBalance).toBe('balanced');
+        expect(state.tone).toBe('balanced');
+        expect(state.pillarBalance).toEqual({ primary: 'social', secondary: 'combat', tertiary: 'exploration' });
         expect(state.npcDensity).toBe('rich');
-        expect(state.lethality).toBe('moderate');
+        expect(state.lethality).toBe('standard');
         expect(state.emotionalRegister).toBe('thrilling');
         expect(state.themes).toEqual(['redemption', 'sacrifice', 'found-family']);
       });
@@ -560,7 +566,7 @@ describe('Phase 2 Integration Tests', () => {
         // Complete all dials
         const dialIds: DialId[] = [
           'partySize', 'partyTier', 'sceneCount', 'sessionLength',
-          'tone', 'combatExplorationBalance', 'npcDensity',
+          'tone', 'pillarBalance', 'npcDensity',
           'lethality', 'emotionalRegister', 'themes'
         ];
 
@@ -571,7 +577,11 @@ describe('Phase 2 Integration Tests', () => {
             else if (dialId === 'sceneCount') useDialsStore.getState().setDial(dialId, 4);
             else if (dialId === 'sessionLength') useDialsStore.getState().setDial(dialId, '3-4 hours');
             else if (dialId === 'themes') useDialsStore.getState().setDial(dialId, ['redemption']);
-            else useDialsStore.getState().setDial(dialId, 'test value');
+            else if (dialId === 'tone') useDialsStore.getState().setDial(dialId, 'balanced');
+            else if (dialId === 'pillarBalance') useDialsStore.getState().setDial(dialId, { primary: 'combat', secondary: 'exploration', tertiary: 'social' });
+            else if (dialId === 'npcDensity') useDialsStore.getState().setDial(dialId, 'moderate');
+            else if (dialId === 'lethality') useDialsStore.getState().setDial(dialId, 'standard');
+            else if (dialId === 'emotionalRegister') useDialsStore.getState().setDial(dialId, 'thrilling');
 
             useDialsStore.getState().confirmDial(dialId);
           });
@@ -611,10 +621,11 @@ describe('Phase 2 Integration Tests', () => {
     describe('clearAllStorageData', () => {
       it('clears all persisted data and resets stores', () => {
         // Set up state in all stores
+        // Note: initSession clears chat messages, so we add the message after
         storeAction(() => {
+          useAdventureStore.getState().initSession('Test');
           useChatStore.getState().addMessage({ role: 'user', content: 'Test' });
           useDialsStore.getState().setDial('partySize', 5);
-          useAdventureStore.getState().initSession('Test');
         });
 
         // Verify data was set
@@ -635,11 +646,12 @@ describe('Phase 2 Integration Tests', () => {
     describe('resetAllStores', () => {
       it('resets all store state to initial values', () => {
         // Set up state
+        // Note: initSession clears chat messages, so we add the message after
         storeAction(() => {
+          useAdventureStore.getState().initSession('Test');
           useChatStore.getState().addMessage({ role: 'user', content: 'Test' });
           useDialsStore.getState().setDial('partySize', 5);
           useDialsStore.getState().confirmDial('partySize');
-          useAdventureStore.getState().initSession('Test');
         });
 
         // Reset

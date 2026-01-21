@@ -1,7 +1,8 @@
 /**
  * DialSummaryPanel Component
  *
- * Right-side panel showing current dial values with edit buttons.
+ * Right-side panel showing all dial selectors inline.
+ * Each dial is always editable with options visible.
  * Organized by category (Concrete vs Conceptual) with collapsible sections.
  * Shows progress and "Continue to Frame" button when complete.
  * Fantasy-themed styling.
@@ -23,16 +24,12 @@ const TOTAL_DIALS = 10;
 export interface DialSummaryPanelProps {
   /** Complete dials state from store */
   dials: DialsState;
-  /** Callback when user clicks Edit on a dial */
-  onEditDial: (dialId: DialId) => void;
-  /** Callback when user confirms a dial value */
-  onConfirmDial: (dialId: DialId) => void;
+  /** Callback when user toggles confirmation for a dial */
+  onConfirmToggle: (dialId: DialId) => void;
   /** Callback when user clicks Continue to Frame */
   onContinue: () => void;
-  /** Currently editing dial ID (optional) */
-  editingDialId?: DialId;
-  /** Render function for edit widgets (optional - uses default if not provided) */
-  renderEditWidget?: (dialId: DialId) => ReactNode;
+  /** Render function for selector widgets */
+  renderSelector: (dialId: DialId) => ReactNode;
   /** Additional CSS classes */
   className?: string;
 }
@@ -90,50 +87,15 @@ function CollapsibleSection({
   );
 }
 
-/**
- * Get dial value from state
- */
-function getDialValue(dials: DialsState, dialId: DialId): unknown {
-  return dials[dialId as keyof DialsState];
-}
-
-/**
- * Default edit widget placeholder
- */
-function DefaultEditWidget() {
-  return (
-    <div className="text-xs text-ink-400 dark:text-parchment-500 italic">
-      Edit widget not provided
-    </div>
-  );
-}
-
 export function DialSummaryPanel({
   dials,
-  onEditDial,
-  onConfirmDial,
+  onConfirmToggle,
   onContinue,
-  editingDialId,
-  renderEditWidget,
+  renderSelector,
   className = '',
 }: DialSummaryPanelProps) {
   const confirmedCount = dials.confirmedDials.size;
   const allConfirmed = confirmedCount === TOTAL_DIALS;
-
-  const handleEdit = (dialId: DialId) => {
-    onEditDial(dialId);
-  };
-
-  const handleConfirm = (dialId: DialId) => {
-    onConfirmDial(dialId);
-  };
-
-  const getEditWidget = (dialId: DialId): ReactNode => {
-    if (renderEditWidget) {
-      return renderEditWidget(dialId);
-    }
-    return <DefaultEditWidget />;
-  };
 
   return (
     <div
@@ -162,12 +124,9 @@ export function DialSummaryPanel({
               key={meta.id}
               dialId={meta.id}
               label={meta.label}
-              value={getDialValue(dials, meta.id)}
               isConfirmed={dials.confirmedDials.has(meta.id)}
-              isEditing={editingDialId === meta.id}
-              onEdit={() => handleEdit(meta.id)}
-              onConfirm={() => handleConfirm(meta.id)}
-              renderEditWidget={() => getEditWidget(meta.id)}
+              onConfirmToggle={() => onConfirmToggle(meta.id)}
+              renderSelector={() => renderSelector(meta.id)}
             />
           ))}
         </CollapsibleSection>
@@ -179,12 +138,9 @@ export function DialSummaryPanel({
               key={meta.id}
               dialId={meta.id}
               label={meta.label}
-              value={getDialValue(dials, meta.id)}
               isConfirmed={dials.confirmedDials.has(meta.id)}
-              isEditing={editingDialId === meta.id}
-              onEdit={() => handleEdit(meta.id)}
-              onConfirm={() => handleConfirm(meta.id)}
-              renderEditWidget={() => getEditWidget(meta.id)}
+              onConfirmToggle={() => onConfirmToggle(meta.id)}
+              renderSelector={() => renderSelector(meta.id)}
             />
           ))}
         </CollapsibleSection>

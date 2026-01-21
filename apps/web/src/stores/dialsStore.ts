@@ -3,7 +3,7 @@
  *
  * Manages the adventure dial state including:
  * - 4 concrete dials (partySize, partyTier, sceneCount, sessionLength)
- * - 6 conceptual dials (tone, combatExplorationBalance, npcDensity, lethality, emotionalRegister, themes)
+ * - 6 conceptual dials (tone, pillarBalance, npcDensity, lethality, emotionalRegister, themes)
  * - Dial confirmation tracking
  * - Validation logic
  */
@@ -16,6 +16,7 @@ import type {
   ThemeOption,
   ConcreteDials,
   ConceptualDials,
+  PillarBalance,
 } from '@dagger-app/shared-types';
 import {
   DEFAULT_CONCRETE_DIALS,
@@ -25,6 +26,11 @@ import {
   isValidSceneCount,
   isValidSessionLength,
   isValidThemes,
+  isValidTone,
+  isValidNPCDensity,
+  isValidLethality,
+  isValidEmotionalRegister,
+  isValidPillarBalance,
   DIAL_CONSTRAINTS,
 } from '@dagger-app/shared-types';
 
@@ -67,16 +73,189 @@ function validateDialValue(dialId: DialId, value: DialValue): boolean {
       return typeof value === 'string' && isValidSessionLength(value);
     case 'themes':
       return Array.isArray(value) && isValidThemes(value as ThemeOption[]);
-    // Conceptual dials accept null or any string
+    // Discrete conceptual dials with specific option types
     case 'tone':
-    case 'combatExplorationBalance':
+      return value === null || (typeof value === 'string' && isValidTone(value));
     case 'npcDensity':
+      return value === null || (typeof value === 'string' && isValidNPCDensity(value));
     case 'lethality':
+      return value === null || (typeof value === 'string' && isValidLethality(value));
     case 'emotionalRegister':
-      return value === null || typeof value === 'string';
+      return value === null || (typeof value === 'string' && isValidEmotionalRegister(value));
+    // PillarBalance is a complex object
+    case 'pillarBalance':
+      return value === null || isValidPillarBalance(value as PillarBalance);
     default:
       return false;
   }
+}
+
+// =============================================================================
+// Migration Logic
+// =============================================================================
+
+/**
+ * Migrate old localStorage data to new discrete type format
+ * Handles graceful migration of:
+ * - partySize: 6 -> 5 (or 4 if out of range)
+ * - Old string-based conceptual dials -> new discrete types
+ * - combatExplorationBalance -> pillarBalance object
+ */
+function migrateDialsData(state: Record<string, unknown>): Record<string, unknown> {
+  const migrated = { ...state };
+
+  // Migrate partySize: old range was 2-6, new range is 2-5
+  if (typeof migrated.partySize === 'number') {
+    if (migrated.partySize === 6) {
+      migrated.partySize = 5;
+    } else if (migrated.partySize < 2 || migrated.partySize > 5) {
+      migrated.partySize = DEFAULT_CONCRETE_DIALS.partySize;
+    }
+  }
+
+  // Migrate old combatExplorationBalance string to pillarBalance object
+  if ('combatExplorationBalance' in migrated && !migrated.pillarBalance) {
+    migrated.pillarBalance = DEFAULT_CONCEPTUAL_DIALS.pillarBalance;
+    delete migrated.combatExplorationBalance;
+  }
+
+  // Migrate old tone string values to new discrete options
+  if (typeof migrated.tone === 'string' && migrated.tone !== null) {
+    migrated.tone = migrateToneValue(migrated.tone);
+  }
+
+  // Migrate old npcDensity string values to new discrete options
+  if (typeof migrated.npcDensity === 'string' && migrated.npcDensity !== null) {
+    migrated.npcDensity = migrateNPCDensityValue(migrated.npcDensity);
+  }
+
+  // Migrate old lethality string values to new discrete options
+  if (typeof migrated.lethality === 'string' && migrated.lethality !== null) {
+    migrated.lethality = migrateLethalityValue(migrated.lethality);
+  }
+
+  // Migrate old emotionalRegister string values to new discrete options
+  if (typeof migrated.emotionalRegister === 'string' && migrated.emotionalRegister !== null) {
+    migrated.emotionalRegister = migrateEmotionalRegisterValue(migrated.emotionalRegister);
+  }
+
+  return migrated;
+}
+
+/**
+ * Map old tone string to nearest discrete option
+ */
+function migrateToneValue(oldValue: string): string | null {
+  const normalized = oldValue.toLowerCase();
+
+  // Check if it's already a valid new option
+  if (['grim', 'serious', 'balanced', 'lighthearted', 'whimsical'].includes(normalized)) {
+    return normalized;
+  }
+
+  // Map legacy spectrum-style values to discrete options
+  if (normalized.includes('grim') || normalized.includes('dark')) {
+    return 'grim';
+  }
+  if (normalized.includes('serious') || normalized.includes('dramatic')) {
+    return 'serious';
+  }
+  if (normalized.includes('light') || normalized.includes('fun')) {
+    return 'lighthearted';
+  }
+  if (normalized.includes('whimsical') || normalized.includes('playful') || normalized.includes('comedic')) {
+    return 'whimsical';
+  }
+  if (normalized.includes('balanced') || normalized.includes('middle')) {
+    return 'balanced';
+  }
+
+  // Default to null if we can't map it
+  return null;
+}
+
+/**
+ * Map old NPC density string to nearest discrete option
+ */
+function migrateNPCDensityValue(oldValue: string): string | null {
+  const normalized = oldValue.toLowerCase();
+
+  // Check if it's already a valid new option
+  if (['sparse', 'moderate', 'rich'].includes(normalized)) {
+    return normalized;
+  }
+
+  // Map legacy spectrum-style values
+  if (normalized.includes('sparse') || normalized.includes('few') || normalized.includes('low')) {
+    return 'sparse';
+  }
+  if (normalized.includes('rich') || normalized.includes('many') || normalized.includes('high')) {
+    return 'rich';
+  }
+  if (normalized.includes('moderate') || normalized.includes('balanced') || normalized.includes('middle')) {
+    return 'moderate';
+  }
+
+  return null;
+}
+
+/**
+ * Map old lethality string to nearest discrete option
+ */
+function migrateLethalityValue(oldValue: string): string | null {
+  const normalized = oldValue.toLowerCase();
+
+  // Check if it's already a valid new option
+  if (['heroic', 'standard', 'dangerous', 'brutal'].includes(normalized)) {
+    return normalized;
+  }
+
+  // Map legacy spectrum-style values
+  if (normalized.includes('heroic') || normalized.includes('safe') || normalized.includes('forgiving')) {
+    return 'heroic';
+  }
+  if (normalized.includes('brutal') || normalized.includes('deadly') || normalized.includes('lethal')) {
+    return 'brutal';
+  }
+  if (normalized.includes('dangerous') || normalized.includes('tactical')) {
+    return 'dangerous';
+  }
+  if (normalized.includes('standard') || normalized.includes('balanced') || normalized.includes('middle')) {
+    return 'standard';
+  }
+
+  return null;
+}
+
+/**
+ * Map old emotional register string to nearest discrete option
+ */
+function migrateEmotionalRegisterValue(oldValue: string): string | null {
+  const normalized = oldValue.toLowerCase();
+
+  // Check if it's already a valid new option
+  if (['thrilling', 'tense', 'heartfelt', 'bittersweet', 'epic'].includes(normalized)) {
+    return normalized;
+  }
+
+  // Map legacy spectrum-style values
+  if (normalized.includes('thrill') || normalized.includes('exciting') || normalized.includes('action')) {
+    return 'thrilling';
+  }
+  if (normalized.includes('tense') || normalized.includes('suspense')) {
+    return 'tense';
+  }
+  if (normalized.includes('heartfelt') || normalized.includes('emotional') || normalized.includes('touching')) {
+    return 'heartfelt';
+  }
+  if (normalized.includes('bittersweet') || normalized.includes('melancholy')) {
+    return 'bittersweet';
+  }
+  if (normalized.includes('epic') || normalized.includes('grand') || normalized.includes('heroic')) {
+    return 'epic';
+  }
+
+  return null;
 }
 
 // =============================================================================
@@ -194,12 +373,18 @@ export const useDialsStore = create<DialsState>()(
       }),
       {
         name: 'dagger-dials-storage',
-        // Handle Set serialization
+        // Handle Set serialization and data migration
         storage: {
           getItem: (name) => {
             const str = localStorage.getItem(name);
             if (!str) return null;
             const parsed = JSON.parse(str);
+
+            // Migrate legacy data to new format
+            if (parsed.state) {
+              parsed.state = migrateDialsData(parsed.state);
+            }
+
             // Restore Set from array
             if (parsed.state?.confirmedDials) {
               parsed.state.confirmedDials = new Set(parsed.state.confirmedDials);
@@ -243,7 +428,7 @@ export const selectUnconfirmedDials = (state: DialsState): DialId[] => {
     'sceneCount',
     'sessionLength',
     'tone',
-    'combatExplorationBalance',
+    'pillarBalance',
     'npcDensity',
     'lethality',
     'emotionalRegister',
@@ -294,7 +479,7 @@ export const selectConcreteDials = (state: DialsState): ConcreteDials => ({
  */
 export const selectConceptualDials = (state: DialsState): ConceptualDials => ({
   tone: state.tone,
-  combatExplorationBalance: state.combatExplorationBalance,
+  pillarBalance: state.pillarBalance,
   npcDensity: state.npcDensity,
   lethality: state.lethality,
   emotionalRegister: state.emotionalRegister,
