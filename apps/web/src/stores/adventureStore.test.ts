@@ -17,23 +17,27 @@ import {
   selectPhaseIndex,
   selectIsComplete,
 } from './adventureStore';
+import { useChatStore } from './chatStore';
 import {
   clearPersistedStorage,
   storeAction,
   verifyDateSerialization,
 } from '../test/store-utils';
 
-// Storage key used by the store
+// Storage keys used by the stores
 const STORAGE_KEY = 'dagger-adventure-storage';
+const CHAT_STORAGE_KEY = 'dagger-chat-storage';
 
 describe('adventureStore', () => {
   beforeEach(() => {
     // Clear localStorage before each test
     clearPersistedStorage(STORAGE_KEY);
+    clearPersistedStorage(CHAT_STORAGE_KEY);
 
-    // Reset store to initial state
+    // Reset stores to initial state
     act(() => {
       useAdventureStore.getState().reset();
+      useChatStore.getState().clearMessages();
     });
   });
 
@@ -103,6 +107,57 @@ describe('adventureStore', () => {
       const sessionId2 = useAdventureStore.getState().sessionId;
 
       expect(sessionId1).not.toBe(sessionId2);
+    });
+
+    it('adds welcome message to chat after clearing messages', () => {
+      // Add some existing messages to verify they get cleared
+      storeAction(() => {
+        useChatStore.getState().addMessage({ role: 'user', content: 'old message' });
+      });
+      expect(useChatStore.getState().messages.length).toBe(1);
+
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test Adventure');
+      });
+
+      const messages = useChatStore.getState().messages;
+      expect(messages.length).toBe(1);
+      expect(messages[0].role).toBe('assistant');
+      expect(messages[0].content).toContain('Welcome to Dagger-Gen');
+    });
+
+    it('includes emoji in welcome message', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test Adventure');
+      });
+
+      const messages = useChatStore.getState().messages;
+      const welcomeContent = messages[0].content;
+      expect(welcomeContent).toContain('🎲');
+      expect(welcomeContent).toContain('✨');
+      expect(welcomeContent).toContain('🗺️');
+    });
+
+    it('includes guidance about party configuration in welcome message', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test Adventure');
+      });
+
+      const messages = useChatStore.getState().messages;
+      const welcomeContent = messages[0].content;
+      expect(welcomeContent).toContain('party');
+      expect(welcomeContent).toContain('tier');
+      expect(welcomeContent).toContain('session');
+    });
+
+    it('mentions Adventure Dials panel in welcome message', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test Adventure');
+      });
+
+      const messages = useChatStore.getState().messages;
+      const welcomeContent = messages[0].content;
+      expect(welcomeContent).toContain('Adventure Dials');
     });
   });
 

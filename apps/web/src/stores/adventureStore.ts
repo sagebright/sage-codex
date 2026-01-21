@@ -62,6 +62,24 @@ export const useAdventureStore = create<AdventureState>()(
           const sessionId = crypto.randomUUID();
           // Clear chat messages from previous sessions
           useChatStore.getState().clearMessages();
+
+          // Add welcome message to guide the user
+          const welcomeMessage = `🎲 Welcome to Dagger-Gen!
+
+I'll help you create an exciting Daggerheart adventure. Let's start by configuring your adventure settings.
+
+✨ **To begin, tell me about your party:**
+- How many players will be adventuring?
+- What tier are they (1-4)?
+- How long is your session?
+
+You can also adjust settings in the **Adventure Dials** panel on the right. Once all dials are confirmed, we'll move on to selecting your adventure frame! 🗺️`;
+
+          useChatStore.getState().addMessage({
+            role: 'assistant',
+            content: welcomeMessage,
+          });
+
           set(
             {
               sessionId,
