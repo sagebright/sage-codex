@@ -171,6 +171,17 @@ pnpm --filter web test
 pnpm --filter mcp-bridge test
 ```
 
+## Project Skills
+
+Auto-activating skills provide scaffolding guidance when creating new code. See `.claude/skills.md` for detailed templates.
+
+| Skill | Trigger | Purpose |
+|-------|---------|---------|
+| `code-quality` | File edits, pre-commit | Clean Code enforcement |
+| `new-mcp-tool` | Creating MCP tools | Consistent tool + test structure |
+| `new-component` | Creating React components | Props, ARIA, fantasy theme, tests |
+| `new-store` | Creating Zustand stores | Middleware, serialization, tests |
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` in `apps/mcp-bridge/`:
