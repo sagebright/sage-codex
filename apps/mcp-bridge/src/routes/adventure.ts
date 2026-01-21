@@ -6,12 +6,12 @@
  * - GET /adventure/:sessionId - Load full adventure
  * - GET /adventure/:sessionId/metadata - Get metadata for recovery modal
  * - DELETE /adventure/:sessionId - Delete adventure
- * - POST /adventure/:sessionId/export - Mark adventure as exported
+ * - POST /adventure/:sessionId/export - Generate markdown files and mark as exported
  */
 
 import { Router } from 'express';
 import type { Request, Response, Router as RouterType } from 'express';
-import type { AdventureSnapshot, ApiError } from '@dagger-app/shared-types';
+import type { AdventureSnapshot, ApiError, WebAdventure } from '@dagger-app/shared-types';
 import {
   saveAdventure,
   loadAdventure,
@@ -19,6 +19,7 @@ import {
   deleteAdventure,
   markExported,
 } from '../services/web-adventure-queries.js';
+import { generateMarkdownHandler } from '../mcp/tools/generateMarkdown.js';
 
 const router: RouterType = Router();
 
@@ -162,26 +163,49 @@ router.delete('/:sessionId', async (req: Request, res: Response) => {
 /**
  * POST /adventure/:sessionId/export
  *
- * Mark adventure as exported (updates timestamp and count).
+ * Generate markdown files and mark adventure as exported.
+ * Returns generated files as JSON array.
  */
 router.post('/:sessionId/export', async (req: Request, res: Response) => {
   const sessionId = req.params.sessionId as string;
 
-  const result = await markExported(sessionId);
+  // 1. Load the full adventure
+  const loadResult = await loadAdventure(sessionId);
 
-  if (result.error || !result.data) {
+  if (loadResult.error) {
     const error: ApiError = {
-      code: 'EXPORT_MARK_FAILED',
-      message: result.error ?? 'Failed to mark adventure as exported',
+      code: 'LOAD_FAILED',
+      message: loadResult.error,
     };
     res.status(500).json(error);
     return;
   }
 
+  if (!loadResult.data) {
+    const error: ApiError = {
+      code: 'NOT_FOUND',
+      message: 'Adventure not found',
+    };
+    res.status(404).json(error);
+    return;
+  }
+
+  // 2. Generate markdown files via MCP tool
+  const markdownResult = await generateMarkdownHandler({
+    adventure: loadResult.data as WebAdventure,
+  });
+
+  // 3. Mark as exported (non-blocking - continue even if this fails)
+  const exportResult = await markExported(sessionId);
+
+  // 4. Return generated files with export metadata
   res.status(200).json({
     success: true,
-    lastExportedAt: result.data.lastExportedAt,
-    exportCount: result.data.exportCount,
+    files: markdownResult.files,
+    adventureName: markdownResult.adventureName,
+    generatedAt: markdownResult.generatedAt,
+    lastExportedAt: exportResult.data?.lastExportedAt ?? new Date().toISOString(),
+    exportCount: exportResult.data?.exportCount ?? 1,
   });
 });
 

@@ -20,6 +20,9 @@ export * from './content.js';
 // Re-export web adventure types
 export * from './web-adventure.js';
 
+// Re-export export types
+export * from './export.js';
+
 /**
  * API health check response
  */

@@ -272,7 +272,25 @@ describe('Adventure Routes', () => {
   });
 
   describe('POST /adventure/:sessionId/export', () => {
-    it('returns 200 with export info when marking succeeds', async () => {
+    it('returns 200 with generated markdown files when adventure exists', async () => {
+      const mockAdventure = createMockAdventure({
+        adventure_name: 'The Lost Temple',
+        selected_frame: {
+          id: 'frame-1',
+          name: 'Test Frame',
+          description: 'A test frame',
+          themes: ['adventure'],
+          typical_adversaries: ['goblin'],
+          lore: 'Test lore',
+          embedding: null,
+          source_book: 'Core',
+          created_at: '2024-01-15T10:00:00Z',
+        },
+      });
+      vi.mocked(loadAdventure).mockResolvedValue({
+        data: mockAdventure,
+        error: null,
+      });
       vi.mocked(markExported).mockResolvedValue({
         data: {
           lastExportedAt: '2024-01-15T15:00:00Z',
@@ -286,21 +304,77 @@ describe('Adventure Routes', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
+      expect(response.body.files).toBeDefined();
+      expect(Array.isArray(response.body.files)).toBe(true);
+      expect(response.body.files.length).toBeGreaterThan(0);
+      expect(response.body.files[0]).toHaveProperty('path');
+      expect(response.body.files[0]).toHaveProperty('content');
+      expect(response.body.adventureName).toBe('The Lost Temple');
+      expect(response.body.generatedAt).toBeDefined();
       expect(response.body.lastExportedAt).toBe('2024-01-15T15:00:00Z');
       expect(response.body.exportCount).toBe(2);
     });
 
-    it('returns 500 when mark export fails', async () => {
-      vi.mocked(markExported).mockResolvedValue({
+    it('returns 404 when adventure not found', async () => {
+      vi.mocked(loadAdventure).mockResolvedValue({
         data: null,
-        error: 'Adventure not found',
+        error: null,
       });
 
       const app = createTestApp();
       const response = await request(app).post('/adventure/non-existent/export');
 
+      expect(response.status).toBe(404);
+      expect(response.body.code).toBe('NOT_FOUND');
+    });
+
+    it('returns 500 when load fails', async () => {
+      vi.mocked(loadAdventure).mockResolvedValue({
+        data: null,
+        error: 'Database error',
+      });
+
+      const app = createTestApp();
+      const response = await request(app).post('/adventure/test-session-123/export');
+
       expect(response.status).toBe(500);
-      expect(response.body.code).toBe('EXPORT_MARK_FAILED');
+      expect(response.body.code).toBe('LOAD_FAILED');
+    });
+
+    it('still returns files even if markExported fails', async () => {
+      const mockAdventure = createMockAdventure();
+      vi.mocked(loadAdventure).mockResolvedValue({
+        data: mockAdventure,
+        error: null,
+      });
+      vi.mocked(markExported).mockResolvedValue({
+        data: null,
+        error: 'Failed to mark',
+      });
+
+      const app = createTestApp();
+      const response = await request(app).post('/adventure/test-session-123/export');
+
+      expect(response.status).toBe(200);
+      expect(response.body.files).toBeDefined();
+      expect(Array.isArray(response.body.files)).toBe(true);
+    });
+
+    it('returns adventure.md in files list', async () => {
+      const mockAdventure = createMockAdventure();
+      vi.mocked(loadAdventure).mockResolvedValue({
+        data: mockAdventure,
+        error: null,
+      });
+      vi.mocked(markExported).mockResolvedValue({
+        data: { lastExportedAt: '2024-01-15T15:00:00Z', exportCount: 1 },
+        error: null,
+      });
+
+      const app = createTestApp();
+      const response = await request(app).post('/adventure/test-session-123/export');
+
+      expect(response.body.files.some((f: { path: string }) => f.path === 'adventure.md')).toBe(true);
     });
   });
 
