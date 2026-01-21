@@ -19,6 +19,7 @@ import type {
   Scene,
   SceneDraft,
   SceneStatus,
+  CompiledNPC,
 } from '@dagger-app/shared-types';
 import { isCustomFrame, isOutlineComplete } from '@dagger-app/shared-types';
 
@@ -61,6 +62,20 @@ export interface ContentState {
   /** Streaming content during generation */
   sceneStreamingContent: string | null;
 
+  // NPC state (Phase 3.4)
+  /** Compiled NPCs from scenes */
+  npcs: CompiledNPC[];
+  /** Set of confirmed NPC IDs */
+  confirmedNPCIds: Set<string>;
+  /** Loading state for NPC compilation */
+  npcLoading: boolean;
+  /** Error message if NPC compilation failed */
+  npcError: string | null;
+  /** Streaming content during NPC compilation */
+  npcStreamingContent: string | null;
+  /** NPC currently being refined */
+  refiningNPCId: string | null;
+
   // Actions - Frame
   setAvailableFrames: (frames: DaggerheartFrame[]) => void;
   selectFrame: (frame: SelectedFrame) => void;
@@ -93,6 +108,19 @@ export interface ContentState {
   navigateToPreviousScene: () => void;
   clearScenes: () => void;
 
+  // Actions - NPC (Phase 3.4)
+  setNPCs: (npcs: CompiledNPC[]) => void;
+  addNPC: (npc: CompiledNPC) => void;
+  updateNPC: (npcId: string, updates: Partial<CompiledNPC>) => void;
+  confirmNPC: (npcId: string) => void;
+  confirmAllNPCs: () => void;
+  setNPCLoading: (loading: boolean) => void;
+  setNPCError: (error: string | null) => void;
+  setNPCStreamingContent: (content: string | null) => void;
+  appendNPCStreamingContent: (chunk: string) => void;
+  setRefiningNPCId: (npcId: string | null) => void;
+  clearNPCs: () => void;
+
   // Reset
   resetContent: () => void;
 }
@@ -117,6 +145,13 @@ const initialContentState = {
   sceneLoading: false,
   sceneError: null as string | null,
   sceneStreamingContent: null as string | null,
+  // NPC state
+  npcs: [] as CompiledNPC[],
+  confirmedNPCIds: new Set<string>(),
+  npcLoading: false,
+  npcError: null as string | null,
+  npcStreamingContent: null as string | null,
+  refiningNPCId: null as string | null,
 };
 
 // =============================================================================
@@ -452,6 +487,126 @@ export const useContentStore = create<ContentState>()(
           );
         },
 
+        // =====================================================================
+        // NPC Actions (Phase 3.4)
+        // =====================================================================
+
+        /**
+         * Set all compiled NPCs
+         */
+        setNPCs: (npcs: CompiledNPC[]) => {
+          set({ npcs, npcError: null }, false, 'setNPCs');
+        },
+
+        /**
+         * Add a single NPC
+         */
+        addNPC: (npc: CompiledNPC) => {
+          const { npcs } = get();
+          set({ npcs: [...npcs, npc] }, false, 'addNPC');
+        },
+
+        /**
+         * Update an existing NPC
+         */
+        updateNPC: (npcId: string, updates: Partial<CompiledNPC>) => {
+          const { npcs } = get();
+          const updatedNPCs = npcs.map((npc) =>
+            npc.id === npcId
+              ? { ...npc, ...updates, updatedAt: new Date().toISOString() }
+              : npc
+          );
+          set({ npcs: updatedNPCs }, false, 'updateNPC');
+        },
+
+        /**
+         * Confirm an NPC
+         */
+        confirmNPC: (npcId: string) => {
+          const { npcs, confirmedNPCIds } = get();
+          const updatedNPCs = npcs.map((npc) =>
+            npc.id === npcId
+              ? { ...npc, isConfirmed: true, updatedAt: new Date().toISOString() }
+              : npc
+          );
+          const newConfirmedIds = new Set(confirmedNPCIds);
+          newConfirmedIds.add(npcId);
+          set({ npcs: updatedNPCs, confirmedNPCIds: newConfirmedIds }, false, 'confirmNPC');
+        },
+
+        /**
+         * Confirm all NPCs
+         */
+        confirmAllNPCs: () => {
+          const { npcs } = get();
+          const now = new Date().toISOString();
+          const updatedNPCs = npcs.map((npc) => ({
+            ...npc,
+            isConfirmed: true,
+            updatedAt: now,
+          }));
+          const allIds = new Set(npcs.map((n) => n.id));
+          set({ npcs: updatedNPCs, confirmedNPCIds: allIds }, false, 'confirmAllNPCs');
+        },
+
+        /**
+         * Set NPC loading state
+         */
+        setNPCLoading: (loading: boolean) => {
+          set({ npcLoading: loading }, false, 'setNPCLoading');
+        },
+
+        /**
+         * Set NPC error state
+         */
+        setNPCError: (error: string | null) => {
+          set({ npcError: error, npcLoading: false }, false, 'setNPCError');
+        },
+
+        /**
+         * Set NPC streaming content
+         */
+        setNPCStreamingContent: (content: string | null) => {
+          set({ npcStreamingContent: content }, false, 'setNPCStreamingContent');
+        },
+
+        /**
+         * Append to NPC streaming content
+         */
+        appendNPCStreamingContent: (chunk: string) => {
+          const { npcStreamingContent } = get();
+          set(
+            { npcStreamingContent: (npcStreamingContent || '') + chunk },
+            false,
+            'appendNPCStreamingContent'
+          );
+        },
+
+        /**
+         * Set the NPC currently being refined
+         */
+        setRefiningNPCId: (npcId: string | null) => {
+          set({ refiningNPCId: npcId }, false, 'setRefiningNPCId');
+        },
+
+        /**
+         * Clear all NPCs
+         */
+        clearNPCs: () => {
+          set(
+            {
+              npcs: [],
+              confirmedNPCIds: new Set<string>(),
+              npcLoading: false,
+              npcError: null,
+              npcStreamingContent: null,
+              refiningNPCId: null,
+            },
+            false,
+            'clearNPCs'
+          );
+        },
+
         /**
          * Reset all content state
          */
@@ -461,7 +616,7 @@ export const useContentStore = create<ContentState>()(
       }),
       {
         name: 'dagger-content-storage',
-        // Persist frame, outline, and scene state (not available frames from DB)
+        // Persist frame, outline, scene, and NPC state (not available frames from DB)
         partialize: (state) => ({
           selectedFrame: state.selectedFrame,
           frameConfirmed: state.frameConfirmed,
@@ -469,7 +624,28 @@ export const useContentStore = create<ContentState>()(
           outlineConfirmed: state.outlineConfirmed,
           scenes: state.scenes,
           currentSceneId: state.currentSceneId,
+          npcs: state.npcs,
+          confirmedNPCIds: Array.from(state.confirmedNPCIds), // Convert Set to Array for serialization
         }),
+        // Custom storage to handle Set serialization
+        storage: {
+          getItem: (name) => {
+            const str = localStorage.getItem(name);
+            if (!str) return null;
+            const parsed = JSON.parse(str);
+            // Convert confirmedNPCIds back to Set
+            if (parsed.state?.confirmedNPCIds) {
+              parsed.state.confirmedNPCIds = new Set(parsed.state.confirmedNPCIds);
+            }
+            return parsed;
+          },
+          setItem: (name, value) => {
+            localStorage.setItem(name, JSON.stringify(value));
+          },
+          removeItem: (name) => {
+            localStorage.removeItem(name);
+          },
+        },
       }
     ),
     { name: 'ContentStore' }
@@ -686,3 +862,86 @@ export const selectSceneNavigation = (
 
   return { canGoPrevious, canGoNext, currentIndex };
 };
+
+// =============================================================================
+// NPC Selectors (Phase 3.4)
+// =============================================================================
+
+/**
+ * Get all NPCs
+ */
+export const selectNPCs = (state: ContentState): CompiledNPC[] => state.npcs;
+
+/**
+ * Get confirmed NPC IDs
+ */
+export const selectConfirmedNPCIds = (state: ContentState): Set<string> =>
+  state.confirmedNPCIds;
+
+/**
+ * Get NPC by ID
+ */
+export const selectNPCById = (state: ContentState, npcId: string): CompiledNPC | undefined =>
+  state.npcs.find((n) => n.id === npcId);
+
+/**
+ * Get count of confirmed NPCs
+ */
+export const selectConfirmedNPCCount = (state: ContentState): number =>
+  state.confirmedNPCIds.size;
+
+/**
+ * Check if all NPCs are confirmed
+ */
+export const selectAllNPCsConfirmed = (state: ContentState): boolean =>
+  state.npcs.length > 0 && state.confirmedNPCIds.size === state.npcs.length;
+
+/**
+ * Get NPC loading/error status
+ */
+export const selectNPCStatus = (
+  state: ContentState
+): {
+  loading: boolean;
+  error: string | null;
+  streamingContent: string | null;
+  refiningNPCId: string | null;
+} => ({
+  loading: state.npcLoading,
+  error: state.npcError,
+  streamingContent: state.npcStreamingContent,
+  refiningNPCId: state.refiningNPCId,
+});
+
+/**
+ * Check if user can proceed to adversaries phase
+ */
+export const selectCanProceedToAdversaries = (state: ContentState): boolean =>
+  state.npcs.length > 0 && state.confirmedNPCIds.size === state.npcs.length;
+
+/**
+ * Get NPC summary for display
+ */
+export const selectNPCSummary = (
+  state: ContentState
+): { total: number; confirmed: number; pending: number } => ({
+  total: state.npcs.length,
+  confirmed: state.confirmedNPCIds.size,
+  pending: state.npcs.length - state.confirmedNPCIds.size,
+});
+
+/**
+ * Get NPCs by role
+ */
+export const selectNPCsByRole = (
+  state: ContentState,
+  role: CompiledNPC['role']
+): CompiledNPC[] => state.npcs.filter((n) => n.role === role);
+
+/**
+ * Get NPCs appearing in a specific scene
+ */
+export const selectNPCsByScene = (
+  state: ContentState,
+  sceneId: string
+): CompiledNPC[] => state.npcs.filter((n) => n.sceneAppearances.includes(sceneId));

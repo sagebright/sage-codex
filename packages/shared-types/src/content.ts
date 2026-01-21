@@ -881,3 +881,272 @@ export interface GenerateSceneResponse {
   isComplete: boolean;
   followUpQuestion?: string;
 }
+
+// =============================================================================
+// NPC Types (Phase 3.4)
+// =============================================================================
+
+/**
+ * NPC role in the adventure
+ */
+export type NPCRole = 'ally' | 'neutral' | 'quest-giver' | 'antagonist' | 'bystander';
+
+/**
+ * A compiled NPC extracted from scenes and enriched with details
+ */
+export interface NPC {
+  /** Unique identifier */
+  id: string;
+  /** NPC name */
+  name: string;
+  /** Role in the adventure */
+  role: NPCRole;
+  /** Brief description of the NPC */
+  description: string;
+  /** Physical appearance */
+  appearance: string;
+  /** Personality traits and behavior */
+  personality: string;
+  /** What drives this NPC */
+  motivations: string[];
+  /** Connections to other NPCs or story elements */
+  connections: string[];
+  /** Scene IDs where this NPC appears */
+  sceneAppearances: string[];
+}
+
+/**
+ * Extraction context for an NPC
+ */
+export interface NPCExtractionContext {
+  /** Scene where NPC was found */
+  sceneId: string;
+  /** Context/excerpt where NPC was mentioned */
+  context: string;
+}
+
+/**
+ * Compiled NPC with metadata about extraction and confirmation
+ */
+export interface CompiledNPC extends NPC {
+  /** Whether the NPC has been confirmed by the user */
+  isConfirmed: boolean;
+  /** Sources from which NPC was extracted */
+  extractedFrom: NPCExtractionContext[];
+  /** When NPC was first created */
+  createdAt: string;
+  /** When NPC was last updated */
+  updatedAt: string;
+}
+
+// =============================================================================
+// MCP Tool: compile_npcs
+// =============================================================================
+
+/**
+ * Scene data for NPC compilation
+ */
+export interface SceneNPCData {
+  sceneId: string;
+  title: string;
+  extractedNPCs: ExtractedNPC[];
+}
+
+/**
+ * Input for the compile_npcs MCP tool
+ */
+export interface CompileNPCsInput {
+  /** Scenes with extracted NPC data */
+  scenes: SceneNPCData[];
+  /** Adventure frame for context */
+  frame: SelectedFrame;
+  /** Dial settings for context */
+  dialsSummary: {
+    partySize: number;
+    partyTier: 1 | 2 | 3 | 4;
+    tone: string | null;
+    themes: string[];
+  };
+  /** Optional user feedback for refinement */
+  feedback?: string;
+  /** Previous NPCs (if refining) */
+  previousNPCs?: NPC[];
+}
+
+/**
+ * Output from the compile_npcs MCP tool
+ */
+export interface CompileNPCsOutput {
+  /** The assistant's response message */
+  assistantMessage: string;
+  /** Compiled NPCs */
+  npcs?: NPC[];
+  /** Whether compilation is complete */
+  isComplete: boolean;
+  /** Follow-up question if more info needed */
+  followUpQuestion?: string;
+}
+
+// =============================================================================
+// WebSocket Events for NPC
+// =============================================================================
+
+/**
+ * WebSocket event types for NPC compilation (client → server)
+ */
+export type NPCClientEventType = 'npc:compile' | 'npc:refine' | 'npc:confirm';
+
+/**
+ * WebSocket event types for NPC compilation (server → client)
+ */
+export type NPCServerEventType =
+  | 'npc:compile_start'
+  | 'npc:compile_chunk'
+  | 'npc:compile_complete'
+  | 'npc:refined'
+  | 'npc:confirmed'
+  | 'npc:error';
+
+// -----------------------------------------------------------------------------
+// Client Events (Frontend → Bridge)
+// -----------------------------------------------------------------------------
+
+/**
+ * User requests NPC compilation from confirmed scenes
+ */
+export interface NPCCompileEvent {
+  type: 'npc:compile';
+  payload: {
+    sceneIds: string[];
+  };
+}
+
+/**
+ * User requests refinement of a specific NPC
+ */
+export interface NPCRefineEvent {
+  type: 'npc:refine';
+  payload: {
+    npcId: string;
+    feedback: string;
+  };
+}
+
+/**
+ * User confirms an NPC
+ */
+export interface NPCConfirmEvent {
+  type: 'npc:confirm';
+  payload: {
+    npcId: string;
+  };
+}
+
+/**
+ * Union of all NPC client events
+ */
+export type NPCClientEvent = NPCCompileEvent | NPCRefineEvent | NPCConfirmEvent;
+
+// -----------------------------------------------------------------------------
+// Server Events (Bridge → Frontend)
+// -----------------------------------------------------------------------------
+
+/**
+ * NPC compilation starting
+ */
+export interface NPCCompileStartEvent {
+  type: 'npc:compile_start';
+  payload: {
+    messageId: string;
+    totalScenes: number;
+  };
+}
+
+/**
+ * Streaming chunk of NPC compilation
+ */
+export interface NPCCompileChunkEvent {
+  type: 'npc:compile_chunk';
+  payload: {
+    messageId: string;
+    chunk: string;
+  };
+}
+
+/**
+ * NPC compilation complete
+ */
+export interface NPCCompileCompleteEvent {
+  type: 'npc:compile_complete';
+  payload: {
+    messageId: string;
+    npcs?: NPC[];
+    isComplete: boolean;
+    followUpQuestion?: string;
+  };
+}
+
+/**
+ * NPC refined after feedback
+ */
+export interface NPCRefinedEvent {
+  type: 'npc:refined';
+  payload: {
+    npc: NPC;
+  };
+}
+
+/**
+ * NPC confirmed
+ */
+export interface NPCConfirmedEvent {
+  type: 'npc:confirmed';
+  payload: {
+    npcId: string;
+  };
+}
+
+/**
+ * NPC error
+ */
+export interface NPCErrorEvent {
+  type: 'npc:error';
+  payload: {
+    code: string;
+    message: string;
+  };
+}
+
+/**
+ * Union of all NPC server events
+ */
+export type NPCServerEvent =
+  | NPCCompileStartEvent
+  | NPCCompileChunkEvent
+  | NPCCompileCompleteEvent
+  | NPCRefinedEvent
+  | NPCConfirmedEvent
+  | NPCErrorEvent;
+
+// =============================================================================
+// NPC API Types
+// =============================================================================
+
+/**
+ * Request to compile NPCs from scenes
+ */
+export interface CompileNPCsRequest {
+  sceneIds: string[];
+  conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>;
+}
+
+/**
+ * Response from NPC compilation
+ */
+export interface CompileNPCsResponse {
+  messageId: string;
+  content: string;
+  npcs?: NPC[];
+  isComplete: boolean;
+  followUpQuestion?: string;
+}

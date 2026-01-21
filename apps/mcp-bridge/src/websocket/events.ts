@@ -32,11 +32,18 @@ import type {
   SceneClientEvent,
   SceneServerEvent,
   SceneDraft,
+  // NPC types
+  NPCCompileEvent,
+  NPCRefineEvent,
+  NPCConfirmEvent,
+  NPCClientEvent,
+  NPCServerEvent,
+  NPC,
 } from '@dagger-app/shared-types';
 
-// Combined event types that include dial, outline, and scene events
-type AllClientEvents = ClientEvent | OutlineClientEvent | SceneClientEvent;
-type AllServerEvents = ServerEvent | OutlineServerEvent | SceneServerEvent;
+// Combined event types that include dial, outline, scene, and NPC events
+type AllClientEvents = ClientEvent | OutlineClientEvent | SceneClientEvent | NPCClientEvent;
+type AllServerEvents = ServerEvent | OutlineServerEvent | SceneServerEvent | NPCServerEvent;
 
 // =============================================================================
 // Event Handlers Configuration
@@ -59,6 +66,10 @@ export interface ClientEventHandlers {
   onSceneFeedback?: (payload: SceneFeedbackEvent['payload']) => Promise<void> | void;
   onSceneConfirm?: (payload: SceneConfirmEvent['payload']) => Promise<void> | void;
   onSceneNavigate?: (payload: SceneNavigateEvent['payload']) => Promise<void> | void;
+  // NPC events
+  onNPCCompile?: (payload: NPCCompileEvent['payload']) => Promise<void> | void;
+  onNPCRefine?: (payload: NPCRefineEvent['payload']) => Promise<void> | void;
+  onNPCConfirm?: (payload: NPCConfirmEvent['payload']) => Promise<void> | void;
 }
 
 // =============================================================================
@@ -341,6 +352,90 @@ export function emitSceneError(ws: WebSocket, sceneId: string, code: string, mes
 }
 
 // =============================================================================
+// NPC Event Emitters (Phase 3.4)
+// =============================================================================
+
+/**
+ * Emit NPC compile start event
+ */
+export function emitNPCCompileStart(ws: WebSocket, messageId: string, totalScenes: number): void {
+  emitToClient(ws, {
+    type: 'npc:compile_start',
+    payload: { messageId, totalScenes },
+  });
+}
+
+/**
+ * Emit NPC compile streaming chunk
+ */
+export function emitNPCCompileChunk(ws: WebSocket, messageId: string, chunk: string): void {
+  emitToClient(ws, {
+    type: 'npc:compile_chunk',
+    payload: { messageId, chunk },
+  });
+}
+
+/**
+ * Emit NPC compile complete
+ */
+export function emitNPCCompileComplete(
+  ws: WebSocket,
+  messageId: string,
+  isComplete: boolean,
+  npcs?: NPC[],
+  followUpQuestion?: string
+): void {
+  const payload: {
+    messageId: string;
+    isComplete: boolean;
+    npcs?: NPC[];
+    followUpQuestion?: string;
+  } = { messageId, isComplete };
+
+  if (npcs) {
+    payload.npcs = npcs;
+  }
+  if (followUpQuestion) {
+    payload.followUpQuestion = followUpQuestion;
+  }
+
+  emitToClient(ws, {
+    type: 'npc:compile_complete',
+    payload,
+  });
+}
+
+/**
+ * Emit NPC refined event
+ */
+export function emitNPCRefined(ws: WebSocket, npc: NPC): void {
+  emitToClient(ws, {
+    type: 'npc:refined',
+    payload: { npc },
+  });
+}
+
+/**
+ * Emit NPC confirmed event
+ */
+export function emitNPCConfirmed(ws: WebSocket, npcId: string): void {
+  emitToClient(ws, {
+    type: 'npc:confirmed',
+    payload: { npcId },
+  });
+}
+
+/**
+ * Emit NPC error event
+ */
+export function emitNPCError(ws: WebSocket, code: string, message: string): void {
+  emitToClient(ws, {
+    type: 'npc:error',
+    payload: { code, message },
+  });
+}
+
+// =============================================================================
 // Client Event Handler
 // =============================================================================
 
@@ -421,6 +516,25 @@ export async function handleClientEvent(
       }
       break;
 
+    // NPC events
+    case 'npc:compile':
+      if (handlers.onNPCCompile) {
+        await handlers.onNPCCompile((event as NPCCompileEvent).payload);
+      }
+      break;
+
+    case 'npc:refine':
+      if (handlers.onNPCRefine) {
+        await handlers.onNPCRefine((event as NPCRefineEvent).payload);
+      }
+      break;
+
+    case 'npc:confirm':
+      if (handlers.onNPCConfirm) {
+        await handlers.onNPCConfirm((event as NPCConfirmEvent).payload);
+      }
+      break;
+
     default:
       emitError(ws, 'UNKNOWN_EVENT', `Unknown event type: ${(event as { type: string }).type}`);
   }
@@ -453,6 +567,10 @@ export function parseClientEvent(data: Buffer | string): AllClientEvents | null 
       'scene:feedback',
       'scene:confirm',
       'scene:navigate',
+      // NPC events
+      'npc:compile',
+      'npc:refine',
+      'npc:confirm',
     ];
     if (!validTypes.includes(parsed.type)) {
       return null;
