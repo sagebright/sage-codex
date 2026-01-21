@@ -6,6 +6,7 @@
  * - Outline generation
  * - Scene editing with draft-revise workflow
  * - NPC compilation
+ * - Adversary selection
  */
 
 // Frame components
@@ -25,3 +26,11 @@ export { SceneNavigation, type SceneNavigationProps } from './SceneNavigation';
 // NPC components (Phase 3.4)
 export { NPCCard, type NPCCardProps } from './NPCCard';
 export { NPCList, type NPCListProps } from './NPCList';
+
+// Adversary components (Phase 4.1)
+export { AdversaryCard, type AdversaryCardProps } from './AdversaryCard';
+export { AdversarySelector, type AdversarySelectorProps } from './AdversarySelector';
+
+// Item components (Phase 4.2)
+export { ItemCard, type ItemCardProps } from './ItemCard';
+export { ItemSelector, type ItemSelectorProps } from './ItemSelector';

@@ -20,6 +20,13 @@ import type {
   SceneDraft,
   SceneStatus,
   CompiledNPC,
+  DaggerheartAdversary,
+  SelectedAdversary,
+  AdversaryFilterOptions,
+  UnifiedItem,
+  SelectedItem,
+  ItemFilterOptions,
+  ItemCategory,
 } from '@dagger-app/shared-types';
 import { isCustomFrame, isOutlineComplete } from '@dagger-app/shared-types';
 
@@ -76,6 +83,38 @@ export interface ContentState {
   /** NPC currently being refined */
   refiningNPCId: string | null;
 
+  // Adversary state (Phase 4.1)
+  /** Available adversaries from Supabase */
+  availableAdversaries: DaggerheartAdversary[];
+  /** Selected adversaries with quantities */
+  selectedAdversaries: SelectedAdversary[];
+  /** Set of confirmed adversary IDs */
+  confirmedAdversaryIds: Set<string>;
+  /** Loading state for adversary loading */
+  adversaryLoading: boolean;
+  /** Error message if adversary loading failed */
+  adversaryError: string | null;
+  /** Available adversary types for filtering */
+  availableAdversaryTypes: string[];
+  /** Current filter options */
+  adversaryFilters: AdversaryFilterOptions;
+
+  // Item state (Phase 4.2)
+  /** Available items from Supabase (unified across categories) */
+  availableItems: UnifiedItem[];
+  /** Selected items with quantities */
+  selectedItems: SelectedItem[];
+  /** Set of confirmed item keys (category:id) */
+  confirmedItemIds: Set<string>;
+  /** Loading state for item loading */
+  itemLoading: boolean;
+  /** Error message if item loading failed */
+  itemError: string | null;
+  /** Available item categories for filtering */
+  availableItemCategories: ItemCategory[];
+  /** Current filter options */
+  itemFilters: ItemFilterOptions;
+
   // Actions - Frame
   setAvailableFrames: (frames: DaggerheartFrame[]) => void;
   selectFrame: (frame: SelectedFrame) => void;
@@ -121,6 +160,30 @@ export interface ContentState {
   setRefiningNPCId: (npcId: string | null) => void;
   clearNPCs: () => void;
 
+  // Actions - Adversary (Phase 4.1)
+  setAvailableAdversaries: (adversaries: DaggerheartAdversary[], types?: string[]) => void;
+  selectAdversary: (adversary: DaggerheartAdversary, quantity?: number) => void;
+  deselectAdversary: (adversaryId: string) => void;
+  updateAdversaryQuantity: (adversaryId: string, quantity: number) => void;
+  confirmAdversary: (adversaryId: string) => void;
+  confirmAllAdversaries: () => void;
+  setAdversaryFilters: (filters: Partial<AdversaryFilterOptions>) => void;
+  setAdversaryLoading: (loading: boolean) => void;
+  setAdversaryError: (error: string | null) => void;
+  clearAdversaries: () => void;
+
+  // Actions - Item (Phase 4.2)
+  setAvailableItems: (items: UnifiedItem[], categories?: ItemCategory[]) => void;
+  selectItem: (item: UnifiedItem, quantity?: number) => void;
+  deselectItem: (itemId: string, category: ItemCategory) => void;
+  updateItemQuantity: (itemId: string, category: ItemCategory, quantity: number) => void;
+  confirmItem: (itemId: string, category: ItemCategory) => void;
+  confirmAllItems: () => void;
+  setItemFilters: (filters: Partial<ItemFilterOptions>) => void;
+  setItemLoading: (loading: boolean) => void;
+  setItemError: (error: string | null) => void;
+  clearItems: () => void;
+
   // Reset
   resetContent: () => void;
 }
@@ -152,6 +215,22 @@ const initialContentState = {
   npcError: null as string | null,
   npcStreamingContent: null as string | null,
   refiningNPCId: null as string | null,
+  // Adversary state
+  availableAdversaries: [] as DaggerheartAdversary[],
+  selectedAdversaries: [] as SelectedAdversary[],
+  confirmedAdversaryIds: new Set<string>(),
+  adversaryLoading: false,
+  adversaryError: null as string | null,
+  availableAdversaryTypes: [] as string[],
+  adversaryFilters: {} as AdversaryFilterOptions,
+  // Item state
+  availableItems: [] as UnifiedItem[],
+  selectedItems: [] as SelectedItem[],
+  confirmedItemIds: new Set<string>(),
+  itemLoading: false,
+  itemError: null as string | null,
+  availableItemCategories: [] as ItemCategory[],
+  itemFilters: {} as ItemFilterOptions,
 };
 
 // =============================================================================
@@ -607,6 +686,296 @@ export const useContentStore = create<ContentState>()(
           );
         },
 
+        // =====================================================================
+        // Adversary Actions (Phase 4.1)
+        // =====================================================================
+
+        /**
+         * Set available adversaries from Supabase
+         */
+        setAvailableAdversaries: (adversaries: DaggerheartAdversary[], types?: string[]) => {
+          set(
+            {
+              availableAdversaries: adversaries,
+              availableAdversaryTypes: types ?? [],
+              adversaryError: null,
+            },
+            false,
+            'setAvailableAdversaries'
+          );
+        },
+
+        /**
+         * Select an adversary with optional quantity
+         */
+        selectAdversary: (adversary: DaggerheartAdversary, quantity = 1) => {
+          const { selectedAdversaries } = get();
+          // Check if already selected
+          const existing = selectedAdversaries.find((sa) => sa.adversary.name === adversary.name);
+          if (existing) {
+            // Update quantity instead
+            const updated = selectedAdversaries.map((sa) =>
+              sa.adversary.name === adversary.name
+                ? { ...sa, quantity: sa.quantity + quantity }
+                : sa
+            );
+            set({ selectedAdversaries: updated }, false, 'selectAdversary');
+          } else {
+            // Add new selection
+            const newSelection: SelectedAdversary = {
+              adversary,
+              quantity,
+            };
+            set(
+              { selectedAdversaries: [...selectedAdversaries, newSelection] },
+              false,
+              'selectAdversary'
+            );
+          }
+        },
+
+        /**
+         * Deselect an adversary
+         */
+        deselectAdversary: (adversaryId: string) => {
+          const { selectedAdversaries, confirmedAdversaryIds } = get();
+          const filtered = selectedAdversaries.filter((sa) => sa.adversary.name !== adversaryId);
+          const newConfirmedIds = new Set(confirmedAdversaryIds);
+          newConfirmedIds.delete(adversaryId);
+          set(
+            { selectedAdversaries: filtered, confirmedAdversaryIds: newConfirmedIds },
+            false,
+            'deselectAdversary'
+          );
+        },
+
+        /**
+         * Update adversary quantity
+         */
+        updateAdversaryQuantity: (adversaryId: string, quantity: number) => {
+          const { selectedAdversaries } = get();
+          const clampedQty = Math.max(1, Math.min(10, quantity));
+          const updated = selectedAdversaries.map((sa) =>
+            sa.adversary.name === adversaryId ? { ...sa, quantity: clampedQty } : sa
+          );
+          set({ selectedAdversaries: updated }, false, 'updateAdversaryQuantity');
+        },
+
+        /**
+         * Confirm an adversary
+         */
+        confirmAdversary: (adversaryId: string) => {
+          const { confirmedAdversaryIds } = get();
+          const newConfirmedIds = new Set(confirmedAdversaryIds);
+          newConfirmedIds.add(adversaryId);
+          set({ confirmedAdversaryIds: newConfirmedIds }, false, 'confirmAdversary');
+        },
+
+        /**
+         * Confirm all adversaries
+         */
+        confirmAllAdversaries: () => {
+          const { selectedAdversaries } = get();
+          const allIds = new Set(selectedAdversaries.map((sa) => sa.adversary.name));
+          set({ confirmedAdversaryIds: allIds }, false, 'confirmAllAdversaries');
+        },
+
+        /**
+         * Set adversary filters
+         */
+        setAdversaryFilters: (filters: Partial<AdversaryFilterOptions>) => {
+          const { adversaryFilters } = get();
+          set(
+            { adversaryFilters: { ...adversaryFilters, ...filters } },
+            false,
+            'setAdversaryFilters'
+          );
+        },
+
+        /**
+         * Set adversary loading state
+         */
+        setAdversaryLoading: (loading: boolean) => {
+          set({ adversaryLoading: loading }, false, 'setAdversaryLoading');
+        },
+
+        /**
+         * Set adversary error state
+         */
+        setAdversaryError: (error: string | null) => {
+          set({ adversaryError: error, adversaryLoading: false }, false, 'setAdversaryError');
+        },
+
+        /**
+         * Clear all adversaries
+         */
+        clearAdversaries: () => {
+          set(
+            {
+              availableAdversaries: [],
+              selectedAdversaries: [],
+              confirmedAdversaryIds: new Set<string>(),
+              adversaryLoading: false,
+              adversaryError: null,
+              availableAdversaryTypes: [],
+              adversaryFilters: {},
+            },
+            false,
+            'clearAdversaries'
+          );
+        },
+
+        // =====================================================================
+        // Item Actions (Phase 4.2)
+        // =====================================================================
+
+        /**
+         * Set available items from Supabase
+         */
+        setAvailableItems: (items: UnifiedItem[], categories?: ItemCategory[]) => {
+          set(
+            {
+              availableItems: items,
+              availableItemCategories: categories ?? [],
+              itemError: null,
+            },
+            false,
+            'setAvailableItems'
+          );
+        },
+
+        /**
+         * Select an item with optional quantity
+         */
+        selectItem: (item: UnifiedItem, quantity = 1) => {
+          const { selectedItems } = get();
+          const itemKey = `${item.category}:${item.data.name}`;
+          // Check if already selected
+          const existing = selectedItems.find(
+            (si) => `${si.item.category}:${si.item.data.name}` === itemKey
+          );
+          if (existing) {
+            // Update quantity instead
+            const updated = selectedItems.map((si) =>
+              `${si.item.category}:${si.item.data.name}` === itemKey
+                ? { ...si, quantity: si.quantity + quantity }
+                : si
+            );
+            set({ selectedItems: updated }, false, 'selectItem');
+          } else {
+            // Add new selection
+            const newSelection: SelectedItem = {
+              item,
+              quantity,
+            };
+            set(
+              { selectedItems: [...selectedItems, newSelection] },
+              false,
+              'selectItem'
+            );
+          }
+        },
+
+        /**
+         * Deselect an item
+         */
+        deselectItem: (itemId: string, category: ItemCategory) => {
+          const { selectedItems, confirmedItemIds } = get();
+          const itemKey = `${category}:${itemId}`;
+          const filtered = selectedItems.filter(
+            (si) => `${si.item.category}:${si.item.data.name}` !== itemKey
+          );
+          const newConfirmedIds = new Set(confirmedItemIds);
+          newConfirmedIds.delete(itemKey);
+          set(
+            { selectedItems: filtered, confirmedItemIds: newConfirmedIds },
+            false,
+            'deselectItem'
+          );
+        },
+
+        /**
+         * Update item quantity
+         */
+        updateItemQuantity: (itemId: string, category: ItemCategory, quantity: number) => {
+          const { selectedItems } = get();
+          const itemKey = `${category}:${itemId}`;
+          const clampedQty = Math.max(1, Math.min(10, quantity));
+          const updated = selectedItems.map((si) =>
+            `${si.item.category}:${si.item.data.name}` === itemKey
+              ? { ...si, quantity: clampedQty }
+              : si
+          );
+          set({ selectedItems: updated }, false, 'updateItemQuantity');
+        },
+
+        /**
+         * Confirm an item
+         */
+        confirmItem: (itemId: string, category: ItemCategory) => {
+          const { confirmedItemIds } = get();
+          const itemKey = `${category}:${itemId}`;
+          const newConfirmedIds = new Set(confirmedItemIds);
+          newConfirmedIds.add(itemKey);
+          set({ confirmedItemIds: newConfirmedIds }, false, 'confirmItem');
+        },
+
+        /**
+         * Confirm all items
+         */
+        confirmAllItems: () => {
+          const { selectedItems } = get();
+          const allIds = new Set(
+            selectedItems.map((si) => `${si.item.category}:${si.item.data.name}`)
+          );
+          set({ confirmedItemIds: allIds }, false, 'confirmAllItems');
+        },
+
+        /**
+         * Set item filters
+         */
+        setItemFilters: (filters: Partial<ItemFilterOptions>) => {
+          const { itemFilters } = get();
+          set(
+            { itemFilters: { ...itemFilters, ...filters } },
+            false,
+            'setItemFilters'
+          );
+        },
+
+        /**
+         * Set item loading state
+         */
+        setItemLoading: (loading: boolean) => {
+          set({ itemLoading: loading }, false, 'setItemLoading');
+        },
+
+        /**
+         * Set item error state
+         */
+        setItemError: (error: string | null) => {
+          set({ itemError: error, itemLoading: false }, false, 'setItemError');
+        },
+
+        /**
+         * Clear all items
+         */
+        clearItems: () => {
+          set(
+            {
+              availableItems: [],
+              selectedItems: [],
+              confirmedItemIds: new Set<string>(),
+              itemLoading: false,
+              itemError: null,
+              availableItemCategories: [],
+              itemFilters: {},
+            },
+            false,
+            'clearItems'
+          );
+        },
+
         /**
          * Reset all content state
          */
@@ -616,7 +985,7 @@ export const useContentStore = create<ContentState>()(
       }),
       {
         name: 'dagger-content-storage',
-        // Persist frame, outline, scene, and NPC state (not available frames from DB)
+        // Persist frame, outline, scene, NPC, adversary, and item state (not available data from DB)
         partialize: (state) => ({
           selectedFrame: state.selectedFrame,
           frameConfirmed: state.frameConfirmed,
@@ -626,6 +995,12 @@ export const useContentStore = create<ContentState>()(
           currentSceneId: state.currentSceneId,
           npcs: state.npcs,
           confirmedNPCIds: Array.from(state.confirmedNPCIds), // Convert Set to Array for serialization
+          selectedAdversaries: state.selectedAdversaries,
+          confirmedAdversaryIds: Array.from(state.confirmedAdversaryIds), // Convert Set to Array for serialization
+          adversaryFilters: state.adversaryFilters,
+          selectedItems: state.selectedItems,
+          confirmedItemIds: Array.from(state.confirmedItemIds), // Convert Set to Array for serialization
+          itemFilters: state.itemFilters,
         }),
         // Custom storage to handle Set serialization
         storage: {
@@ -636,6 +1011,14 @@ export const useContentStore = create<ContentState>()(
             // Convert confirmedNPCIds back to Set
             if (parsed.state?.confirmedNPCIds) {
               parsed.state.confirmedNPCIds = new Set(parsed.state.confirmedNPCIds);
+            }
+            // Convert confirmedAdversaryIds back to Set
+            if (parsed.state?.confirmedAdversaryIds) {
+              parsed.state.confirmedAdversaryIds = new Set(parsed.state.confirmedAdversaryIds);
+            }
+            // Convert confirmedItemIds back to Set
+            if (parsed.state?.confirmedItemIds) {
+              parsed.state.confirmedItemIds = new Set(parsed.state.confirmedItemIds);
             }
             return parsed;
           },
@@ -945,3 +1328,289 @@ export const selectNPCsByScene = (
   state: ContentState,
   sceneId: string
 ): CompiledNPC[] => state.npcs.filter((n) => n.sceneAppearances.includes(sceneId));
+
+// =============================================================================
+// Adversary Selectors (Phase 4.1)
+// =============================================================================
+
+/**
+ * Get all available adversaries
+ */
+export const selectAvailableAdversaries = (state: ContentState): DaggerheartAdversary[] =>
+  state.availableAdversaries;
+
+/**
+ * Get selected adversaries
+ */
+export const selectSelectedAdversaries = (state: ContentState): SelectedAdversary[] =>
+  state.selectedAdversaries;
+
+/**
+ * Get confirmed adversary IDs
+ */
+export const selectConfirmedAdversaryIds = (state: ContentState): Set<string> =>
+  state.confirmedAdversaryIds;
+
+/**
+ * Get filtered adversaries based on current filters
+ */
+export const selectFilteredAdversaries = (state: ContentState): DaggerheartAdversary[] => {
+  const { availableAdversaries, adversaryFilters } = state;
+  let filtered = availableAdversaries;
+
+  // Filter by tier
+  if (adversaryFilters.tier !== undefined) {
+    filtered = filtered.filter((a) => a.tier === adversaryFilters.tier);
+  }
+
+  // Filter by type
+  if (adversaryFilters.type) {
+    filtered = filtered.filter(
+      (a) => a.type?.toLowerCase() === adversaryFilters.type?.toLowerCase()
+    );
+  }
+
+  // Filter by search term
+  if (adversaryFilters.searchTerm) {
+    const term = adversaryFilters.searchTerm.toLowerCase();
+    filtered = filtered.filter(
+      (a) =>
+        a.name.toLowerCase().includes(term) ||
+        a.description?.toLowerCase().includes(term) ||
+        a.type?.toLowerCase().includes(term)
+    );
+  }
+
+  return filtered;
+};
+
+/**
+ * Get count of selected adversaries
+ */
+export const selectSelectedAdversaryCount = (state: ContentState): number =>
+  state.selectedAdversaries.reduce((sum, sa) => sum + sa.quantity, 0);
+
+/**
+ * Get count of confirmed adversaries
+ */
+export const selectConfirmedAdversaryCount = (state: ContentState): number =>
+  state.confirmedAdversaryIds.size;
+
+/**
+ * Check if all selected adversaries are confirmed
+ */
+export const selectAllAdversariesConfirmed = (state: ContentState): boolean =>
+  state.selectedAdversaries.length > 0 &&
+  state.confirmedAdversaryIds.size === state.selectedAdversaries.length;
+
+/**
+ * Get adversary loading/error status
+ */
+export const selectAdversaryStatus = (
+  state: ContentState
+): { loading: boolean; error: string | null } => ({
+  loading: state.adversaryLoading,
+  error: state.adversaryError,
+});
+
+/**
+ * Check if user can proceed to items phase
+ */
+export const selectCanProceedToItems = (state: ContentState): boolean =>
+  state.selectedAdversaries.length > 0 &&
+  state.confirmedAdversaryIds.size === state.selectedAdversaries.length;
+
+/**
+ * Get adversary summary for display
+ */
+export const selectAdversarySummary = (
+  state: ContentState
+): { total: number; selected: number; confirmed: number; pending: number } => ({
+  total: state.availableAdversaries.length,
+  selected: state.selectedAdversaries.length,
+  confirmed: state.confirmedAdversaryIds.size,
+  pending: state.selectedAdversaries.length - state.confirmedAdversaryIds.size,
+});
+
+/**
+ * Get available adversary types for filtering
+ */
+export const selectAvailableAdversaryTypes = (state: ContentState): string[] =>
+  state.availableAdversaryTypes;
+
+/**
+ * Get current adversary filters
+ */
+export const selectAdversaryFilters = (state: ContentState): AdversaryFilterOptions =>
+  state.adversaryFilters;
+
+/**
+ * Check if an adversary is selected
+ */
+export const selectIsAdversarySelected = (
+  state: ContentState,
+  adversaryName: string
+): boolean => state.selectedAdversaries.some((sa) => sa.adversary.name === adversaryName);
+
+/**
+ * Get selected adversary by name
+ */
+export const selectSelectedAdversaryByName = (
+  state: ContentState,
+  adversaryName: string
+): SelectedAdversary | undefined =>
+  state.selectedAdversaries.find((sa) => sa.adversary.name === adversaryName);
+
+// =============================================================================
+// Item Selectors (Phase 4.2)
+// =============================================================================
+
+/**
+ * Get all available items
+ */
+export const selectAvailableItems = (state: ContentState): UnifiedItem[] =>
+  state.availableItems;
+
+/**
+ * Get selected items
+ */
+export const selectSelectedItems = (state: ContentState): SelectedItem[] =>
+  state.selectedItems;
+
+/**
+ * Get confirmed item IDs
+ */
+export const selectConfirmedItemIds = (state: ContentState): Set<string> =>
+  state.confirmedItemIds;
+
+/**
+ * Get filtered items based on current filters
+ */
+export const selectFilteredItems = (state: ContentState): UnifiedItem[] => {
+  const { availableItems, itemFilters } = state;
+  let filtered = availableItems;
+
+  // Filter by tier (only for weapons/armor)
+  if (itemFilters.tier !== undefined) {
+    filtered = filtered.filter((item) => {
+      if (item.category === 'weapon') {
+        return item.data.tier === itemFilters.tier;
+      }
+      if (item.category === 'armor') {
+        return item.data.tier === itemFilters.tier;
+      }
+      // Items and consumables don't have tiers, include them all
+      return true;
+    });
+  }
+
+  // Filter by category
+  if (itemFilters.category) {
+    filtered = filtered.filter((item) => item.category === itemFilters.category);
+  }
+
+  // Filter by search term
+  if (itemFilters.searchTerm) {
+    const term = itemFilters.searchTerm.toLowerCase();
+    filtered = filtered.filter((item) => {
+      if (item.data.name.toLowerCase().includes(term)) return true;
+      // Check description for items and consumables
+      if ((item.category === 'item' || item.category === 'consumable') &&
+          item.data.description?.toLowerCase().includes(term)) {
+        return true;
+      }
+      // Check weapon category for weapons
+      if (item.category === 'weapon' &&
+          item.data.weapon_category?.toLowerCase().includes(term)) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  return filtered;
+};
+
+/**
+ * Get count of selected items
+ */
+export const selectSelectedItemCount = (state: ContentState): number =>
+  state.selectedItems.reduce((sum, si) => sum + si.quantity, 0);
+
+/**
+ * Get count of confirmed items
+ */
+export const selectConfirmedItemCount = (state: ContentState): number =>
+  state.confirmedItemIds.size;
+
+/**
+ * Check if all selected items are confirmed
+ */
+export const selectAllItemsConfirmed = (state: ContentState): boolean =>
+  state.selectedItems.length > 0 &&
+  state.confirmedItemIds.size === state.selectedItems.length;
+
+/**
+ * Get item loading/error status
+ */
+export const selectItemStatus = (
+  state: ContentState
+): { loading: boolean; error: string | null } => ({
+  loading: state.itemLoading,
+  error: state.itemError,
+});
+
+/**
+ * Check if user can proceed to echoes phase
+ */
+export const selectCanProceedToEchoes = (state: ContentState): boolean =>
+  state.selectedItems.length > 0 &&
+  state.confirmedItemIds.size === state.selectedItems.length;
+
+/**
+ * Get item summary for display
+ */
+export const selectItemSummary = (
+  state: ContentState
+): { total: number; selected: number; confirmed: number; pending: number } => ({
+  total: state.availableItems.length,
+  selected: state.selectedItems.length,
+  confirmed: state.confirmedItemIds.size,
+  pending: state.selectedItems.length - state.confirmedItemIds.size,
+});
+
+/**
+ * Get available item categories for filtering
+ */
+export const selectAvailableItemCategories = (state: ContentState): ItemCategory[] =>
+  state.availableItemCategories;
+
+/**
+ * Get current item filters
+ */
+export const selectItemFilters = (state: ContentState): ItemFilterOptions =>
+  state.itemFilters;
+
+/**
+ * Check if an item is selected
+ */
+export const selectIsItemSelected = (
+  state: ContentState,
+  itemName: string,
+  category: ItemCategory
+): boolean =>
+  state.selectedItems.some(
+    (si) => si.item.data.name === itemName && si.item.category === category
+  );
+
+/**
+ * Get selected item by name and category
+ */
+export const selectSelectedItemByKey = (
+  state: ContentState,
+  itemName: string,
+  category: ItemCategory
+): SelectedItem | undefined =>
+  state.selectedItems.find(
+    (si) => si.item.data.name === itemName && si.item.category === category
+  );

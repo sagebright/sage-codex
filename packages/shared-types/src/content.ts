@@ -8,7 +8,7 @@
  * - NPCs (compiled characters)
  */
 
-import type { DaggerheartFrame } from './database.js';
+import type { DaggerheartFrame, DaggerheartAdversary } from './database.js';
 
 // =============================================================================
 // Frame Types
@@ -1149,4 +1149,454 @@ export interface CompileNPCsResponse {
   npcs?: NPC[];
   isComplete: boolean;
   followUpQuestion?: string;
+}
+
+// =============================================================================
+// Adversary Types (Phase 4.1)
+// =============================================================================
+
+/**
+ * A selected adversary for the adventure with assignment metadata
+ */
+export interface SelectedAdversary {
+  /** The adversary from the database */
+  adversary: DaggerheartAdversary;
+  /** Number of this adversary to include */
+  quantity: number;
+  /** Scene IDs where this adversary appears (optional) */
+  assignedScenes?: string[];
+  /** GM notes for this adversary */
+  notes?: string;
+}
+
+/**
+ * Filter options for adversary queries
+ */
+export interface AdversaryFilterOptions {
+  /** Filter by tier (1-4) */
+  tier?: number;
+  /** Filter by type (beast, humanoid, undead, etc.) */
+  type?: string;
+  /** Search by name */
+  searchTerm?: string;
+}
+
+// =============================================================================
+// WebSocket Events for Adversary
+// =============================================================================
+
+/**
+ * WebSocket event types for adversary selection (client -> server)
+ */
+export type AdversaryClientEventType =
+  | 'adversary:load'
+  | 'adversary:select'
+  | 'adversary:deselect'
+  | 'adversary:update_quantity'
+  | 'adversary:confirm';
+
+/**
+ * WebSocket event types for adversary selection (server -> client)
+ */
+export type AdversaryServerEventType =
+  | 'adversary:loaded'
+  | 'adversary:selected'
+  | 'adversary:deselected'
+  | 'adversary:confirmed'
+  | 'adversary:error';
+
+// -----------------------------------------------------------------------------
+// Client Events (Frontend -> Bridge)
+// -----------------------------------------------------------------------------
+
+/**
+ * User requests adversaries to be loaded
+ */
+export interface AdversaryLoadEvent {
+  type: 'adversary:load';
+  payload: {
+    filters: AdversaryFilterOptions;
+  };
+}
+
+/**
+ * User selects an adversary
+ */
+export interface AdversarySelectEvent {
+  type: 'adversary:select';
+  payload: {
+    adversaryId: string;
+    quantity?: number;
+  };
+}
+
+/**
+ * User deselects an adversary
+ */
+export interface AdversaryDeselectEvent {
+  type: 'adversary:deselect';
+  payload: {
+    adversaryId: string;
+  };
+}
+
+/**
+ * User updates quantity for selected adversary
+ */
+export interface AdversaryUpdateQuantityEvent {
+  type: 'adversary:update_quantity';
+  payload: {
+    adversaryId: string;
+    quantity: number;
+  };
+}
+
+/**
+ * User confirms all selected adversaries
+ */
+export interface AdversaryConfirmEvent {
+  type: 'adversary:confirm';
+  payload: {
+    selections: SelectedAdversary[];
+  };
+}
+
+/**
+ * Union of all adversary client events
+ */
+export type AdversaryClientEvent =
+  | AdversaryLoadEvent
+  | AdversarySelectEvent
+  | AdversaryDeselectEvent
+  | AdversaryUpdateQuantityEvent
+  | AdversaryConfirmEvent;
+
+// -----------------------------------------------------------------------------
+// Server Events (Bridge -> Frontend)
+// -----------------------------------------------------------------------------
+
+/**
+ * Adversaries loaded from database
+ */
+export interface AdversaryLoadedEvent {
+  type: 'adversary:loaded';
+  payload: {
+    adversaries: DaggerheartAdversary[];
+    availableTypes: string[];
+  };
+}
+
+/**
+ * Adversary selected
+ */
+export interface AdversarySelectedEvent {
+  type: 'adversary:selected';
+  payload: {
+    adversaryId: string;
+    quantity: number;
+  };
+}
+
+/**
+ * Adversary deselected
+ */
+export interface AdversaryDeselectedEvent {
+  type: 'adversary:deselected';
+  payload: {
+    adversaryId: string;
+  };
+}
+
+/**
+ * Adversaries confirmed
+ */
+export interface AdversaryConfirmedEvent {
+  type: 'adversary:confirmed';
+  payload: {
+    selections: SelectedAdversary[];
+  };
+}
+
+/**
+ * Adversary error
+ */
+export interface AdversaryErrorEvent {
+  type: 'adversary:error';
+  payload: {
+    code: string;
+    message: string;
+  };
+}
+
+/**
+ * Union of all adversary server events
+ */
+export type AdversaryServerEvent =
+  | AdversaryLoadedEvent
+  | AdversarySelectedEvent
+  | AdversaryDeselectedEvent
+  | AdversaryConfirmedEvent
+  | AdversaryErrorEvent;
+
+// =============================================================================
+// Adversary API Types
+// =============================================================================
+
+/**
+ * Request to get adversaries
+ */
+export interface GetAdversariesRequest {
+  tier?: number;
+  type?: string;
+  limit?: number;
+}
+
+/**
+ * Response with adversaries list
+ */
+export interface GetAdversariesResponse {
+  adversaries: DaggerheartAdversary[];
+  availableTypes: string[];
+}
+
+/**
+ * Response with adversary types
+ */
+export interface GetAdversaryTypesResponse {
+  types: string[];
+}
+
+// =============================================================================
+// Item Types (Phase 4.2)
+// =============================================================================
+
+import type {
+  DaggerheartItem,
+  DaggerheartWeapon,
+  DaggerheartArmor,
+  DaggerheartConsumable,
+} from './database.js';
+
+/**
+ * Unified item category for display
+ */
+export type ItemCategory = 'item' | 'weapon' | 'armor' | 'consumable';
+
+/**
+ * Unified item type combining all item categories
+ * Uses discriminated union pattern for type safety
+ */
+export type UnifiedItem =
+  | { category: 'item'; data: DaggerheartItem }
+  | { category: 'weapon'; data: DaggerheartWeapon }
+  | { category: 'armor'; data: DaggerheartArmor }
+  | { category: 'consumable'; data: DaggerheartConsumable };
+
+/**
+ * A selected item for the adventure with assignment metadata
+ */
+export interface SelectedItem {
+  /** The unified item */
+  item: UnifiedItem;
+  /** Number of this item to include */
+  quantity: number;
+  /** Scene IDs where this item appears (optional) */
+  assignedScenes?: string[];
+  /** GM notes for this item */
+  notes?: string;
+}
+
+/**
+ * Filter options for item queries
+ */
+export interface ItemFilterOptions {
+  /** Filter by tier (1-4) - only applies to weapons/armor */
+  tier?: number;
+  /** Filter by category */
+  category?: ItemCategory;
+  /** Search by name */
+  searchTerm?: string;
+}
+
+// =============================================================================
+// WebSocket Events for Item
+// =============================================================================
+
+/**
+ * WebSocket event types for item selection (client -> server)
+ */
+export type ItemClientEventType =
+  | 'item:load'
+  | 'item:select'
+  | 'item:deselect'
+  | 'item:update_quantity'
+  | 'item:confirm';
+
+/**
+ * WebSocket event types for item selection (server -> client)
+ */
+export type ItemServerEventType =
+  | 'item:loaded'
+  | 'item:selected'
+  | 'item:deselected'
+  | 'item:confirmed'
+  | 'item:error';
+
+// -----------------------------------------------------------------------------
+// Client Events (Frontend -> Bridge)
+// -----------------------------------------------------------------------------
+
+/**
+ * User requests items to be loaded
+ */
+export interface ItemLoadEvent {
+  type: 'item:load';
+  payload: {
+    filters: ItemFilterOptions;
+  };
+}
+
+/**
+ * User selects an item
+ */
+export interface ItemSelectEvent {
+  type: 'item:select';
+  payload: {
+    itemId: string;
+    category: ItemCategory;
+    quantity?: number;
+  };
+}
+
+/**
+ * User deselects an item
+ */
+export interface ItemDeselectEvent {
+  type: 'item:deselect';
+  payload: {
+    itemId: string;
+    category: ItemCategory;
+  };
+}
+
+/**
+ * User updates quantity for selected item
+ */
+export interface ItemUpdateQuantityEvent {
+  type: 'item:update_quantity';
+  payload: {
+    itemId: string;
+    category: ItemCategory;
+    quantity: number;
+  };
+}
+
+/**
+ * User confirms all selected items
+ */
+export interface ItemConfirmEvent {
+  type: 'item:confirm';
+  payload: {
+    selections: SelectedItem[];
+  };
+}
+
+/**
+ * Union of all item client events
+ */
+export type ItemClientEvent =
+  | ItemLoadEvent
+  | ItemSelectEvent
+  | ItemDeselectEvent
+  | ItemUpdateQuantityEvent
+  | ItemConfirmEvent;
+
+// -----------------------------------------------------------------------------
+// Server Events (Bridge -> Frontend)
+// -----------------------------------------------------------------------------
+
+/**
+ * Items loaded from database
+ */
+export interface ItemLoadedEvent {
+  type: 'item:loaded';
+  payload: {
+    items: UnifiedItem[];
+    availableCategories: ItemCategory[];
+  };
+}
+
+/**
+ * Item selected
+ */
+export interface ItemSelectedEvent {
+  type: 'item:selected';
+  payload: {
+    itemId: string;
+    category: ItemCategory;
+    quantity: number;
+  };
+}
+
+/**
+ * Item deselected
+ */
+export interface ItemDeselectedEvent {
+  type: 'item:deselected';
+  payload: {
+    itemId: string;
+    category: ItemCategory;
+  };
+}
+
+/**
+ * Items confirmed
+ */
+export interface ItemConfirmedEvent {
+  type: 'item:confirmed';
+  payload: {
+    selections: SelectedItem[];
+  };
+}
+
+/**
+ * Item error
+ */
+export interface ItemErrorEvent {
+  type: 'item:error';
+  payload: {
+    code: string;
+    message: string;
+  };
+}
+
+/**
+ * Union of all item server events
+ */
+export type ItemServerEvent =
+  | ItemLoadedEvent
+  | ItemSelectedEvent
+  | ItemDeselectedEvent
+  | ItemConfirmedEvent
+  | ItemErrorEvent;
+
+// =============================================================================
+// Item API Types
+// =============================================================================
+
+/**
+ * Request to get items
+ */
+export interface GetItemsRequest {
+  tier?: number;
+  category?: ItemCategory;
+  limit?: number;
+}
+
+/**
+ * Response with unified items list
+ */
+export interface GetItemsResponse {
+  items: UnifiedItem[];
+  availableCategories: ItemCategory[];
 }

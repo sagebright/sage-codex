@@ -39,11 +39,32 @@ import type {
   NPCClientEvent,
   NPCServerEvent,
   NPC,
+  // Adversary types
+  AdversaryLoadEvent,
+  AdversarySelectEvent,
+  AdversaryDeselectEvent,
+  AdversaryUpdateQuantityEvent,
+  AdversaryConfirmEvent,
+  AdversaryClientEvent,
+  AdversaryServerEvent,
+  SelectedAdversary,
+  DaggerheartAdversary,
+  // Item types
+  ItemLoadEvent,
+  ItemSelectEvent,
+  ItemDeselectEvent,
+  ItemUpdateQuantityEvent,
+  ItemConfirmEvent,
+  ItemClientEvent,
+  ItemServerEvent,
+  SelectedItem,
+  UnifiedItem,
+  ItemCategory,
 } from '@dagger-app/shared-types';
 
-// Combined event types that include dial, outline, scene, and NPC events
-type AllClientEvents = ClientEvent | OutlineClientEvent | SceneClientEvent | NPCClientEvent;
-type AllServerEvents = ServerEvent | OutlineServerEvent | SceneServerEvent | NPCServerEvent;
+// Combined event types that include dial, outline, scene, NPC, adversary, and item events
+type AllClientEvents = ClientEvent | OutlineClientEvent | SceneClientEvent | NPCClientEvent | AdversaryClientEvent | ItemClientEvent;
+type AllServerEvents = ServerEvent | OutlineServerEvent | SceneServerEvent | NPCServerEvent | AdversaryServerEvent | ItemServerEvent;
 
 // =============================================================================
 // Event Handlers Configuration
@@ -70,6 +91,18 @@ export interface ClientEventHandlers {
   onNPCCompile?: (payload: NPCCompileEvent['payload']) => Promise<void> | void;
   onNPCRefine?: (payload: NPCRefineEvent['payload']) => Promise<void> | void;
   onNPCConfirm?: (payload: NPCConfirmEvent['payload']) => Promise<void> | void;
+  // Adversary events
+  onAdversaryLoad?: (payload: AdversaryLoadEvent['payload']) => Promise<void> | void;
+  onAdversarySelect?: (payload: AdversarySelectEvent['payload']) => Promise<void> | void;
+  onAdversaryDeselect?: (payload: AdversaryDeselectEvent['payload']) => Promise<void> | void;
+  onAdversaryUpdateQuantity?: (payload: AdversaryUpdateQuantityEvent['payload']) => Promise<void> | void;
+  onAdversaryConfirm?: (payload: AdversaryConfirmEvent['payload']) => Promise<void> | void;
+  // Item events
+  onItemLoad?: (payload: ItemLoadEvent['payload']) => Promise<void> | void;
+  onItemSelect?: (payload: ItemSelectEvent['payload']) => Promise<void> | void;
+  onItemDeselect?: (payload: ItemDeselectEvent['payload']) => Promise<void> | void;
+  onItemUpdateQuantity?: (payload: ItemUpdateQuantityEvent['payload']) => Promise<void> | void;
+  onItemConfirm?: (payload: ItemConfirmEvent['payload']) => Promise<void> | void;
 }
 
 // =============================================================================
@@ -436,6 +469,127 @@ export function emitNPCError(ws: WebSocket, code: string, message: string): void
 }
 
 // =============================================================================
+// Adversary Event Emitters (Phase 4.1)
+// =============================================================================
+
+/**
+ * Emit adversaries loaded from database
+ */
+export function emitAdversaryLoaded(
+  ws: WebSocket,
+  adversaries: DaggerheartAdversary[],
+  availableTypes: string[]
+): void {
+  emitToClient(ws, {
+    type: 'adversary:loaded',
+    payload: { adversaries, availableTypes },
+  });
+}
+
+/**
+ * Emit adversary selected
+ */
+export function emitAdversarySelected(ws: WebSocket, adversaryId: string, quantity: number): void {
+  emitToClient(ws, {
+    type: 'adversary:selected',
+    payload: { adversaryId, quantity },
+  });
+}
+
+/**
+ * Emit adversary deselected
+ */
+export function emitAdversaryDeselected(ws: WebSocket, adversaryId: string): void {
+  emitToClient(ws, {
+    type: 'adversary:deselected',
+    payload: { adversaryId },
+  });
+}
+
+/**
+ * Emit adversaries confirmed
+ */
+export function emitAdversaryConfirmed(ws: WebSocket, selections: SelectedAdversary[]): void {
+  emitToClient(ws, {
+    type: 'adversary:confirmed',
+    payload: { selections },
+  });
+}
+
+/**
+ * Emit adversary error
+ */
+export function emitAdversaryError(ws: WebSocket, code: string, message: string): void {
+  emitToClient(ws, {
+    type: 'adversary:error',
+    payload: { code, message },
+  });
+}
+
+// =============================================================================
+// Item Event Emitters (Phase 4.2)
+// =============================================================================
+
+/**
+ * Emit items loaded from database
+ */
+export function emitItemLoaded(
+  ws: WebSocket,
+  items: UnifiedItem[],
+  availableCategories: ItemCategory[]
+): void {
+  emitToClient(ws, {
+    type: 'item:loaded',
+    payload: { items, availableCategories },
+  });
+}
+
+/**
+ * Emit item selected
+ */
+export function emitItemSelected(
+  ws: WebSocket,
+  itemId: string,
+  category: ItemCategory,
+  quantity: number
+): void {
+  emitToClient(ws, {
+    type: 'item:selected',
+    payload: { itemId, category, quantity },
+  });
+}
+
+/**
+ * Emit item deselected
+ */
+export function emitItemDeselected(ws: WebSocket, itemId: string, category: ItemCategory): void {
+  emitToClient(ws, {
+    type: 'item:deselected',
+    payload: { itemId, category },
+  });
+}
+
+/**
+ * Emit items confirmed
+ */
+export function emitItemConfirmed(ws: WebSocket, selections: SelectedItem[]): void {
+  emitToClient(ws, {
+    type: 'item:confirmed',
+    payload: { selections },
+  });
+}
+
+/**
+ * Emit item error
+ */
+export function emitItemError(ws: WebSocket, code: string, message: string): void {
+  emitToClient(ws, {
+    type: 'item:error',
+    payload: { code, message },
+  });
+}
+
+// =============================================================================
 // Client Event Handler
 // =============================================================================
 
@@ -535,6 +689,68 @@ export async function handleClientEvent(
       }
       break;
 
+    // Adversary events
+    case 'adversary:load':
+      if (handlers.onAdversaryLoad) {
+        await handlers.onAdversaryLoad((event as AdversaryLoadEvent).payload);
+      }
+      break;
+
+    case 'adversary:select':
+      if (handlers.onAdversarySelect) {
+        await handlers.onAdversarySelect((event as AdversarySelectEvent).payload);
+      }
+      break;
+
+    case 'adversary:deselect':
+      if (handlers.onAdversaryDeselect) {
+        await handlers.onAdversaryDeselect((event as AdversaryDeselectEvent).payload);
+      }
+      break;
+
+    case 'adversary:update_quantity':
+      if (handlers.onAdversaryUpdateQuantity) {
+        await handlers.onAdversaryUpdateQuantity((event as AdversaryUpdateQuantityEvent).payload);
+      }
+      break;
+
+    case 'adversary:confirm':
+      if (handlers.onAdversaryConfirm) {
+        await handlers.onAdversaryConfirm((event as AdversaryConfirmEvent).payload);
+      }
+      break;
+
+    // Item events
+    case 'item:load':
+      if (handlers.onItemLoad) {
+        await handlers.onItemLoad((event as ItemLoadEvent).payload);
+      }
+      break;
+
+    case 'item:select':
+      if (handlers.onItemSelect) {
+        await handlers.onItemSelect((event as ItemSelectEvent).payload);
+      }
+      break;
+
+    case 'item:deselect':
+      if (handlers.onItemDeselect) {
+        await handlers.onItemDeselect((event as ItemDeselectEvent).payload);
+      }
+      break;
+
+    case 'item:update_quantity':
+      if (handlers.onItemUpdateQuantity) {
+        await handlers.onItemUpdateQuantity((event as ItemUpdateQuantityEvent).payload);
+      }
+      break;
+
+    case 'item:confirm':
+      if (handlers.onItemConfirm) {
+        await handlers.onItemConfirm((event as ItemConfirmEvent).payload);
+      }
+      break;
+
     default:
       emitError(ws, 'UNKNOWN_EVENT', `Unknown event type: ${(event as { type: string }).type}`);
   }
@@ -571,6 +787,18 @@ export function parseClientEvent(data: Buffer | string): AllClientEvents | null 
       'npc:compile',
       'npc:refine',
       'npc:confirm',
+      // Adversary events
+      'adversary:load',
+      'adversary:select',
+      'adversary:deselect',
+      'adversary:update_quantity',
+      'adversary:confirm',
+      // Item events
+      'item:load',
+      'item:select',
+      'item:deselect',
+      'item:update_quantity',
+      'item:confirm',
     ];
     if (!validTypes.includes(parsed.type)) {
       return null;
