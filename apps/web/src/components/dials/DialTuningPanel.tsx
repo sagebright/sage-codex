@@ -248,6 +248,7 @@ export function DialTuningPanel({
           description="Adventure tone from grim to whimsical"
           value={dials.tone ? dials.tone.charAt(0).toUpperCase() + dials.tone.slice(1) : 'Not set'}
           isSet={dials.confirmedDials.has('tone')}
+          isConceptual
         >
           <ToneSelect
             value={dials.tone || 'balanced'}
@@ -263,6 +264,7 @@ export function DialTuningPanel({
           description="Priority of Combat, Exploration, Social"
           value={formatPillarBalance(dials.pillarBalance)}
           isSet={dials.confirmedDials.has('pillarBalance')}
+          isConceptual
         >
           <PillarBalanceSelect
             value={
@@ -284,6 +286,7 @@ export function DialTuningPanel({
           description="How dangerous is the adventure?"
           value={dials.lethality ? dials.lethality.charAt(0).toUpperCase() + dials.lethality.slice(1) : 'Not set'}
           isSet={dials.confirmedDials.has('lethality')}
+          isConceptual
         >
           <LethalitySelect
             value={dials.lethality || 'standard'}
@@ -299,6 +302,7 @@ export function DialTuningPanel({
           description="Number of named NPCs"
           value={dials.npcDensity ? dials.npcDensity.charAt(0).toUpperCase() + dials.npcDensity.slice(1) : 'Not set'}
           isSet={dials.confirmedDials.has('npcDensity')}
+          isConceptual
         >
           <NPCDensitySelect
             value={dials.npcDensity || 'moderate'}
@@ -314,6 +318,7 @@ export function DialTuningPanel({
           description="Primary emotional journey"
           value={dials.emotionalRegister ? dials.emotionalRegister.charAt(0).toUpperCase() + dials.emotionalRegister.slice(1) : 'Not set'}
           isSet={dials.confirmedDials.has('emotionalRegister')}
+          isConceptual
         >
           <EmotionalRegisterSelect
             value={dials.emotionalRegister || 'epic'}
@@ -332,6 +337,7 @@ export function DialTuningPanel({
           description="Story themes (select up to 3)"
           value={formatThemes(dials.themes)}
           isSet={dials.confirmedDials.has('themes')}
+          isConceptual
           className="lg:col-span-2"
         >
           <MultiSelectChips

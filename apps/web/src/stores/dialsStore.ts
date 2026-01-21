@@ -35,6 +35,21 @@ import {
 } from '@dagger-app/shared-types';
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+/**
+ * Concrete dial IDs that should be pre-confirmed on initialization.
+ * These dials have meaningful defaults (4 players, tier 1, 4 scenes, 3-4 hours).
+ */
+export const DEFAULT_CONFIRMED_DIALS: DialId[] = [
+  'partySize',
+  'partyTier',
+  'sceneCount',
+  'sessionLength',
+];
+
+// =============================================================================
 // Types
 // =============================================================================
 
@@ -265,7 +280,7 @@ function migrateEmotionalRegisterValue(oldValue: string): string | null {
 const initialDialValues = {
   ...DEFAULT_CONCRETE_DIALS,
   ...DEFAULT_CONCEPTUAL_DIALS,
-  confirmedDials: new Set<DialId>(),
+  confirmedDials: new Set<DialId>(DEFAULT_CONFIRMED_DIALS),
 };
 
 // =============================================================================
@@ -320,7 +335,7 @@ export const useDialsStore = create<DialsState>()(
             {
               ...DEFAULT_CONCRETE_DIALS,
               ...DEFAULT_CONCEPTUAL_DIALS,
-              confirmedDials: new Set<DialId>(),
+              confirmedDials: new Set<DialId>(DEFAULT_CONFIRMED_DIALS),
             },
             false,
             'resetDials'

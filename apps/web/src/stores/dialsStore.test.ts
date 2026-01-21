@@ -32,6 +32,10 @@ import {
   DEFAULT_CONCEPTUAL_DIALS,
   DIAL_CONSTRAINTS,
 } from '@dagger-app/shared-types';
+import { DEFAULT_CONFIRMED_DIALS } from './dialsStore';
+
+// Number of concrete dials that are pre-confirmed on initialization
+const PRE_CONFIRMED_COUNT = DEFAULT_CONFIRMED_DIALS.length;
 
 // Storage key used by the store
 const STORAGE_KEY = 'dagger-dials-storage';
@@ -68,9 +72,17 @@ describe('dialsStore', () => {
       expect(state.themes).toEqual(DEFAULT_CONCEPTUAL_DIALS.themes);
     });
 
-    it('starts with no confirmed dials', () => {
+    it('starts with concrete dials pre-confirmed', () => {
       const state = useDialsStore.getState();
-      expect(state.confirmedDials.size).toBe(0);
+      // Concrete dials (partySize, partyTier, sceneCount, sessionLength) are pre-confirmed
+      expect(state.confirmedDials.size).toBe(PRE_CONFIRMED_COUNT);
+      expect(state.confirmedDials.has('partySize')).toBe(true);
+      expect(state.confirmedDials.has('partyTier')).toBe(true);
+      expect(state.confirmedDials.has('sceneCount')).toBe(true);
+      expect(state.confirmedDials.has('sessionLength')).toBe(true);
+      // Conceptual dials are not pre-confirmed
+      expect(state.confirmedDials.has('tone')).toBe(false);
+      expect(state.confirmedDials.has('pillarBalance')).toBe(false);
     });
   });
 
@@ -283,24 +295,25 @@ describe('dialsStore', () => {
       expect(state.confirmedDials.has('partySize')).toBe(false);
     });
 
-    it('can confirm multiple dials', () => {
+    it('can confirm additional dials beyond pre-confirmed', () => {
+      // partySize and partyTier are already pre-confirmed, add tone
       storeAction(() => {
-        useDialsStore.getState().confirmDial('partySize');
-        useDialsStore.getState().confirmDial('partyTier');
         useDialsStore.getState().confirmDial('tone');
       });
 
       const state = useDialsStore.getState();
-      expect(state.confirmedDials.size).toBe(3);
+      // 4 pre-confirmed + 1 newly confirmed = 5
+      expect(state.confirmedDials.size).toBe(PRE_CONFIRMED_COUNT + 1);
+      expect(state.confirmedDials.has('tone')).toBe(true);
     });
   });
 
   describe('resetDials', () => {
-    it('resets all dials to defaults', () => {
+    it('resets all dials to defaults with concrete dials pre-confirmed', () => {
       storeAction(() => {
         useDialsStore.getState().setDial('partySize', 5);
         useDialsStore.getState().setDial('tone', 'grim');
-        useDialsStore.getState().confirmDial('partySize');
+        useDialsStore.getState().confirmDial('tone');
       });
 
       storeAction(() => useDialsStore.getState().resetDials());
@@ -308,7 +321,10 @@ describe('dialsStore', () => {
       const state = useDialsStore.getState();
       expect(state.partySize).toBe(DEFAULT_CONCRETE_DIALS.partySize);
       expect(state.tone).toBe(DEFAULT_CONCEPTUAL_DIALS.tone);
-      expect(state.confirmedDials.size).toBe(0);
+      // Reset restores pre-confirmed state for concrete dials
+      expect(state.confirmedDials.size).toBe(PRE_CONFIRMED_COUNT);
+      expect(state.confirmedDials.has('partySize')).toBe(true);
+      expect(state.confirmedDials.has('tone')).toBe(false);
     });
   });
 
@@ -364,67 +380,75 @@ describe('dialsStore', () => {
 
   describe('selectors', () => {
     describe('selectUnconfirmedDials', () => {
-      it('returns all dials when none confirmed', () => {
+      it('returns only conceptual dials when concrete dials are pre-confirmed', () => {
         const state = useDialsStore.getState();
         const unconfirmed = selectUnconfirmedDials(state);
 
-        expect(unconfirmed).toHaveLength(10);
+        // 10 total dials - 4 pre-confirmed concrete dials = 6 unconfirmed
+        expect(unconfirmed).toHaveLength(10 - PRE_CONFIRMED_COUNT);
+        // Concrete dials should not be in unconfirmed list
+        expect(unconfirmed).not.toContain('partySize');
+        expect(unconfirmed).not.toContain('partyTier');
+        expect(unconfirmed).not.toContain('sceneCount');
+        expect(unconfirmed).not.toContain('sessionLength');
+        // Conceptual dials should be unconfirmed
+        expect(unconfirmed).toContain('tone');
+        expect(unconfirmed).toContain('pillarBalance');
       });
 
       it('excludes confirmed dials', () => {
         storeAction(() => {
-          useDialsStore.getState().confirmDial('partySize');
           useDialsStore.getState().confirmDial('tone');
         });
 
         const state = useDialsStore.getState();
         const unconfirmed = selectUnconfirmedDials(state);
 
-        expect(unconfirmed).not.toContain('partySize');
-        expect(unconfirmed).not.toContain('tone');
-        expect(unconfirmed).toHaveLength(8);
+        expect(unconfirmed).not.toContain('partySize'); // pre-confirmed
+        expect(unconfirmed).not.toContain('tone'); // newly confirmed
+        // 10 total - 4 pre-confirmed - 1 newly confirmed = 5
+        expect(unconfirmed).toHaveLength(10 - PRE_CONFIRMED_COUNT - 1);
       });
     });
 
     describe('selectConfirmedCount', () => {
-      it('returns 0 when none confirmed', () => {
+      it('returns pre-confirmed count on initialization', () => {
         const state = useDialsStore.getState();
-        expect(selectConfirmedCount(state)).toBe(0);
+        expect(selectConfirmedCount(state)).toBe(PRE_CONFIRMED_COUNT);
       });
 
-      it('counts confirmed dials', () => {
+      it('counts confirmed dials including pre-confirmed', () => {
         storeAction(() => {
-          useDialsStore.getState().confirmDial('partySize');
-          useDialsStore.getState().confirmDial('partyTier');
+          useDialsStore.getState().confirmDial('tone');
+          useDialsStore.getState().confirmDial('lethality');
         });
 
         const state = useDialsStore.getState();
-        expect(selectConfirmedCount(state)).toBe(2);
+        // 4 pre-confirmed + 2 newly confirmed = 6
+        expect(selectConfirmedCount(state)).toBe(PRE_CONFIRMED_COUNT + 2);
       });
     });
 
     describe('selectCompletionPercentage', () => {
-      it('returns 0% when none confirmed', () => {
+      it('returns 40% on initialization (4 pre-confirmed out of 10)', () => {
         const state = useDialsStore.getState();
-        expect(selectCompletionPercentage(state)).toBe(0);
+        // 4/10 = 40%
+        expect(selectCompletionPercentage(state)).toBe(PRE_CONFIRMED_COUNT * 10);
       });
 
-      it('returns correct percentage', () => {
+      it('returns correct percentage after confirming additional dials', () => {
         storeAction(() => {
-          useDialsStore.getState().confirmDial('partySize');
-          useDialsStore.getState().confirmDial('partyTier');
+          useDialsStore.getState().confirmDial('tone');
+          useDialsStore.getState().confirmDial('lethality');
         });
 
         const state = useDialsStore.getState();
-        expect(selectCompletionPercentage(state)).toBe(20); // 2/10 = 20%
+        // (4 pre-confirmed + 2 newly confirmed) / 10 = 60%
+        expect(selectCompletionPercentage(state)).toBe((PRE_CONFIRMED_COUNT + 2) * 10);
       });
 
       it('returns 100% when all confirmed', () => {
-        const allDials = [
-          'partySize',
-          'partyTier',
-          'sceneCount',
-          'sessionLength',
+        const conceptualDials = [
           'tone',
           'pillarBalance',
           'npcDensity',
@@ -434,7 +458,8 @@ describe('dialsStore', () => {
         ] as const;
 
         storeAction(() => {
-          allDials.forEach((dial) => useDialsStore.getState().confirmDial(dial));
+          // Concrete dials are already pre-confirmed, just confirm conceptual ones
+          conceptualDials.forEach((dial) => useDialsStore.getState().confirmDial(dial));
         });
 
         const state = useDialsStore.getState();
@@ -443,45 +468,47 @@ describe('dialsStore', () => {
     });
 
     describe('selectRequiredDialsComplete', () => {
-      it('returns false when no required dials confirmed', () => {
+      it('returns true on initialization since required dials are pre-confirmed', () => {
         const state = useDialsStore.getState();
-        expect(selectRequiredDialsComplete(state)).toBe(false);
+        // All required (concrete) dials are pre-confirmed
+        expect(selectRequiredDialsComplete(state)).toBe(true);
       });
 
-      it('returns false when some required dials missing', () => {
+      it('returns false when a required dial is unconfirmed', () => {
         storeAction(() => {
-          useDialsStore.getState().confirmDial('partySize');
-          useDialsStore.getState().confirmDial('partyTier');
+          // Unconfirm a required dial
+          useDialsStore.getState().unconfirmDial('partySize');
         });
 
         const state = useDialsStore.getState();
         expect(selectRequiredDialsComplete(state)).toBe(false);
       });
 
-      it('returns true when all required dials confirmed', () => {
-        storeAction(() => {
-          useDialsStore.getState().confirmDial('partySize');
-          useDialsStore.getState().confirmDial('partyTier');
-          useDialsStore.getState().confirmDial('sceneCount');
-          useDialsStore.getState().confirmDial('sessionLength');
-        });
-
+      it('returns true when all required dials are confirmed', () => {
+        // Start fresh - all required dials are already pre-confirmed
         const state = useDialsStore.getState();
         expect(selectRequiredDialsComplete(state)).toBe(true);
       });
     });
 
     describe('selectIsDialConfirmed', () => {
-      it('returns false for unconfirmed dial', () => {
+      it('returns false for unconfirmed conceptual dial', () => {
         const state = useDialsStore.getState();
-        expect(selectIsDialConfirmed(state, 'partySize')).toBe(false);
+        // Conceptual dials are not pre-confirmed
+        expect(selectIsDialConfirmed(state, 'tone')).toBe(false);
+      });
+
+      it('returns true for pre-confirmed concrete dial', () => {
+        const state = useDialsStore.getState();
+        // Concrete dials are pre-confirmed
+        expect(selectIsDialConfirmed(state, 'partySize')).toBe(true);
       });
 
       it('returns true for confirmed dial', () => {
-        storeAction(() => useDialsStore.getState().confirmDial('partySize'));
+        storeAction(() => useDialsStore.getState().confirmDial('tone'));
 
         const state = useDialsStore.getState();
-        expect(selectIsDialConfirmed(state, 'partySize')).toBe(true);
+        expect(selectIsDialConfirmed(state, 'tone')).toBe(true);
       });
     });
 
@@ -534,9 +561,9 @@ describe('dialsStore', () => {
     });
 
     describe('selectDialsSummary', () => {
-      it('returns complete summary object', () => {
+      it('returns complete summary object with pre-confirmed count', () => {
         storeAction(() => {
-          useDialsStore.getState().confirmDial('partySize');
+          useDialsStore.getState().confirmDial('tone');
         });
 
         const state = useDialsStore.getState();
@@ -544,7 +571,8 @@ describe('dialsStore', () => {
 
         expect(summary.concrete).toEqual(selectConcreteDials(state));
         expect(summary.conceptual).toEqual(selectConceptualDials(state));
-        expect(summary.confirmedCount).toBe(1);
+        // 4 pre-confirmed + 1 newly confirmed = 5
+        expect(summary.confirmedCount).toBe(PRE_CONFIRMED_COUNT + 1);
       });
     });
   });

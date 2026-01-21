@@ -18,9 +18,12 @@ import { ChatContainer } from '@/components/chat/ChatContainer';
 
 // Stores
 import { useChatStore } from '@/stores/chatStore';
-import { useDialsStore, selectConfirmedCount, selectCompletionPercentage } from '@/stores/dialsStore';
+import { useDialsStore, selectConfirmedCount, selectCompletionPercentage, DEFAULT_CONFIRMED_DIALS } from '@/stores/dialsStore';
 import { useAdventureStore } from '@/stores/adventureStore';
 import { resetAllStores, clearAllStorageData } from '@/stores';
+
+// Number of concrete dials that are pre-confirmed on initialization
+const PRE_CONFIRMED_COUNT = DEFAULT_CONFIRMED_DIALS.length;
 
 // Types
 import type { DialId } from '@dagger-app/shared-types';
@@ -210,29 +213,24 @@ describe('Phase 2 Integration Tests', () => {
 
   describe('2. Dial Interactions', () => {
     describe('dial confirmation', () => {
-      it('updates confirmed count when dial is confirmed', () => {
-        // Set a dial value
-        storeAction(() => {
-          useDialsStore.getState().setDial('partySize', 4);
-          useDialsStore.getState().confirmDial('partySize');
-        });
-
+      it('has concrete dials pre-confirmed on initialization', () => {
+        // Concrete dials are already pre-confirmed
         const state = useDialsStore.getState();
-        expect(selectConfirmedCount(state)).toBe(1);
+        expect(selectConfirmedCount(state)).toBe(PRE_CONFIRMED_COUNT);
       });
 
-      it('tracks completion percentage across all dials', () => {
-        // Confirm multiple dials
+      it('tracks completion percentage with pre-confirmed dials', () => {
+        // Confirm additional conceptual dials
         storeAction(() => {
-          useDialsStore.getState().setDial('partySize', 4);
-          useDialsStore.getState().confirmDial('partySize');
-          useDialsStore.getState().setDial('partyTier', 2);
-          useDialsStore.getState().confirmDial('partyTier');
+          useDialsStore.getState().setDial('tone', 'grim');
+          useDialsStore.getState().confirmDial('tone');
+          useDialsStore.getState().setDial('lethality', 'brutal');
+          useDialsStore.getState().confirmDial('lethality');
         });
 
         const state = useDialsStore.getState();
-        // 2 out of 10 dials confirmed = 20%
-        expect(selectCompletionPercentage(state)).toBe(20);
+        // 4 pre-confirmed + 2 newly confirmed = 6 out of 10 = 60%
+        expect(selectCompletionPercentage(state)).toBe((PRE_CONFIRMED_COUNT + 2) * 10);
       });
     });
 
@@ -370,13 +368,10 @@ describe('Phase 2 Integration Tests', () => {
     });
 
     describe('complete dial tuning flow', () => {
-      it('tracks progress as dials are confirmed', () => {
-        // Set each dial and confirm it, verifying progress along the way
-        const dialActions = [
-          () => useDialsStore.getState().setDial('partySize', 4),
-          () => useDialsStore.getState().setDial('partyTier', 2),
-          () => useDialsStore.getState().setDial('sceneCount', 4),
-          () => useDialsStore.getState().setDial('sessionLength', '3-4 hours'),
+      it('tracks progress as conceptual dials are confirmed', () => {
+        // Concrete dials are already pre-confirmed (4/10 = 40%)
+        // Test confirming conceptual dials progressively
+        const conceptualDialActions = [
           () => useDialsStore.getState().setDial('tone', 'grim'),
           () => useDialsStore.getState().setDial('pillarBalance', { primary: 'exploration', secondary: 'combat', tertiary: 'social' }),
           () => useDialsStore.getState().setDial('npcDensity', 'moderate'),
@@ -385,20 +380,20 @@ describe('Phase 2 Integration Tests', () => {
           () => useDialsStore.getState().setDial('themes', ['redemption', 'found-family'] as const),
         ];
 
-        const dialIds: DialId[] = [
-          'partySize', 'partyTier', 'sceneCount', 'sessionLength',
+        const conceptualDialIds: DialId[] = [
           'tone', 'pillarBalance', 'npcDensity',
           'lethality', 'emotionalRegister', 'themes'
         ];
 
-        dialActions.forEach((setAction, index) => {
+        conceptualDialActions.forEach((setAction, index) => {
           storeAction(() => {
             setAction();
-            useDialsStore.getState().confirmDial(dialIds[index]);
+            useDialsStore.getState().confirmDial(conceptualDialIds[index]);
           });
 
           const state = useDialsStore.getState();
-          const expectedPercentage = ((index + 1) / 10) * 100;
+          // 4 pre-confirmed + (index + 1) newly confirmed
+          const expectedPercentage = ((PRE_CONFIRMED_COUNT + index + 1) / 10) * 100;
           expect(selectCompletionPercentage(state)).toBe(expectedPercentage);
         });
 
@@ -529,14 +524,14 @@ describe('Phase 2 Integration Tests', () => {
     });
 
     describe('resetAllStores', () => {
-      it('resets all store state to initial values', () => {
+      it('resets all store state to initial values with pre-confirmed dials', () => {
         // Set up state
         // Note: initSession clears chat messages, so we add the message after
         storeAction(() => {
           useAdventureStore.getState().initSession('Test');
           useChatStore.getState().addMessage({ role: 'user', content: 'Test' });
           useDialsStore.getState().setDial('partySize', 5);
-          useDialsStore.getState().confirmDial('partySize');
+          useDialsStore.getState().confirmDial('tone'); // Confirm a conceptual dial
         });
 
         // Reset
@@ -545,7 +540,8 @@ describe('Phase 2 Integration Tests', () => {
         // Verify reset
         expect(useChatStore.getState().messages).toEqual([]);
         expect(useDialsStore.getState().partySize).toBe(4); // Default
-        expect(selectConfirmedCount(useDialsStore.getState())).toBe(0);
+        // After reset, only concrete dials are pre-confirmed (not tone)
+        expect(selectConfirmedCount(useDialsStore.getState())).toBe(PRE_CONFIRMED_COUNT);
         expect(useAdventureStore.getState().sessionId).toBeNull();
       });
     });

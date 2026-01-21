@@ -28,6 +28,8 @@ export interface DialCardProps {
   isRequired?: boolean;
   /** Has user set a value (vs default) */
   isSet?: boolean;
+  /** Is this a conceptual (optional) dial? Used for opacity indicator */
+  isConceptual?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
@@ -39,15 +41,22 @@ export function DialCard({
   children,
   isRequired = false,
   isSet = false,
+  isConceptual = false,
   className = '',
 }: DialCardProps) {
+  // Unconfirmed conceptual dials show at reduced opacity
+  const shouldShowReducedOpacity = isConceptual && !isSet;
+
   return (
     <div
       data-testid="dial-card"
       data-set={isSet ? 'true' : 'false'}
+      data-conceptual={isConceptual ? 'true' : 'false'}
       className={`
         w-full flex flex-col gap-2 p-4 rounded-fantasy border
         shadow-fantasy
+        transition-opacity duration-300 ease-in-out
+        ${shouldShowReducedOpacity ? 'opacity-60' : 'opacity-100'}
         ${
           isSet
             ? 'border-gold-400 bg-gold-50/30 dark:border-gold-600 dark:bg-gold-900/10'
