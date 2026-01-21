@@ -4,19 +4,22 @@
  * Main panel for frame selection phase.
  * Shows existing frames from Supabase with option to create custom.
  * Includes search/filter, frame cards, and selected frame details.
+ * Shows name suggestion banner after frame confirmation if adventure is unnamed.
  * Fantasy-themed styling.
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { DaggerheartFrame, SelectedFrame } from '@dagger-app/shared-types';
 import { isCustomFrame } from '@dagger-app/shared-types';
 import { FrameCard } from './FrameCard';
+import { NameSuggestionBanner } from '../adventure';
 import {
   useContentStore,
   selectHasSelectedFrame,
   selectIsFrameConfirmed,
   selectCanProceedToOutline,
 } from '../../stores/contentStore';
+import { useAdventureStore } from '../../stores/adventureStore';
 
 export interface FramePanelProps {
   /** Callback when user wants to create custom frame (opens chat) */
@@ -27,6 +30,18 @@ export interface FramePanelProps {
   className?: string;
 }
 
+/** Generates a suggested adventure name from frame name and themes */
+function generateNameSuggestion(frameName: string, themes?: string[]): string {
+  // Simple name generation based on frame and themes
+  if (themes && themes.length > 0) {
+    // Pick a random theme to incorporate
+    const theme = themes[0];
+    const themeWord = theme.charAt(0).toUpperCase() + theme.slice(1);
+    return `The ${themeWord} of ${frameName}`;
+  }
+  return `Adventures in ${frameName}`;
+}
+
 export function FramePanel({
   onCreateCustom,
   onContinueToOutline,
@@ -34,6 +49,12 @@ export function FramePanel({
 }: FramePanelProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFrameId, setExpandedFrameId] = useState<string | null>(null);
+  const [showNameSuggestion, setShowNameSuggestion] = useState(false);
+  const [nameSuggestionDismissed, setNameSuggestionDismissed] = useState(false);
+
+  // Adventure store state
+  const adventureName = useAdventureStore((state) => state.adventureName);
+  const setAdventureName = useAdventureStore((state) => state.setAdventureName);
 
   // Store state
   const availableFrames = useContentStore((state) => state.availableFrames);
@@ -48,6 +69,33 @@ export function FramePanel({
   const selectFrame = useContentStore((state) => state.selectFrame);
   const confirmFrame = useContentStore((state) => state.confirmFrame);
   const clearFrame = useContentStore((state) => state.clearFrame);
+
+  // Show name suggestion after frame confirmation if adventure is unnamed
+  useEffect(() => {
+    const isUnnamed = !adventureName || adventureName.trim() === '';
+    if (isFrameConfirmed && isUnnamed && !nameSuggestionDismissed) {
+      setShowNameSuggestion(true);
+    } else {
+      setShowNameSuggestion(false);
+    }
+  }, [isFrameConfirmed, adventureName, nameSuggestionDismissed]);
+
+  // Generate suggested name based on selected frame
+  const suggestedName = useMemo(() => {
+    if (!selectedFrame) return '';
+    return generateNameSuggestion(selectedFrame.name, selectedFrame.themes ?? undefined);
+  }, [selectedFrame]);
+
+  // Name suggestion handlers
+  const handleAcceptName = useCallback((name: string) => {
+    setAdventureName(name);
+    setShowNameSuggestion(false);
+  }, [setAdventureName]);
+
+  const handleDismissNameSuggestion = useCallback(() => {
+    setShowNameSuggestion(false);
+    setNameSuggestionDismissed(true);
+  }, []);
 
   // Filter frames by search query
   const filteredFrames = useMemo(() => {
@@ -204,6 +252,17 @@ export function FramePanel({
           </div>
         )}
       </div>
+
+      {/* Name suggestion banner (shown after frame confirmation for unnamed adventures) */}
+      {showNameSuggestion && suggestedName && (
+        <div className="p-4 border-t border-ink-200 dark:border-shadow-600">
+          <NameSuggestionBanner
+            suggestedName={suggestedName}
+            onAccept={handleAcceptName}
+            onDismiss={handleDismissNameSuggestion}
+          />
+        </div>
+      )}
 
       {/* Selected frame actions */}
       {hasSelectedFrame && (

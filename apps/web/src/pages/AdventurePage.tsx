@@ -123,24 +123,20 @@ function DarkModeToggle() {
 
 interface SetupPhaseProps {
   onStart: (name: string) => void;
+  onSkip: () => void;
 }
 
-function SetupPhase({ onStart }: SetupPhaseProps) {
+function SetupPhase({ onStart, onSkip }: SetupPhaseProps) {
   const [adventureName, setAdventureName] = useState('');
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = adventureName.trim();
-    if (!trimmed) {
-      setError('Please enter an adventure name');
-      return;
-    }
-    if (trimmed.length < 3) {
-      setError('Adventure name must be at least 3 characters');
-      return;
-    }
     onStart(trimmed);
+  };
+
+  const handleSkip = () => {
+    onSkip();
   };
 
   return (
@@ -151,7 +147,7 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
             Create Your Adventure
           </h1>
           <p className="text-ink-600 dark:text-parchment-400">
-            Give your Daggerheart adventure a name to begin
+            Give your Daggerheart adventure a name to begin, or skip to name it later
           </p>
         </div>
 
@@ -161,6 +157,9 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
             className="block text-sm font-medium text-ink-700 dark:text-parchment-300 mb-2"
           >
             Adventure Name
+            <span className="text-ink-400 dark:text-parchment-500 font-normal ml-1">
+              (optional)
+            </span>
           </label>
           <input
             id="adventure-name"
@@ -168,7 +167,6 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
             value={adventureName}
             onChange={(e) => {
               setAdventureName(e.target.value);
-              setError(null);
             }}
             placeholder="e.g., The Hollow Vigil"
             autoFocus
@@ -182,24 +180,38 @@ function SetupPhase({ onStart }: SetupPhaseProps) {
               transition-all
             "
           />
-          {error && (
-            <p className="mt-2 text-sm text-blood-600 dark:text-blood-400">{error}</p>
-          )}
-          <button
-            type="submit"
-            className="
-              w-full mt-4 py-3 px-4 rounded-fantasy border-2
-              bg-gold-500 border-gold-600 text-ink-900
-              font-serif font-semibold text-base
-              hover:bg-gold-400 hover:border-gold-500
-              dark:bg-gold-600 dark:border-gold-500
-              dark:hover:bg-gold-500 dark:hover:border-gold-400
-              shadow-gold-glow
-              transition-all duration-200
-            "
-          >
-            Begin Adventure
-          </button>
+          <div className="flex gap-3 mt-4">
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="
+                flex-1 py-3 px-4 rounded-fantasy border-2
+                bg-parchment-100 border-ink-300 text-ink-600
+                font-serif font-semibold text-base
+                hover:bg-parchment-200 hover:border-ink-400
+                dark:bg-shadow-700 dark:border-shadow-500 dark:text-parchment-300
+                dark:hover:bg-shadow-600 dark:hover:border-shadow-400
+                transition-all duration-200
+              "
+            >
+              Skip for now
+            </button>
+            <button
+              type="submit"
+              className="
+                flex-1 py-3 px-4 rounded-fantasy border-2
+                bg-gold-500 border-gold-600 text-ink-900
+                font-serif font-semibold text-base
+                hover:bg-gold-400 hover:border-gold-500
+                dark:bg-gold-600 dark:border-gold-500
+                dark:hover:bg-gold-500 dark:hover:border-gold-400
+                shadow-gold-glow
+                transition-all duration-200
+              "
+            >
+              Begin Adventure
+            </button>
+          </div>
         </form>
 
         <div className="text-center mt-6">
@@ -462,6 +474,10 @@ export function AdventurePage() {
 
   const handleStartAdventure = useCallback((name: string) => {
     initSession(name);
+  }, [initSession]);
+
+  const handleSkipNaming = useCallback(() => {
+    initSession('');
   }, [initSession]);
 
   const handleGoBack = useCallback(() => {
@@ -807,12 +823,12 @@ export function AdventurePage() {
   const renderPhaseContent = () => {
     // If no session and not in setup, show setup
     if (!hasActiveSession && currentPhase !== 'setup') {
-      return <SetupPhase onStart={handleStartAdventure} />;
+      return <SetupPhase onStart={handleStartAdventure} onSkip={handleSkipNaming} />;
     }
 
     switch (currentPhase) {
       case 'setup':
-        return <SetupPhase onStart={handleStartAdventure} />;
+        return <SetupPhase onStart={handleStartAdventure} onSkip={handleSkipNaming} />;
 
       case 'dial-tuning':
         return (

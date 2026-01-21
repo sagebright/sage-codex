@@ -53,6 +53,73 @@ describe('adventureStore', () => {
     });
   });
 
+  describe('initSession with optional name', () => {
+    it('accepts empty string as name and uses default placeholder', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('');
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.sessionId).toBe('test-uuid-0001');
+      expect(state.adventureName).toBe('');
+      expect(state.currentPhase).toBe('dial-tuning');
+    });
+
+    it('accepts undefined name and defaults to empty string', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession();
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.sessionId).toBe('test-uuid-0001');
+      expect(state.adventureName).toBe('');
+    });
+  });
+
+  describe('setAdventureName', () => {
+    it('updates the adventure name after session is initialized', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('');
+      });
+
+      storeAction(() => {
+        useAdventureStore.getState().setAdventureName('Shadows of Redemption');
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.adventureName).toBe('Shadows of Redemption');
+    });
+
+    it('trims whitespace from adventure name', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('');
+      });
+
+      storeAction(() => {
+        useAdventureStore.getState().setAdventureName('  My Adventure  ');
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.adventureName).toBe('My Adventure');
+    });
+
+    it('allows changing name multiple times', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Initial Name');
+      });
+
+      storeAction(() => {
+        useAdventureStore.getState().setAdventureName('New Name');
+      });
+      expect(useAdventureStore.getState().adventureName).toBe('New Name');
+
+      storeAction(() => {
+        useAdventureStore.getState().setAdventureName('Final Name');
+      });
+      expect(useAdventureStore.getState().adventureName).toBe('Final Name');
+    });
+  });
+
   describe('initSession', () => {
     it('creates a new session with UUID', () => {
       storeAction(() => {

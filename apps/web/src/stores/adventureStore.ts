@@ -27,7 +27,8 @@ export interface AdventureState {
   phaseHistory: Phase[];
 
   // Actions
-  initSession: (name: string) => void;
+  initSession: (name?: string) => void;
+  setAdventureName: (name: string) => void;
   setPhase: (phase: Phase) => void;
   goToPreviousPhase: () => void;
   reset: () => void;
@@ -57,8 +58,9 @@ export const useAdventureStore = create<AdventureState>()(
 
         /**
          * Initialize a new adventure session
+         * @param name - Optional adventure name (defaults to empty string)
          */
-        initSession: (name: string) => {
+        initSession: (name: string = '') => {
           const sessionId = crypto.randomUUID();
           // Clear chat messages from previous sessions
           useChatStore.getState().clearMessages();
@@ -90,6 +92,20 @@ You can also adjust settings in the **Adventure Dials** panel on the right. Once
             },
             false,
             'initSession'
+          );
+        },
+
+        /**
+         * Set or update the adventure name
+         * @param name - The adventure name (will be trimmed)
+         */
+        setAdventureName: (name: string) => {
+          set(
+            {
+              adventureName: name.trim(),
+            },
+            false,
+            'setAdventureName'
           );
         },
 
