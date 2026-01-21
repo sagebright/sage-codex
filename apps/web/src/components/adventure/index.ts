@@ -7,3 +7,4 @@
 
 export { PhaseProgressBar, type PhaseProgressBarProps } from './PhaseProgressBar';
 export { PhaseNavigation, type PhaseNavigationProps } from './PhaseNavigation';
+export { SessionRecoveryModal, type SessionRecoveryModalProps } from './SessionRecoveryModal';

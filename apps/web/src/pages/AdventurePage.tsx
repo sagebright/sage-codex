@@ -21,7 +21,11 @@ import type { DialId, CompiledNPC, PartyTier, SessionLength, ThemeOption } from 
 import { THEME_OPTIONS } from '@dagger-app/shared-types';
 
 // Adventure components
-import { PhaseProgressBar, PhaseNavigation } from '@/components/adventure';
+import { PhaseProgressBar, PhaseNavigation, SessionRecoveryModal } from '@/components/adventure';
+
+// Services and persistence
+import { loadAdventure, deleteAdventure } from '@/services/adventureService';
+import { restoreFromSnapshot } from '@/stores/persistence';
 
 // Phase 2 components
 import { ChatContainer } from '@/components/chat';
@@ -249,6 +253,64 @@ export function AdventurePage() {
   const initSession = useAdventureStore((state) => state.initSession);
   const setPhase = useAdventureStore((state) => state.setPhase);
   const goToPreviousPhase = useAdventureStore((state) => state.goToPreviousPhase);
+  const resetAdventure = useAdventureStore((state) => state.reset);
+
+  // =============================================================================
+  // Session Recovery State
+  // =============================================================================
+
+  type RecoveryState = 'checking' | 'show-modal' | 'none';
+  const [recoveryState, setRecoveryState] = useState<RecoveryState>('checking');
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('dagger-adventure-storage');
+    if (!stored) {
+      setRecoveryState('none');
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(stored);
+      const storedSessionId = parsed?.state?.sessionId;
+
+      if (!storedSessionId) {
+        setRecoveryState('none');
+        return;
+      }
+
+      // Found sessionId in localStorage - show recovery modal
+      setRecoveryState('show-modal');
+    } catch {
+      // Invalid JSON in localStorage
+      setRecoveryState('none');
+    }
+  }, []);
+
+  // Recovery handlers
+  const handleResume = useCallback(async () => {
+    if (!sessionId) {
+      setRecoveryState('none');
+      return;
+    }
+
+    const response = await loadAdventure(sessionId);
+    if (response.exists && response.adventure) {
+      restoreFromSnapshot(response.adventure);
+    }
+    setRecoveryState('none');
+  }, [sessionId]);
+
+  const handleStartFresh = useCallback(async () => {
+    if (sessionId) {
+      await deleteAdventure(sessionId);
+    }
+    // Clear all stores
+    resetAdventure();
+    useDialsStore.getState().resetDials();
+    useContentStore.getState().resetContent();
+    setRecoveryState('none');
+  }, [sessionId, resetAdventure]);
 
   // Dials store state - use individual selectors to avoid infinite loops
   const partySize = useDialsStore((state) => state.partySize);
@@ -798,6 +860,30 @@ export function AdventurePage() {
   // Render
   // =============================================================================
 
+  // Show loading state while checking for existing session
+  if (recoveryState === 'checking') {
+    return (
+      <div className="min-h-screen flex flex-col bg-parchment-100 dark:bg-shadow-900 transition-colors duration-200">
+        <header className="flex items-center justify-between px-4 py-3 bg-parchment-50 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600">
+          <Link to="/" className="font-serif text-xl font-bold text-ink-800 dark:text-parchment-100">
+            Dagger-Gen
+          </Link>
+          <DarkModeToggle />
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="w-8 h-8 border-4 border-gold-200 border-t-gold-500 rounded-full animate-spin" />
+            </div>
+            <p className="text-ink-600 dark:text-parchment-400">
+              Loading...
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   // Determine if we should show the phase navigation (not for setup or scenes which have their own)
   const showPhaseNavigation =
     hasActiveSession &&
@@ -807,6 +893,15 @@ export function AdventurePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-parchment-100 dark:bg-shadow-900 transition-colors duration-200">
+      {/* Session recovery modal */}
+      {recoveryState === 'show-modal' && sessionId && (
+        <SessionRecoveryModal
+          sessionId={sessionId}
+          onResume={handleResume}
+          onStartFresh={handleStartFresh}
+        />
+      )}
+
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-3 bg-parchment-50 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600">
         <Link to="/" className="font-serif text-xl font-bold text-ink-800 dark:text-parchment-100">
