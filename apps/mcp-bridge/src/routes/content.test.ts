@@ -1074,6 +1074,81 @@ describe('Content Route', () => {
     });
   });
 
+  // ==========================================================================
+  // Name Suggestion Routes
+  // ==========================================================================
+
+  describe('POST /content/suggest-name', () => {
+    it('should return a suggested name based on frame', async () => {
+      const response = await request(app)
+        .post('/content/suggest-name')
+        .send({
+          frameName: 'The Dark Forest',
+          themes: ['mystery', 'horror'],
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('suggestion');
+      expect(typeof response.body.suggestion).toBe('string');
+      expect(response.body.suggestion.length).toBeGreaterThan(0);
+    });
+
+    it('should avoid current name when provided', async () => {
+      const response = await request(app)
+        .post('/content/suggest-name')
+        .send({
+          frameName: 'The Dark Forest',
+          themes: ['mystery', 'horror'],
+          currentName: 'Shadows in the Trees',
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.suggestion).not.toBe('Shadows in the Trees');
+    });
+
+    it('should return 400 if frameName is missing', async () => {
+      const response = await request(app)
+        .post('/content/suggest-name')
+        .send({
+          themes: ['mystery'],
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('code', 'INVALID_REQUEST');
+      expect(response.body.message).toContain('frameName');
+    });
+
+    it('should work without themes', async () => {
+      const response = await request(app)
+        .post('/content/suggest-name')
+        .send({
+          frameName: 'The Dark Forest',
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('suggestion');
+      expect(typeof response.body.suggestion).toBe('string');
+    });
+
+    it('should generate varied suggestions for same frame', async () => {
+      // Make two requests and verify they can produce different suggestions
+      const responses = await Promise.all([
+        request(app)
+          .post('/content/suggest-name')
+          .send({ frameName: 'City of Shadows', themes: ['urban', 'political'] }),
+        request(app)
+          .post('/content/suggest-name')
+          .send({ frameName: 'City of Shadows', themes: ['urban', 'political'] }),
+      ]);
+
+      expect(responses[0].status).toBe(200);
+      expect(responses[1].status).toBe(200);
+      // Both should return valid suggestions (they may or may not be different due to randomness)
+      expect(responses[0].body.suggestion.length).toBeGreaterThan(0);
+      expect(responses[1].body.suggestion.length).toBeGreaterThan(0);
+    });
+  });
+
   // ===========================================================================
   // Echo Routes (Phase 4.3)
   // ===========================================================================

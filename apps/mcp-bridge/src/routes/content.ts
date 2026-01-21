@@ -45,6 +45,7 @@ import {
 import { ECHO_TEMPLATES, ECHOES_PER_CATEGORY } from '../constants/echo-templates.js';
 import { generateFrameHandler } from '../mcp/tools/generateFrame.js';
 import { generateOutlineHandler } from '../mcp/tools/generateOutline.js';
+import { generateAdventureName, type SuggestNameParams } from '../services/name-suggestion.js';
 import { sendError, sendStructuredError } from './helpers.js';
 import type { StructuredErrorResponse } from '@dagger-app/shared-types';
 
@@ -427,6 +428,46 @@ router.get('/items', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching items:', error);
     sendError(res, 'INTERNAL_ERROR', 'Failed to fetch items');
+  }
+});
+
+// =============================================================================
+// Name Suggestion Routes
+// =============================================================================
+
+/**
+ * Response body for suggest-name endpoint
+ */
+interface SuggestNameResponse {
+  suggestion: string;
+}
+
+/**
+ * POST /content/suggest-name
+ *
+ * Generate a suggested adventure name based on frame context.
+ */
+router.post('/suggest-name', async (req: Request, res: Response) => {
+  const body = req.body as Partial<SuggestNameParams>;
+
+  // Validate request
+  if (!body.frameName || typeof body.frameName !== 'string') {
+    sendError(res, 'INVALID_REQUEST', 'frameName is required', 400);
+    return;
+  }
+
+  try {
+    const suggestion = generateAdventureName({
+      frameName: body.frameName,
+      themes: body.themes,
+      currentName: body.currentName,
+    });
+
+    const response: SuggestNameResponse = { suggestion };
+    res.json(response);
+  } catch (error) {
+    console.error('Name suggestion error:', error);
+    sendError(res, 'PROCESSING_ERROR', 'Failed to generate name suggestion');
   }
 });
 

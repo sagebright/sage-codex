@@ -50,6 +50,8 @@ export function FramePanel({
   const [expandedFrameId, setExpandedFrameId] = useState<string | null>(null);
   const [showNameSuggestion, setShowNameSuggestion] = useState(false);
   const [nameSuggestionDismissed, setNameSuggestionDismissed] = useState(false);
+  const [isLoadingNameSuggestion, setIsLoadingNameSuggestion] = useState(false);
+  const [currentSuggestion, setCurrentSuggestion] = useState<string | null>(null);
 
   // Adventure store state
   const adventureName = useAdventureStore((state) => state.adventureName);
@@ -110,11 +112,19 @@ export function FramePanel({
     }
   }, [isFrameConfirmed, adventureName, nameSuggestionDismissed]);
 
-  // Generate suggested name based on selected frame
-  const suggestedName = useMemo(() => {
+  // Generate initial suggested name based on selected frame
+  const initialSuggestedName = useMemo(() => {
     if (!selectedFrame) return '';
     return generateNameSuggestion(selectedFrame.name, selectedFrame.themes ?? undefined);
   }, [selectedFrame]);
+
+  // Use currentSuggestion if set (from API), otherwise use the initial generated name
+  const suggestedName = currentSuggestion ?? initialSuggestedName;
+
+  // Reset currentSuggestion when frame changes
+  useEffect(() => {
+    setCurrentSuggestion(null);
+  }, [selectedFrame?.id]);
 
   // Name suggestion handlers
   const handleAcceptName = useCallback((name: string) => {
@@ -126,6 +136,39 @@ export function FramePanel({
     setShowNameSuggestion(false);
     setNameSuggestionDismissed(true);
   }, []);
+
+  // Handle requesting a new name suggestion from the API
+  const handleSuggestAnotherName = useCallback(async () => {
+    if (!selectedFrame || isLoadingNameSuggestion) return;
+
+    setIsLoadingNameSuggestion(true);
+
+    try {
+      const response = await fetch('/api/content/suggest-name', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          frameName: selectedFrame.name,
+          themes: selectedFrame.themes ?? [],
+          currentName: suggestedName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch name suggestion');
+      }
+
+      const data = await response.json();
+      if (data.suggestion) {
+        // Update the current suggestion to show in the banner
+        setCurrentSuggestion(data.suggestion);
+      }
+    } catch (error) {
+      console.error('Error fetching name suggestion:', error);
+    } finally {
+      setIsLoadingNameSuggestion(false);
+    }
+  }, [selectedFrame, suggestedName, isLoadingNameSuggestion]);
 
   // Filter frames by search query
   const filteredFrames = useMemo(() => {
@@ -284,6 +327,8 @@ export function FramePanel({
             suggestedName={suggestedName}
             onAccept={handleAcceptName}
             onDismiss={handleDismissNameSuggestion}
+            onSuggestAnother={handleSuggestAnotherName}
+            isLoading={isLoadingNameSuggestion}
           />
         </div>
       )}

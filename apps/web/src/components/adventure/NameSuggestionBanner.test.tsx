@@ -192,4 +192,81 @@ describe('NameSuggestionBanner', () => {
       expect(mockOnAccept).not.toHaveBeenCalled();
     });
   });
+
+  describe('suggest another action', () => {
+    const mockOnSuggestAnother = vi.fn();
+
+    it('renders Suggest Another button when callback is provided', () => {
+      render(<NameSuggestionBanner {...defaultProps} onSuggestAnother={mockOnSuggestAnother} />);
+
+      expect(screen.getByRole('button', { name: 'Suggest Another' })).toBeInTheDocument();
+    });
+
+    it('does not render Suggest Another button when callback is not provided', () => {
+      render(<NameSuggestionBanner {...defaultProps} />);
+
+      expect(screen.queryByRole('button', { name: 'Suggest Another' })).not.toBeInTheDocument();
+    });
+
+    it('calls onSuggestAnother when Suggest Another button is clicked', async () => {
+      const user = userEvent.setup();
+      render(<NameSuggestionBanner {...defaultProps} onSuggestAnother={mockOnSuggestAnother} />);
+
+      await user.click(screen.getByRole('button', { name: 'Suggest Another' }));
+
+      expect(mockOnSuggestAnother).toHaveBeenCalled();
+    });
+
+    it('positions Suggest Another button between Modify and Dismiss', () => {
+      render(<NameSuggestionBanner {...defaultProps} onSuggestAnother={mockOnSuggestAnother} />);
+
+      const buttons = screen.getAllByRole('button');
+      const acceptIndex = buttons.findIndex((btn) => btn.textContent === 'Accept');
+      const modifyIndex = buttons.findIndex((btn) => btn.textContent === 'Modify');
+      const suggestAnotherIndex = buttons.findIndex((btn) => btn.textContent === 'Suggest Another');
+      const dismissIndex = buttons.findIndex((btn) => btn.textContent === 'Dismiss');
+
+      // Suggest Another should be after Modify and before Dismiss
+      expect(suggestAnotherIndex).toBeGreaterThan(modifyIndex);
+      expect(suggestAnotherIndex).toBeLessThan(dismissIndex);
+      expect(acceptIndex).toBeLessThan(modifyIndex);
+    });
+
+    it('does not show Suggest Another button in edit mode', async () => {
+      const user = userEvent.setup();
+      render(<NameSuggestionBanner {...defaultProps} onSuggestAnother={mockOnSuggestAnother} />);
+
+      await user.click(screen.getByRole('button', { name: 'Modify' }));
+
+      expect(screen.queryByRole('button', { name: 'Suggest Another' })).not.toBeInTheDocument();
+    });
+
+    it('shows loading state when isLoading is true', () => {
+      render(
+        <NameSuggestionBanner
+          {...defaultProps}
+          onSuggestAnother={mockOnSuggestAnother}
+          isLoading={true}
+        />
+      );
+
+      // When loading, button shows "Generating..." text
+      const suggestButton = screen.getByRole('button', { name: /Generating/i });
+      expect(suggestButton).toBeDisabled();
+      expect(suggestButton).toHaveTextContent('Generating...');
+    });
+
+    it('disables Suggest Another button when isLoading', async () => {
+      render(
+        <NameSuggestionBanner
+          {...defaultProps}
+          onSuggestAnother={mockOnSuggestAnother}
+          isLoading={true}
+        />
+      );
+
+      const suggestButton = screen.getByRole('button', { name: /Generating/i });
+      expect(suggestButton).toBeDisabled();
+    });
+  });
 });

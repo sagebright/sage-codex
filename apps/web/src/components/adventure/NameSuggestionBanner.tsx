@@ -19,6 +19,10 @@ export interface NameSuggestionBannerProps {
   onAccept: (name: string) => void;
   /** Callback when user dismisses the suggestion */
   onDismiss: () => void;
+  /** Callback when user wants a different suggestion (optional) */
+  onSuggestAnother?: () => void;
+  /** Whether a new suggestion is being generated */
+  isLoading?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
@@ -31,6 +35,8 @@ export function NameSuggestionBanner({
   suggestedName,
   onAccept,
   onDismiss,
+  onSuggestAnother,
+  isLoading = false,
   className = '',
 }: NameSuggestionBannerProps) {
   const [editedName, setEditedName] = useState(suggestedName);
@@ -173,6 +179,23 @@ export function NameSuggestionBanner({
                 >
                   Modify
                 </button>
+                {onSuggestAnother && (
+                  <button
+                    type="button"
+                    onClick={onSuggestAnother}
+                    disabled={isLoading}
+                    className="
+                      px-3 py-1.5 text-sm font-medium rounded-fantasy
+                      text-gold-600 hover:text-gold-700
+                      dark:text-gold-400 dark:hover:text-gold-300
+                      hover:bg-gold-50 dark:hover:bg-gold-900/20
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                      transition-colors
+                    "
+                  >
+                    {isLoading ? 'Generating...' : 'Suggest Another'}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={onDismiss}
