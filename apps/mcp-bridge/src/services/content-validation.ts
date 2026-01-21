@@ -173,7 +173,7 @@ export function parseEchoCategories(
 /**
  * Find the first error in an array of database results
  */
-export function findFirstError<T>(results: DbResult<T>[]): string | null {
+export function findFirstError(results: { error: string | null }[]): string | null {
   for (const result of results) {
     if (result.error) {
       return result.error;

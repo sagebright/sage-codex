@@ -18,11 +18,9 @@ import type {
   GetAdversariesResponse,
   GetAdversaryTypesResponse,
   GetItemsResponse,
-  UnifiedItem,
   ItemCategory,
   GenerateEchoesRequest,
   GenerateEchoesResponse,
-  EchoCategory,
   Echo,
 } from '@dagger-app/shared-types';
 import {
@@ -30,11 +28,21 @@ import {
   getFrameByName,
   getAdversaries,
   getAdversaryByName,
+  getAdversaryTypes,
   getItems,
   getWeapons,
   getArmor,
   getConsumables,
 } from '../services/daggerheart-queries.js';
+import {
+  parseTier,
+  parseLimit,
+  parseCategory,
+  parseEchoCategories,
+  findFirstError,
+  buildUnifiedItems,
+} from '../services/content-validation.js';
+import { ECHO_TEMPLATES, ECHOES_PER_CATEGORY } from '../constants/echo-templates.js';
 import { generateFrameHandler } from '../mcp/tools/generateFrame.js';
 import { generateOutlineHandler } from '../mcp/tools/generateOutline.js';
 import { sendError } from './helpers.js';
@@ -227,25 +235,27 @@ router.get('/adversaries', async (req: Request, res: Response) => {
   try {
     const { tier, type, limit } = req.query;
 
+    const tierResult = parseTier(tier as string | undefined);
+    if (tierResult.error) {
+      sendError(res, 'INVALID_REQUEST', tierResult.error, 400);
+      return;
+    }
+
+    const limitResult = parseLimit(limit as string | undefined);
+    if (limitResult.error) {
+      sendError(res, 'INVALID_REQUEST', limitResult.error, 400);
+      return;
+    }
+
     const options: { tier?: number; type?: string; limit?: number } = {};
-    if (tier !== undefined && tier !== '') {
-      const parsedTier = parseInt(tier as string, 10);
-      if (isNaN(parsedTier) || parsedTier < 1 || parsedTier > 4) {
-        sendError(res, 'INVALID_REQUEST', 'tier must be a number between 1 and 4', 400);
-        return;
-      }
-      options.tier = parsedTier;
+    if (tierResult.value !== undefined) {
+      options.tier = tierResult.value;
     }
     if (type && typeof type === 'string') {
       options.type = type;
     }
-    if (limit !== undefined && limit !== '') {
-      const parsedLimit = parseInt(limit as string, 10);
-      if (isNaN(parsedLimit) || parsedLimit < 1) {
-        sendError(res, 'INVALID_REQUEST', 'limit must be a positive number', 400);
-        return;
-      }
-      options.limit = parsedLimit;
+    if (limitResult.value !== undefined) {
+      options.limit = limitResult.value;
     }
 
     const result = await getAdversaries(options);
@@ -278,17 +288,14 @@ router.get('/adversaries', async (req: Request, res: Response) => {
  */
 router.get('/adversaries/types', async (_req: Request, res: Response) => {
   try {
-    // Get all adversaries to extract types
-    const result = await getAdversaries();
+    const result = await getAdversaryTypes();
 
     if (result.error) {
       sendError(res, 'DATABASE_ERROR', result.error);
       return;
     }
 
-    const types = [...new Set((result.data || []).map((a: DaggerheartAdversary) => a.type))].sort();
-
-    const response: GetAdversaryTypesResponse = { types };
+    const response: GetAdversaryTypesResponse = { types: result.data || [] };
     res.json(response);
   } catch (error) {
     console.error('Error fetching adversary types:', error);
@@ -327,8 +334,6 @@ router.get('/adversaries/:name', async (req: Request, res: Response) => {
 // Item Routes (Phase 4.2)
 // =============================================================================
 
-const VALID_ITEM_CATEGORIES: ItemCategory[] = ['item', 'weapon', 'armor', 'consumable'];
-
 /**
  * GET /content/items
  *
@@ -339,98 +344,49 @@ router.get('/items', async (req: Request, res: Response) => {
   try {
     const { tier, category, limit } = req.query;
 
-    // Validate tier
-    let parsedTier: number | undefined;
-    if (tier !== undefined && tier !== '') {
-      parsedTier = parseInt(tier as string, 10);
-      if (isNaN(parsedTier) || parsedTier < 1 || parsedTier > 4) {
-        sendError(res, 'INVALID_REQUEST', 'tier must be a number between 1 and 4', 400);
-        return;
-      }
+    const tierResult = parseTier(tier as string | undefined);
+    if (tierResult.error) {
+      sendError(res, 'INVALID_REQUEST', tierResult.error, 400);
+      return;
     }
 
-    // Validate category
-    let filterCategory: ItemCategory | undefined;
-    if (category && typeof category === 'string') {
-      if (!VALID_ITEM_CATEGORIES.includes(category as ItemCategory)) {
-        sendError(res, 'INVALID_REQUEST', `category must be one of: ${VALID_ITEM_CATEGORIES.join(', ')}`, 400);
-        return;
-      }
-      filterCategory = category as ItemCategory;
+    const categoryResult = parseCategory(category as string | undefined);
+    if (categoryResult.error) {
+      sendError(res, 'INVALID_REQUEST', categoryResult.error, 400);
+      return;
     }
 
-    // Validate limit
-    let parsedLimit: number | undefined;
-    if (limit !== undefined && limit !== '') {
-      parsedLimit = parseInt(limit as string, 10);
-      if (isNaN(parsedLimit) || parsedLimit < 1) {
-        sendError(res, 'INVALID_REQUEST', 'limit must be a positive number', 400);
-        return;
-      }
+    const limitResult = parseLimit(limit as string | undefined);
+    if (limitResult.error) {
+      sendError(res, 'INVALID_REQUEST', limitResult.error, 400);
+      return;
     }
+
+    const filterCategory = categoryResult.value;
+    const tierOptions = tierResult.value !== undefined ? { tier: tierResult.value } : undefined;
 
     // Fetch from all categories in parallel
     const [itemsResult, weaponsResult, armorResult, consumablesResult] = await Promise.all([
       filterCategory && filterCategory !== 'item' ? Promise.resolve({ data: [], error: null }) : getItems(),
-      filterCategory && filterCategory !== 'weapon'
-        ? Promise.resolve({ data: [], error: null })
-        : getWeapons(parsedTier !== undefined ? { tier: parsedTier } : undefined),
-      filterCategory && filterCategory !== 'armor'
-        ? Promise.resolve({ data: [], error: null })
-        : getArmor(parsedTier !== undefined ? { tier: parsedTier } : undefined),
-      filterCategory && filterCategory !== 'consumable'
-        ? Promise.resolve({ data: [], error: null })
-        : getConsumables(),
+      filterCategory && filterCategory !== 'weapon' ? Promise.resolve({ data: [], error: null }) : getWeapons(tierOptions),
+      filterCategory && filterCategory !== 'armor' ? Promise.resolve({ data: [], error: null }) : getArmor(tierOptions),
+      filterCategory && filterCategory !== 'consumable' ? Promise.resolve({ data: [], error: null }) : getConsumables(),
     ]);
 
-    // Check for errors
-    if (itemsResult.error) {
-      sendError(res, 'DATABASE_ERROR', itemsResult.error);
-      return;
-    }
-    if (weaponsResult.error) {
-      sendError(res, 'DATABASE_ERROR', weaponsResult.error);
-      return;
-    }
-    if (armorResult.error) {
-      sendError(res, 'DATABASE_ERROR', armorResult.error);
-      return;
-    }
-    if (consumablesResult.error) {
-      sendError(res, 'DATABASE_ERROR', consumablesResult.error);
+    const dbError = findFirstError([itemsResult, weaponsResult, armorResult, consumablesResult]);
+    if (dbError) {
+      sendError(res, 'DATABASE_ERROR', dbError);
       return;
     }
 
-    // Build unified items list
-    const unifiedItems: UnifiedItem[] = [];
+    const unifiedItems = buildUnifiedItems(
+      itemsResult.data || [],
+      weaponsResult.data || [],
+      armorResult.data || [],
+      consumablesResult.data || []
+    );
 
-    // Add items
-    for (const item of itemsResult.data || []) {
-      unifiedItems.push({ category: 'item', data: item });
-    }
-
-    // Add weapons
-    for (const weapon of weaponsResult.data || []) {
-      unifiedItems.push({ category: 'weapon', data: weapon });
-    }
-
-    // Add armor
-    for (const armor of armorResult.data || []) {
-      unifiedItems.push({ category: 'armor', data: armor });
-    }
-
-    // Add consumables
-    for (const consumable of consumablesResult.data || []) {
-      unifiedItems.push({ category: 'consumable', data: consumable });
-    }
-
-    // Apply limit if specified
-    let finalItems = unifiedItems;
-    if (parsedLimit !== undefined) {
-      finalItems = unifiedItems.slice(0, parsedLimit);
-    }
-
-    // Extract available categories
+    const finalItems = limitResult.value !== undefined ? unifiedItems.slice(0, limitResult.value) : unifiedItems;
     const availableCategories = [...new Set(unifiedItems.map((item) => item.category))].sort() as ItemCategory[];
 
     const response: GetItemsResponse = {
@@ -448,58 +404,6 @@ router.get('/items', async (req: Request, res: Response) => {
 // Echo Routes (Phase 4.3)
 // =============================================================================
 
-const VALID_ECHO_CATEGORIES: EchoCategory[] = [
-  'complications',
-  'rumors',
-  'discoveries',
-  'intrusions',
-  'wonders',
-];
-
-/** Number of echoes to generate per category */
-const ECHOES_PER_CATEGORY = 2;
-
-/**
- * Echo content templates for each category
- */
-const ECHO_TEMPLATES: Record<EchoCategory, Array<{ title: string; content: string }>> = {
-  complications: [
-    { title: 'The Bridge Collapses', content: 'The ancient bridge begins to crumble beneath the party\'s feet, forcing quick decisions.' },
-    { title: 'Sudden Storm', content: 'A fierce magical storm rolls in, limiting visibility and forcing the party to seek shelter.' },
-    { title: 'Resource Shortage', content: 'Critical supplies run low at the worst possible moment, requiring the party to improvise.' },
-    { title: 'Blocked Path', content: 'The intended route is blocked by a recent cave-in or magical barrier.' },
-    { title: 'Time Pressure', content: 'An unexpected deadline emerges, forcing the party to accelerate their plans.' },
-  ],
-  rumors: [
-    { title: 'Whispers of Treasure', content: 'Locals speak of hidden riches in a nearby abandoned location, but warn of its dangers.' },
-    { title: 'A Stranger\'s Warning', content: 'A mysterious traveler shares cryptic information about events to come.' },
-    { title: 'Political Intrigue', content: 'Overheard conversations hint at power struggles among local factions.' },
-    { title: 'Missing Persons', content: 'Several people have gone missing under similar, suspicious circumstances.' },
-    { title: 'Ancient Prophecy', content: 'An old tale speaks of heroes who will face a great trial in this very place.' },
-  ],
-  discoveries: [
-    { title: 'Hidden Chamber', content: 'A concealed door or passage reveals a previously unknown area to explore.' },
-    { title: 'Ancient Inscription', content: 'Mysterious writing provides clues about the location\'s history or secrets.' },
-    { title: 'Unexpected Ally', content: 'Someone thought to be hostile turns out to share common goals with the party.' },
-    { title: 'Lost Artifact', content: 'An item of significance is found in an unexpected place.' },
-    { title: 'Truth Revealed', content: 'A key piece of information changes the party\'s understanding of their situation.' },
-  ],
-  intrusions: [
-    { title: 'Uninvited Guest', content: 'A third party arrives unexpectedly, with unclear intentions.' },
-    { title: 'Ambush', content: 'Hidden enemies reveal themselves at an inopportune moment.' },
-    { title: 'Environmental Hazard', content: 'Natural or magical forces suddenly threaten the area.' },
-    { title: 'Message Arrives', content: 'Urgent news reaches the party, changing priorities.' },
-    { title: 'Old Enemy Returns', content: 'Someone from the party\'s past appears with unfinished business.' },
-  ],
-  wonders: [
-    { title: 'Aurora of Magic', content: 'Magical lights fill the sky, marking a moment of supernatural significance.' },
-    { title: 'Living Architecture', content: 'Buildings or structures reveal they have a life and will of their own.' },
-    { title: 'Cosmic Alignment', content: 'Stars or moons align in a way that amplifies magical power.' },
-    { title: 'Spirit Visitation', content: 'Benevolent spirits appear to offer guidance or blessing.' },
-    { title: 'Natural Wonder', content: 'The party witnesses something beautiful and awe-inspiring in nature.' },
-  ],
-};
-
 /**
  * POST /content/echoes/generate
  *
@@ -508,27 +412,20 @@ const ECHO_TEMPLATES: Record<EchoCategory, Array<{ title: string; content: strin
 router.post('/echoes/generate', async (req: Request, res: Response) => {
   const body = req.body as Partial<GenerateEchoesRequest>;
 
-  // Validate categories if provided
-  let categoriesToGenerate: EchoCategory[] = VALID_ECHO_CATEGORIES;
-  if (body.categories && Array.isArray(body.categories)) {
-    // Validate all categories
-    for (const cat of body.categories) {
-      if (!VALID_ECHO_CATEGORIES.includes(cat as EchoCategory)) {
-        sendError(res, 'INVALID_REQUEST', `Invalid category: ${cat}. Must be one of: ${VALID_ECHO_CATEGORIES.join(', ')}`, 400);
-        return;
-      }
-    }
-    categoriesToGenerate = body.categories as EchoCategory[];
+  const categoriesResult = parseEchoCategories(body.categories);
+  if (categoriesResult.error) {
+    sendError(res, 'INVALID_REQUEST', categoriesResult.error, 400);
+    return;
   }
 
+  const categoriesToGenerate = categoriesResult.value!;
+
   try {
-    // Generate echoes for each requested category
     const echoes: Echo[] = [];
     const now = new Date().toISOString();
 
     for (const category of categoriesToGenerate) {
       const templates = ECHO_TEMPLATES[category];
-      // Pick random echoes from each category
       const shuffled = [...templates].sort(() => Math.random() - 0.5);
       const selectedTemplates = shuffled.slice(0, ECHOES_PER_CATEGORY);
 
@@ -544,7 +441,6 @@ router.post('/echoes/generate', async (req: Request, res: Response) => {
       }
     }
 
-    // Build response message
     const categoryList = categoriesToGenerate.join(', ');
     const assistantMessage = `I've generated ${echoes.length} echoes across ${categoriesToGenerate.length} categories (${categoryList}). Review each echo and confirm when ready.`;
 

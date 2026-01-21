@@ -245,7 +245,7 @@ describe('Content Validation', () => {
     });
 
     it('should return null for empty array', () => {
-      expect(findFirstError<number>([])).toBeNull();
+      expect(findFirstError([])).toBeNull();
     });
   });
 

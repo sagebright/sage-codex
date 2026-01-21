@@ -22,6 +22,7 @@ vi.mock('../services/daggerheart-queries.js', () => ({
   getFrameByName: vi.fn(),
   getAdversaries: vi.fn(),
   getAdversaryByName: vi.fn(),
+  getAdversaryTypes: vi.fn(),
   getItems: vi.fn(),
   getWeapons: vi.fn(),
   getArmor: vi.fn(),
@@ -665,8 +666,8 @@ describe('Content Route', () => {
 
   describe('GET /content/adversaries/types', () => {
     it('should return all available types', async () => {
-      vi.mocked(daggerheartQueries.getAdversaries).mockResolvedValue({
-        data: mockAdversaries,
+      vi.mocked(daggerheartQueries.getAdversaryTypes).mockResolvedValue({
+        data: ['beast', 'humanoid', 'undead'],
         error: null,
       });
 
@@ -680,8 +681,8 @@ describe('Content Route', () => {
     });
 
     it('should return sorted unique types', async () => {
-      vi.mocked(daggerheartQueries.getAdversaries).mockResolvedValue({
-        data: mockAdversaries,
+      vi.mocked(daggerheartQueries.getAdversaryTypes).mockResolvedValue({
+        data: ['beast', 'humanoid', 'undead'],
         error: null,
       });
 
@@ -692,7 +693,7 @@ describe('Content Route', () => {
     });
 
     it('should handle database errors', async () => {
-      vi.mocked(daggerheartQueries.getAdversaries).mockResolvedValue({
+      vi.mocked(daggerheartQueries.getAdversaryTypes).mockResolvedValue({
         data: null,
         error: 'Database connection failed',
       });

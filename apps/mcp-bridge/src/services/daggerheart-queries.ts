@@ -93,6 +93,24 @@ export async function getAdversaries(options?: {
 }
 
 /**
+ * Fetch distinct adversary types (optimized - only fetches type column)
+ */
+export async function getAdversaryTypes(): Promise<QueryResult<string[]>> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('daggerheart_adversaries')
+    .select('type');
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  // Extract unique types and sort
+  const types = [...new Set((data || []).map((row: { type: string }) => row.type))].sort();
+  return { data: types, error: null };
+}
+
+/**
  * Fetch a single adversary by name
  */
 export async function getAdversaryByName(name: string): Promise<QueryResult<DaggerheartAdversary>> {
