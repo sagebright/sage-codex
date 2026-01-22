@@ -8,6 +8,7 @@
 
 import { useState, useCallback } from 'react';
 import { SceneBriefCard } from './SceneBriefCard';
+import { PoweredByIndicator } from '../ui/PoweredByIndicator';
 import {
   useContentStore,
   selectHasOutline,
@@ -31,6 +32,10 @@ export interface OutlinePanelProps {
   frameName?: string;
   /** Expected scene count from dials */
   expectedSceneCount?: number;
+  /** Whether outline generation is in progress */
+  isGenerating?: boolean;
+  /** Whether to show the "Powered by Claude" indicator */
+  showPoweredBy?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
@@ -42,6 +47,8 @@ export function OutlinePanel({
   onEditScene,
   frameName,
   expectedSceneCount = 4,
+  isGenerating = false,
+  showPoweredBy = false,
   className = '',
 }: OutlinePanelProps) {
   const [expandedSceneId, setExpandedSceneId] = useState<string | null>(null);
@@ -104,12 +111,11 @@ export function OutlinePanel({
   };
 
   // Loading state
-  if (loading) {
+  if (loading || isGenerating) {
     return (
       <div className={`flex items-center justify-center p-8 ${className}`}>
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-gold-300 border-t-gold-600 rounded-full animate-spin" />
-          <p className="mt-4 text-ink-600 dark:text-parchment-400">Generating outline...</p>
+          <PoweredByIndicator isLoading={true} className="justify-center mb-4" />
           {frameName && (
             <p className="mt-2 text-sm text-ink-500 dark:text-parchment-500">
               Based on <span className="font-medium">{frameName}</span>
@@ -338,6 +344,11 @@ export function OutlinePanel({
 
       {/* Action footer */}
       <div className="p-4 border-t border-ink-200 dark:border-shadow-600 bg-parchment-100 dark:bg-shadow-800">
+        {/* Powered by Claude indicator */}
+        {showPoweredBy && hasOutline && (
+          <PoweredByIndicator isLoading={false} className="mb-3" />
+        )}
+
         {isOutlineConfirmed ? (
           <>
             <div className="flex items-center justify-between mb-3">

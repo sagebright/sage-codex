@@ -252,7 +252,7 @@ describe('OutlinePanel', () => {
         />
       );
 
-      expect(screen.getByText('Generating outline...')).toBeInTheDocument();
+      expect(screen.getByText(/Generating with Claude/i)).toBeInTheDocument();
     });
 
     it('shows frame name context while loading', () => {

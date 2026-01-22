@@ -22,6 +22,9 @@ export interface AdventureState {
   adventureName: string;
   createdAt: Date | null;
 
+  // Claude session for content generation continuity
+  claudeSessionId: string | null;
+
   // Phase management
   currentPhase: Phase;
   phaseHistory: Phase[];
@@ -29,6 +32,7 @@ export interface AdventureState {
   // Actions
   initSession: (name?: string) => void;
   setAdventureName: (name: string) => void;
+  setClaudeSessionId: (sessionId: string | null) => void;
   setPhase: (phase: Phase) => void;
   goToPreviousPhase: () => void;
   reset: () => void;
@@ -42,6 +46,7 @@ const initialState = {
   sessionId: null,
   adventureName: '',
   createdAt: null,
+  claudeSessionId: null,
   currentPhase: 'setup' as Phase,
   phaseHistory: [] as Phase[],
 };
@@ -106,6 +111,20 @@ You can also adjust settings in the **Adventure Dials** panel on the right. Once
             },
             false,
             'setAdventureName'
+          );
+        },
+
+        /**
+         * Set the Claude session ID for content generation continuity
+         * @param sessionId - The Claude session ID from backend, or null to clear
+         */
+        setClaudeSessionId: (sessionId: string | null) => {
+          set(
+            {
+              claudeSessionId: sessionId,
+            },
+            false,
+            'setClaudeSessionId'
           );
         },
 

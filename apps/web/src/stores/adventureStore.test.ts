@@ -51,6 +51,11 @@ describe('adventureStore', () => {
       expect(state.currentPhase).toBe('setup');
       expect(state.phaseHistory).toEqual([]);
     });
+
+    it('starts with null claudeSessionId', () => {
+      const state = useAdventureStore.getState();
+      expect(state.claudeSessionId).toBeNull();
+    });
   });
 
   describe('initSession with optional name', () => {
@@ -361,6 +366,68 @@ describe('adventureStore', () => {
       expect(state.createdAt).toBeNull();
       expect(state.currentPhase).toBe('setup');
       expect(state.phaseHistory).toEqual([]);
+    });
+
+    it('resets claudeSessionId to null', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test');
+      });
+      storeAction(() => {
+        useAdventureStore.getState().setClaudeSessionId('claude-session-123');
+      });
+
+      storeAction(() => {
+        useAdventureStore.getState().reset();
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.claudeSessionId).toBeNull();
+    });
+  });
+
+  describe('claudeSessionId', () => {
+    it('can be set via setClaudeSessionId', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test');
+      });
+
+      storeAction(() => {
+        useAdventureStore.getState().setClaudeSessionId('claude-session-abc123');
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.claudeSessionId).toBe('claude-session-abc123');
+    });
+
+    it('can be cleared by setting to null', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test');
+      });
+      storeAction(() => {
+        useAdventureStore.getState().setClaudeSessionId('claude-session-abc');
+      });
+
+      storeAction(() => {
+        useAdventureStore.getState().setClaudeSessionId(null);
+      });
+
+      const state = useAdventureStore.getState();
+      expect(state.claudeSessionId).toBeNull();
+    });
+
+    it('persists claudeSessionId to localStorage', () => {
+      storeAction(() => {
+        useAdventureStore.getState().initSession('Test');
+      });
+      storeAction(() => {
+        useAdventureStore.getState().setClaudeSessionId('persisted-session');
+      });
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      expect(stored).not.toBeNull();
+
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state.claudeSessionId).toBe('persisted-session');
     });
   });
 

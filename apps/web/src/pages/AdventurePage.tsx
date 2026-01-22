@@ -17,7 +17,7 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import type { CompiledNPC } from '@dagger-app/shared-types';
+import type { CompiledNPC, StructuredErrorResponse } from '@dagger-app/shared-types';
 
 // Adventure components
 import { PhaseProgressBar, PhaseNavigation, SessionRecoveryModal } from '@/components/adventure';
@@ -42,6 +42,9 @@ import {
 
 // Services
 import { exportAdventure, type ExportData } from '@/services/adventureService';
+
+// UI Components
+import { ErrorModal } from '@/components/ui/ErrorModal';
 
 // Stores
 import {
@@ -254,6 +257,7 @@ export function AdventurePage() {
   const sessionId = useAdventureStore((state) => state.sessionId);
   const adventureName = useAdventureStore((state) => state.adventureName);
   const currentPhase = useAdventureStore((state) => state.currentPhase);
+  const claudeSessionId = useAdventureStore((state) => state.claudeSessionId);
   const hasActiveSession = useAdventureStore(selectHasActiveSession);
   const canGoBack = useAdventureStore(selectCanGoBack);
 
@@ -262,6 +266,7 @@ export function AdventurePage() {
   const setPhase = useAdventureStore((state) => state.setPhase);
   const goToPreviousPhase = useAdventureStore((state) => state.goToPreviousPhase);
   const resetAdventure = useAdventureStore((state) => state.reset);
+  const setClaudeSessionId = useAdventureStore((state) => state.setClaudeSessionId);
 
   // =============================================================================
   // Session Recovery State
@@ -439,6 +444,11 @@ export function AdventurePage() {
   const selectedFrame = useContentStore((state) => state.selectedFrame);
   const currentOutline = useContentStore((state) => state.currentOutline);
 
+  // Outline actions
+  const setOutline = useContentStore((state) => state.setOutline);
+  const setOutlineLoading = useContentStore((state) => state.setOutlineLoading);
+  const setOutlineError = useContentStore((state) => state.setOutlineError);
+
   // Export-related content store state
   const selectedAdversaries = useContentStore((state) => state.selectedAdversaries);
   const selectedItems = useContentStore((state) => state.selectedItems);
@@ -447,6 +457,10 @@ export function AdventurePage() {
   // Export state
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+
+  // Generation state
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<StructuredErrorResponse | null>(null);
 
   // =============================================================================
   // Phase Transition Handlers
@@ -527,10 +541,114 @@ export function AdventurePage() {
     setPhase('dial-tuning');
   }, [setPhase]);
 
-  const handleGenerateOutline = useCallback((_feedback?: string) => {
-    // In full implementation, this would trigger MCP tool invocation
-    console.log('[AdventurePage] Generate outline with feedback:', _feedback);
-  }, []);
+  const handleGenerateOutline = useCallback(async (feedback?: string) => {
+    if (!selectedFrame) {
+      setGenerationError({
+        error: 'NO_FRAME_SELECTED',
+        title: 'No Frame Selected',
+        message: 'Please select a frame before generating an outline.',
+        instructions: ['Go back to the Frame selection phase', 'Select or create a frame'],
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    setOutlineLoading(true);
+    setGenerationError(null);
+
+    try {
+      const dialsSummary = {
+        partySize,
+        partyTier,
+        sceneCount,
+        sessionLength,
+        tone,
+        themes,
+        pillarBalance,
+        lethality,
+      };
+
+      const response = await fetch('/api/content/outline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          frame: selectedFrame,
+          dialsSummary,
+          feedback,
+          previousOutline: currentOutline,
+          sessionId: claudeSessionId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle structured error response
+        if (data.title && data.instructions) {
+          setGenerationError(data as StructuredErrorResponse);
+        } else {
+          setGenerationError({
+            error: data.error || 'GENERATION_FAILED',
+            title: 'Generation Failed',
+            message: data.message || 'Failed to generate outline. Please try again.',
+            instructions: ['Check your connection', 'Try again in a moment'],
+          });
+        }
+        setOutlineError(data.message || 'Failed to generate outline');
+        return;
+      }
+
+      // Update Claude session ID for continuity
+      if (data.sessionId) {
+        setClaudeSessionId(data.sessionId);
+      }
+
+      // Update outline in store
+      if (data.outline) {
+        setOutline(data.outline);
+      }
+
+      // Add assistant message to chat
+      if (data.assistantMessage) {
+        useChatStore.getState().addMessage({
+          role: 'assistant',
+          content: data.assistantMessage,
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setGenerationError({
+        error: 'NETWORK_ERROR',
+        title: 'Connection Error',
+        message: errorMessage,
+        instructions: [
+          'Check your internet connection',
+          'Ensure the backend server is running',
+          'Try again',
+        ],
+      });
+      setOutlineError(errorMessage);
+    } finally {
+      setIsGenerating(false);
+      setOutlineLoading(false);
+    }
+  }, [
+    selectedFrame,
+    currentOutline,
+    claudeSessionId,
+    partySize,
+    partyTier,
+    sceneCount,
+    sessionLength,
+    tone,
+    themes,
+    pillarBalance,
+    lethality,
+    setClaudeSessionId,
+    setOutline,
+    setOutlineLoading,
+    setOutlineError,
+  ]);
 
   const handleSceneFeedback = useCallback((_feedback: string) => {
     // In full implementation, this would trigger MCP tool for scene revision
@@ -708,6 +826,8 @@ export function AdventurePage() {
             onBackToFrame={handleGoBack}
             frameName={selectedFrame?.name}
             expectedSceneCount={sceneCount}
+            isGenerating={isGenerating}
+            showPoweredBy={currentOutline !== null || claudeSessionId !== null}
             className="flex-1"
           />
         );
@@ -857,6 +977,14 @@ export function AdventurePage() {
           sessionId={sessionId}
           onResume={handleResume}
           onStartFresh={handleStartFresh}
+        />
+      )}
+
+      {/* Generation error modal */}
+      {generationError && (
+        <ErrorModal
+          error={generationError}
+          onClose={() => setGenerationError(null)}
         />
       )}
 
