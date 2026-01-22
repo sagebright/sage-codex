@@ -17,7 +17,8 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import type { CompiledNPC, StructuredErrorResponse } from '@dagger-app/shared-types';
+import { createPortal } from 'react-dom';
+import type { CompiledNPC, StructuredErrorResponse, CreateCustomFrameRequest, DaggerheartCustomFrame } from '@dagger-app/shared-types';
 
 // Adventure components
 import { PhaseProgressBar, PhaseNavigation, SessionRecoveryModal } from '@/components/adventure';
@@ -39,6 +40,9 @@ import {
   NPCList,
   ExportPanel,
 } from '@/components/content';
+
+// Custom Frame Wizard
+import { CustomFrameWizard } from '@/components/frames/CustomFrameWizard';
 
 // Services
 import { exportAdventure, type ExportData } from '@/services/adventureService';
@@ -462,6 +466,17 @@ export function AdventurePage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<StructuredErrorResponse | null>(null);
 
+  // Custom Frame Wizard state
+  const [showCustomFrameWizard, setShowCustomFrameWizard] = useState(false);
+  const [customFrameSaving, setCustomFrameSaving] = useState(false);
+  const [customFrameError, setCustomFrameError] = useState<string | null>(null);
+
+  // Content store actions for frame selection
+  const selectFrame = useContentStore((state) => state.selectFrame);
+  const confirmFrame = useContentStore((state) => state.confirmFrame);
+  const setAvailableFrames = useContentStore((state) => state.setAvailableFrames);
+  const availableFrames = useContentStore((state) => state.availableFrames);
+
   // =============================================================================
   // Phase Transition Handlers
   // =============================================================================
@@ -537,9 +552,70 @@ export function AdventurePage() {
   // =============================================================================
 
   const handleCreateCustomFrame = useCallback(() => {
-    // Switch back to dial-tuning to use chat for custom frame creation
-    setPhase('dial-tuning');
-  }, [setPhase]);
+    // Open the custom frame wizard modal
+    setShowCustomFrameWizard(true);
+    setCustomFrameError(null);
+  }, []);
+
+  const handleCustomFrameCancel = useCallback(() => {
+    setShowCustomFrameWizard(false);
+    setCustomFrameError(null);
+  }, []);
+
+  const handleCustomFrameComplete = useCallback(async (frameData: CreateCustomFrameRequest) => {
+    setCustomFrameSaving(true);
+    setCustomFrameError(null);
+
+    try {
+      const response = await fetch('/api/custom-frames', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(frameData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to create frame: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'Failed to create custom frame');
+      }
+
+      const createdFrame: DaggerheartCustomFrame = result.data;
+
+      // Convert DaggerheartCustomFrame to SelectedFrame format for store
+      const frameForSelection = {
+        id: createdFrame.id,
+        name: createdFrame.title,
+        description: createdFrame.concept,
+        themes: createdFrame.themes,
+        typical_adversaries: [],
+        lore: createdFrame.pitch,
+        source_book: 'Custom',
+        embedding: null,
+        created_at: createdFrame.created_at ?? new Date().toISOString(),
+        isCustom: true as const,
+      };
+
+      // Add to available frames list (mark as custom)
+      setAvailableFrames([...availableFrames, frameForSelection as never]);
+
+      // Auto-select and confirm the created frame
+      selectFrame(frameForSelection);
+      confirmFrame();
+
+      // Close wizard
+      setShowCustomFrameWizard(false);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to create custom frame';
+      setCustomFrameError(message);
+    } finally {
+      setCustomFrameSaving(false);
+    }
+  }, [availableFrames, setAvailableFrames, selectFrame, confirmFrame]);
 
   const handleGenerateOutline = useCallback(async (feedback?: string) => {
     if (!selectedFrame) {
@@ -986,6 +1062,46 @@ export function AdventurePage() {
           error={generationError}
           onClose={() => setGenerationError(null)}
         />
+      )}
+
+      {/* Custom Frame Wizard modal */}
+      {showCustomFrameWizard && createPortal(
+        <div
+          role="dialog"
+          aria-labelledby="custom-frame-wizard-title"
+          aria-modal="true"
+          className="fixed inset-0 bg-shadow-950/70 z-50 flex items-center justify-center animate-in fade-in duration-200"
+        >
+          <div className="bg-parchment-50 dark:bg-shadow-900 rounded-fantasy shadow-fantasy w-full max-w-2xl max-h-[90vh] mx-4 flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-ink-200 dark:border-shadow-600 flex items-center justify-between">
+              <h2
+                id="custom-frame-wizard-title"
+                className="font-serif text-xl font-bold text-ink-800 dark:text-parchment-100"
+              >
+                Create Custom Frame
+              </h2>
+              <button
+                type="button"
+                onClick={handleCustomFrameCancel}
+                className="p-2 text-ink-500 hover:text-ink-700 dark:text-parchment-500 dark:hover:text-parchment-300 rounded-fantasy transition-colors"
+                aria-label="Close wizard"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <CustomFrameWizard
+                onComplete={handleCustomFrameComplete}
+                onCancel={handleCustomFrameCancel}
+                isSaving={customFrameSaving}
+                saveError={customFrameError}
+              />
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {/* Header */}

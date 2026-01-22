@@ -22,3 +22,6 @@ export type { StepThemesProps } from './steps/StepThemes';
 
 export { StepReview } from './steps/StepReview';
 export type { StepReviewProps } from './steps/StepReview';
+
+export { AdvancedOptionsDisclosure } from './AdvancedOptionsDisclosure';
+export type { AdvancedOptionsDisclosureProps } from './AdvancedOptionsDisclosure';

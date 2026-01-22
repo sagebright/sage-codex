@@ -73,7 +73,7 @@ export function FramePanel({
   const setFramesLoading = useContentStore((state) => state.setFramesLoading);
   const setFramesError = useContentStore((state) => state.setFramesError);
 
-  // Fetch frames from backend on mount
+  // Fetch official frames and custom frames from backend on mount
   useEffect(() => {
     const fetchFrames = async () => {
       // Skip if already loading or frames are loaded
@@ -84,15 +84,50 @@ export function FramePanel({
       setFramesLoading(true);
 
       try {
-        const response = await fetch('/api/content/frames');
+        // Fetch official frames and custom frames in parallel
+        const [framesResponse, customFramesResponse] = await Promise.all([
+          fetch('/api/content/frames'),
+          fetch('/api/custom-frames'),
+        ]);
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || `HTTP error ${response.status}`);
+        if (!framesResponse.ok) {
+          const errorText = await framesResponse.text();
+          throw new Error(errorText || `HTTP error ${framesResponse.status}`);
         }
 
-        const data = await response.json();
-        setAvailableFrames(data.frames || []);
+        const framesData = await framesResponse.json();
+        const officialFrames = framesData.frames || [];
+
+        // Merge custom frames if available (convert to compatible format)
+        let allFrames = [...officialFrames];
+
+        if (customFramesResponse.ok) {
+          const customFramesData = await customFramesResponse.json();
+          if (customFramesData.success && customFramesData.data) {
+            const customFrames = customFramesData.data.map((cf: {
+              id: string;
+              title: string;
+              concept: string;
+              pitch: string;
+              themes: string[];
+              created_at?: string;
+            }) => ({
+              id: cf.id,
+              name: cf.title,
+              description: cf.concept,
+              themes: cf.themes,
+              typical_adversaries: [],
+              lore: cf.pitch,
+              source_book: 'Custom',
+              embedding: null,
+              created_at: cf.created_at ?? new Date().toISOString(),
+              isCustom: true as const,
+            }));
+            allFrames = [...allFrames, ...customFrames];
+          }
+        }
+
+        setAvailableFrames(allFrames);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to fetch frames';
         setFramesError(message);

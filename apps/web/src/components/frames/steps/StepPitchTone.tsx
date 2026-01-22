@@ -3,13 +3,16 @@
  *
  * Step 2 of the custom frame wizard.
  * Collects Pitch (textarea) and Tone & Feel (multi-select).
+ * Includes Advanced Options for Overview.
  * Fantasy-themed styling.
  */
 
 import { useId } from 'react';
+import { AdvancedOptionsDisclosure } from '../AdvancedOptionsDisclosure';
 
 /** Maximum character limit for pitch */
 const PITCH_MAX_LENGTH = 500;
+const OVERVIEW_MAX_LENGTH = 2000;
 
 /** Available tone options */
 const TONE_OPTIONS = [
@@ -26,10 +29,14 @@ export interface StepPitchToneProps {
   pitch: string;
   /** Currently selected tones */
   tones: string[];
+  /** Overview text (optional advanced) */
+  overview?: string;
   /** Callback when pitch changes */
   onPitchChange: (value: string) => void;
   /** Callback when tones change */
   onTonesChange: (value: string[]) => void;
+  /** Callback when overview changes */
+  onOverviewChange?: (value: string) => void;
   /** Validation errors */
   errors?: {
     pitch?: string;
@@ -42,14 +49,17 @@ export interface StepPitchToneProps {
 export function StepPitchTone({
   pitch,
   tones,
+  overview = '',
   onPitchChange,
   onTonesChange,
+  onOverviewChange,
   errors = {},
   className = '',
 }: StepPitchToneProps) {
   const pitchId = useId();
   const pitchErrorId = useId();
   const tonesErrorId = useId();
+  const overviewId = useId();
 
   const handleToneClick = (toneId: string) => {
     if (tones.includes(toneId)) {
@@ -155,6 +165,42 @@ export function StepPitchTone({
           </p>
         )}
       </div>
+
+      {/* Advanced Options - Overview */}
+      <AdvancedOptionsDisclosure>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-baseline">
+            <label
+              htmlFor={overviewId}
+              className="text-sm font-medium text-ink-700 dark:text-parchment-300"
+            >
+              Detailed Overview
+            </label>
+            <span className="text-xs text-ink-500 dark:text-parchment-500">
+              {overview.length} / {OVERVIEW_MAX_LENGTH}
+            </span>
+          </div>
+          <textarea
+            id={overviewId}
+            value={overview}
+            onChange={(e) => onOverviewChange?.(e.target.value.slice(0, OVERVIEW_MAX_LENGTH))}
+            placeholder="Provide a more detailed overview of your frame, including setting details, key factions, important locations, or historical context..."
+            rows={6}
+            className="
+              w-full px-4 py-3 rounded-fantasy border resize-none
+              bg-parchment-50 dark:bg-shadow-800
+              text-ink-900 dark:text-parchment-100
+              placeholder-ink-400 dark:placeholder-parchment-600
+              border-ink-300 dark:border-shadow-500
+              focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-gold-400
+              transition-all duration-200
+            "
+          />
+          <p className="text-xs text-ink-500 dark:text-parchment-500 italic">
+            This detailed overview will be used to provide richer context during adventure generation.
+          </p>
+        </div>
+      </AdvancedOptionsDisclosure>
     </div>
   );
 }

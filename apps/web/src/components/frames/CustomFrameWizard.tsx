@@ -33,6 +33,10 @@ export interface WizardFormData {
   pitch: string;
   tones: string[];
   themes: string[];
+  // Advanced options (optional)
+  complexityRating?: number;
+  touchstones?: string[];
+  overview?: string;
 }
 
 /** Initial empty form data */
@@ -42,6 +46,9 @@ const INITIAL_FORM_DATA: WizardFormData = {
   pitch: '',
   tones: [],
   themes: [],
+  complexityRating: undefined,
+  touchstones: [],
+  overview: '',
 };
 
 export interface CustomFrameWizardProps {
@@ -49,6 +56,10 @@ export interface CustomFrameWizardProps {
   onComplete: (data: CreateCustomFrameRequest) => void;
   /** Callback when wizard is cancelled */
   onCancel: () => void;
+  /** Whether the frame is currently being saved */
+  isSaving?: boolean;
+  /** Error message from save operation */
+  saveError?: string | null;
   /** Additional CSS classes */
   className?: string;
 }
@@ -56,6 +67,8 @@ export interface CustomFrameWizardProps {
 export function CustomFrameWizard({
   onComplete,
   onCancel,
+  isSaving = false,
+  saveError = null,
   className = '',
 }: CustomFrameWizardProps) {
   const headingId = useId();
@@ -144,6 +157,10 @@ export function CustomFrameWizard({
       pitch: formData.pitch.trim(),
       tone_feel: formData.tones,
       themes: formData.themes,
+      // Include advanced options if provided
+      ...(formData.complexityRating !== undefined && { complexity_rating: formData.complexityRating }),
+      ...(formData.touchstones && formData.touchstones.length > 0 && { touchstones: formData.touchstones }),
+      ...(formData.overview && formData.overview.trim() && { overview: formData.overview.trim() }),
     };
     onComplete(requestData);
   }, [formData, onComplete]);
@@ -156,8 +173,12 @@ export function CustomFrameWizard({
           <StepBasics
             title={formData.title}
             concept={formData.concept}
+            complexityRating={formData.complexityRating}
+            touchstones={formData.touchstones}
             onTitleChange={(value) => updateField('title', value)}
             onConceptChange={(value) => updateField('concept', value)}
+            onComplexityRatingChange={(value) => updateField('complexityRating', value)}
+            onTouchstonesChange={(value) => updateField('touchstones', value)}
             errors={{ title: errors.title, concept: errors.concept }}
           />
         );
@@ -167,8 +188,10 @@ export function CustomFrameWizard({
           <StepPitchTone
             pitch={formData.pitch}
             tones={formData.tones}
+            overview={formData.overview}
             onPitchChange={(value) => updateField('pitch', value)}
             onTonesChange={(value) => updateField('tones', value)}
+            onOverviewChange={(value) => updateField('overview', value)}
             errors={{ pitch: errors.pitch, tones: errors.tones }}
           />
         );
@@ -238,12 +261,22 @@ export function CustomFrameWizard({
 
       {/* Footer with navigation buttons */}
       <div className="p-4 border-t border-ink-200 dark:border-shadow-600 bg-parchment-100 dark:bg-shadow-800">
+        {/* Error message */}
+        {saveError && (
+          <div
+            role="alert"
+            className="mb-3 p-3 rounded-fantasy bg-blood-50 dark:bg-blood-900/30 border border-blood-200 dark:border-blood-800 text-blood-700 dark:text-blood-300 text-sm"
+          >
+            {saveError}
+          </div>
+        )}
         <div className="flex justify-between">
           {/* Left side: Cancel and Back */}
           <div className="flex gap-2">
             <button
               type="button"
               onClick={onCancel}
+              disabled={isSaving}
               className="
                 px-4 py-2 text-sm font-medium rounded-fantasy border
                 bg-transparent border-ink-300 text-ink-600
@@ -251,6 +284,7 @@ export function CustomFrameWizard({
                 dark:border-shadow-500 dark:text-parchment-400
                 dark:hover:bg-shadow-700 dark:hover:border-shadow-400
                 transition-colors duration-200
+                disabled:opacity-50 disabled:cursor-not-allowed
               "
             >
               Cancel
@@ -260,6 +294,7 @@ export function CustomFrameWizard({
               <button
                 type="button"
                 onClick={handleBack}
+                disabled={isSaving}
                 className="
                   px-4 py-2 text-sm font-medium rounded-fantasy border
                   bg-transparent border-ink-300 text-ink-600
@@ -267,6 +302,7 @@ export function CustomFrameWizard({
                   dark:border-shadow-500 dark:text-parchment-400
                   dark:hover:bg-shadow-700 dark:hover:border-shadow-400
                   transition-colors duration-200
+                  disabled:opacity-50 disabled:cursor-not-allowed
                 "
               >
                 Back
@@ -280,6 +316,7 @@ export function CustomFrameWizard({
               <button
                 type="button"
                 onClick={handleCreate}
+                disabled={isSaving}
                 className="
                   px-6 py-2 text-sm font-semibold rounded-fantasy border-2
                   bg-gold-500 border-gold-600 text-ink-900
@@ -287,9 +324,14 @@ export function CustomFrameWizard({
                   dark:bg-gold-600 dark:border-gold-500 dark:text-shadow-900
                   dark:hover:bg-gold-500 dark:hover:border-gold-400
                   transition-colors duration-200
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  flex items-center gap-2
                 "
               >
-                Create Frame
+                {isSaving && (
+                  <div className="w-4 h-4 border-2 border-ink-400 border-t-ink-900 rounded-full animate-spin" />
+                )}
+                {isSaving ? 'Creating...' : 'Create Frame'}
               </button>
             ) : (
               <button

@@ -31,6 +31,14 @@ const TONE_LABELS: Record<string, string> = {
   'intimate': 'Intimate',
 };
 
+/** Complexity rating descriptions */
+const COMPLEXITY_LABELS: Record<number, string> = {
+  1: 'Simple',
+  2: 'Moderate',
+  3: 'Complex',
+  4: 'Advanced',
+};
+
 /** Map theme IDs to display labels */
 const THEME_LABELS: Record<string, string> = {
   'redemption': 'Redemption',
@@ -150,6 +158,48 @@ export function StepReview({
           ))}
         </div>
       </section>
+
+      {/* Advanced Options Section (only show if any advanced options are set) */}
+      {(formData.complexityRating || (formData.touchstones && formData.touchstones.length > 0) || formData.overview) && (
+        <section className="rounded-fantasy border border-ink-200 dark:border-shadow-600 p-4 bg-parchment-50/50 dark:bg-shadow-800/50">
+          <h3 className="text-sm font-semibold text-ink-700 dark:text-parchment-300 mb-3">
+            Advanced Options
+          </h3>
+          <dl className="flex flex-col gap-3">
+            {formData.complexityRating && (
+              <div>
+                <dt className="text-xs text-ink-500 dark:text-parchment-500">Complexity Rating</dt>
+                <dd className="text-sm text-ink-700 dark:text-parchment-300">
+                  {formData.complexityRating} - {COMPLEXITY_LABELS[formData.complexityRating]}
+                </dd>
+              </div>
+            )}
+            {formData.touchstones && formData.touchstones.length > 0 && (
+              <div>
+                <dt className="text-xs text-ink-500 dark:text-parchment-500">Touchstones</dt>
+                <dd className="flex flex-wrap gap-1 mt-1">
+                  {formData.touchstones.map((touchstone, index) => (
+                    <span
+                      key={index}
+                      className="px-2 py-0.5 text-xs rounded-full bg-parchment-200 dark:bg-shadow-700 text-ink-700 dark:text-parchment-300"
+                    >
+                      {touchstone}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+            {formData.overview && (
+              <div>
+                <dt className="text-xs text-ink-500 dark:text-parchment-500">Overview</dt>
+                <dd className="text-sm text-ink-700 dark:text-parchment-300 line-clamp-3">
+                  {formData.overview}
+                </dd>
+              </div>
+            )}
+          </dl>
+        </section>
+      )}
     </div>
   );
 }
