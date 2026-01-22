@@ -16,7 +16,6 @@ import {
   selectCanProceedToScenes,
   selectSceneBriefs,
   selectOutlineTitle,
-  selectOutlineStatus,
 } from '../../stores/contentStore';
 
 export interface OutlinePanelProps {
@@ -61,7 +60,8 @@ export function OutlinePanel({
   const canProceed = useContentStore(selectCanProceedToScenes);
   const sceneBriefs = useContentStore(selectSceneBriefs);
   const outlineTitle = useContentStore(selectOutlineTitle);
-  const { loading, error } = useContentStore(selectOutlineStatus);
+  const loading = useContentStore((state) => state.outlineLoading);
+  const error = useContentStore((state) => state.outlineError);
   const currentOutline = useContentStore((state) => state.currentOutline);
 
   // Store actions
