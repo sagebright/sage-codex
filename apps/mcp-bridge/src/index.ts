@@ -33,7 +33,7 @@ app.use('/health', healthRouter);
 app.use('/chat', chatRouter);
 app.use('/content', contentRouter);
 app.use('/adventure', adventureRouter);
-app.use('/api/custom-frames', customFramesRouter);
+app.use('/custom-frames', customFramesRouter);
 
 // WebSocket server (shares same port via HTTP upgrade)
 const wss = createWebSocketServer(server);
