@@ -569,6 +569,100 @@ describe('Content Route', () => {
         expect(scene.keyElements?.length).toBeGreaterThan(0);
       });
     });
+
+    // =========================================================================
+    // Error Scenarios (500/503 responses)
+    // =========================================================================
+
+    it('should return 500 with GENERATION_FAILED when Claude CLI times out', async () => {
+      vi.mocked(claudeCli.invokeClaudeCli).mockRejectedValue(
+        new Error('Claude CLI timed out after 90000ms')
+      );
+
+      const response = await request(app)
+        .post('/content/outline/generate')
+        .send({
+          frame: mockFrame,
+          dialsSummary: mockDialsSummary,
+        });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty('error', 'GENERATION_FAILED');
+      expect(response.body).toHaveProperty('title', 'Outline Generation Failed');
+      expect(response.body).toHaveProperty('instructions');
+      expect(Array.isArray(response.body.instructions)).toBe(true);
+    });
+
+    it('should return 503 with CLAUDE_NOT_AVAILABLE when CLI is not installed', async () => {
+      vi.mocked(claudeCli.invokeClaudeCli).mockRejectedValue(
+        new Error('CLAUDE_NOT_AVAILABLE: Claude Code CLI is not installed')
+      );
+
+      const response = await request(app)
+        .post('/content/outline/generate')
+        .send({
+          frame: mockFrame,
+          dialsSummary: mockDialsSummary,
+        });
+
+      expect(response.status).toBe(503);
+      expect(response.body).toHaveProperty('error', 'CLAUDE_NOT_AVAILABLE');
+      expect(response.body).toHaveProperty('title', 'Claude Code Not Available');
+      expect(response.body).toHaveProperty('instructions');
+      expect(response.body.instructions).toContain(
+        'Install Claude Code: curl -fsSL https://claude.ai/install.sh | bash'
+      );
+    });
+
+    it('should return 500 with GENERATION_FAILED when Claude CLI spawn fails', async () => {
+      vi.mocked(claudeCli.invokeClaudeCli).mockRejectedValue(
+        new Error('Failed to spawn Claude CLI: spawn claude ENOENT')
+      );
+
+      const response = await request(app)
+        .post('/content/outline/generate')
+        .send({
+          frame: mockFrame,
+          dialsSummary: mockDialsSummary,
+        });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty('error', 'GENERATION_FAILED');
+      expect(response.body).toHaveProperty('title', 'Outline Generation Failed');
+    });
+
+    it('should return 500 when Claude CLI returns non-zero exit code', async () => {
+      vi.mocked(claudeCli.invokeClaudeCli).mockRejectedValue(
+        new Error('Claude CLI exited with code 1: Authentication failed')
+      );
+
+      const response = await request(app)
+        .post('/content/outline/generate')
+        .send({
+          frame: mockFrame,
+          dialsSummary: mockDialsSummary,
+        });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty('error', 'GENERATION_FAILED');
+    });
+
+    it('should return 500 when outline parsing fails', async () => {
+      vi.mocked(claudeCli.invokeClaudeCli).mockResolvedValue({
+        output: 'This is not valid JSON',
+        jsonResponse: undefined,
+      });
+
+      const response = await request(app)
+        .post('/content/outline/generate')
+        .send({
+          frame: mockFrame,
+          dialsSummary: mockDialsSummary,
+        });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty('error', 'GENERATION_FAILED');
+    });
   });
 
   // ==========================================================================
