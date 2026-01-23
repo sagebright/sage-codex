@@ -49,25 +49,77 @@ Activation flow: After base questions, offer "Quick defaults / Deep dive / Mark 
 ### 1.4 `/create-template` Command
 **Files**: `~/.claude/commands/create-template.md`
 
-New command for creating templates through guided conversation:
-1. Template identity (name, type, description)
-2. Expert persona generation
-3. Workflow type (dial_tuning vs branching)
-4. **Pipeline declaration** (direct_to_issues vs full_refinement)
-5. Phase definition
-6. Output definition (files, directories, GitHub integration)
-7. File generation to `~/.claude/templates/<id>/`
+A conversational research process for creating project templates. Templates are "containers with defined expected outputs" - running `/create-project <template>` fills the container with project-specific details.
 
-### 1.5 Design Awareness in Persona
-**Files**: `~/.claude/templates/software/PLANNING_SKILL.md`
+**Phase 1: Template Identity**
+1. Name the template and its domain (e.g., "functional-spec", "event-planning", "book-creation")
+2. Define expected output format: markdown docs, GitHub issues, or file scaffolding
+3. Declare pipeline: `direct_to_issues` vs `full_refinement`
 
-Add design style awareness section with reference patterns:
-- Minimalist/Clean (Apple, Linear)
-- Bold/Expressive (Stripe, Vercel)
-- Corporate/Professional (Salesforce)
-- Playful/Creative (Slack, Mailchimp)
+**Phase 2: Domain Research** (CRITICAL)
+4. Claude researches the domain to identify all atomic building blocks
+   - Essential components of this project type
+   - Questions a domain expert would ask
+   - Common variations and edge cases
+5. Present findings: "Based on my research, a [domain] typically includes..."
 
-Probe for style references during frontend questions.
+**Phase 3: Component Validation**
+6. Together validate which components are:
+   - **Always present** (required in all projects of this type)
+   - **Sometimes present** (conditional on project specifics)
+   - **Optional** (nice-to-have, can be deferred)
+
+**Phase 4: Template Generation**
+7. Generate template files to `~/.claude/templates/<id>/`:
+   - `template.yaml` - Configuration with phases, dials/branches, outputs
+   - `PLANNING_SKILL.md` - Expert persona for this domain
+   - Supporting files as needed
+
+**Phase 5: Validation**
+8. Test template against 2-3 hypothetical use cases
+9. Refine based on gaps discovered
+
+### 1.5 Design Persona Framework
+**Files**: `~/.claude/skills/design-personas/SKILL.md`, `~/.claude/design-personas/*.yaml`
+
+Design personas are **skills** (not templates) that constrain how an agent executes design-related work. They are domain-and-audience specific.
+
+> **Key Distinction**: Project templates define *what* we're building; design personas define *how* design work gets executed.
+
+**1.5.1 Design Persona Categories** (11 total)
+
+| Category | Description | Examples |
+|----------|-------------|----------|
+| Domain | Industry/context | B2B SaaS, TTRPG, e-commerce |
+| Audience | Who will use it | Enterprise users, gamers, children |
+| Emotional Goals | Feelings to evoke | Trust, excitement, wonder |
+| Desired Actions | What users should do | Sign up, explore, purchase |
+| Color Strategy | Palette approach | Muted/professional, bold/playful |
+| Animation Boundaries | Motion philosophy | Minimal/subtle, expressive |
+| Typography Rules | Text hierarchy | Dense data tables, readable prose |
+| Layout Conventions | Spatial patterns | Dashboard grids, card layouts |
+| Component Vocabulary | UI patterns | Data viz heavy, form-centric |
+| Accessibility | WCAG compliance | AA/AAA, keyboard nav, screen reader |
+| Brand Voice | Copy and terminology | Formal/casual, technical/friendly |
+
+**1.5.2 Persona Instantiation**
+
+Create persona instances as YAML files in `~/.claude/design-personas/`:
+- `b2b-saas.yaml` - Enterprise software (muted, data-dense, AA accessibility)
+- `ttrpg.yaml` - Gaming/fantasy (expressive, themed, immersive)
+- `youth.yaml` - Youth-oriented (bold, playful, AAA accessibility)
+
+**1.5.3 Integration Points**
+
+1. **During Project Creation**: Auto-assign based on project type + audience
+2. **At Issue Level**: Assign via GitHub labels (`design` + `frontend`)
+
+**1.5.4 Implementation**
+
+Single skill with persona selection (may refactor to multiple skills as library grows):
+- Skill auto-activates on frontend design work
+- Loads active persona from project state or issue assignment
+- Enforces constraints during component generation
 
 ---
 
@@ -130,28 +182,42 @@ Script monitors inbox for specific senders → triggers Claude analysis → send
 
 ---
 
-## Phase 4: Designer Persona Framework
+## Phase 4: Design Persona Instances
 
-### 4.1 Persona Schema Definition
-Based on NPC framework (22 traits + 7 layers), create designer-specific schema:
+> **Note**: Phase 4 implements the framework defined in Section 1.5. Create this after the design-personas skill is working.
 
-**Designer Voiceprint Traits** (subset):
-- Boldness (conservative ↔ experimental)
-- Density (minimal ↔ rich)
-- Formality (playful ↔ corporate)
-- Motion (static ↔ animated)
+### 4.1 Create Core Personas
 
-**Designer Layers**:
-- Design Philosophy (principles, values)
-- Reference Library (brands, sites to emulate)
-- Technical Constraints (frameworks, components)
-- Color Strategy (palette generation approach)
-- Typography Rules (scale, pairing)
+Using the 11-category schema from 1.5.1, create initial persona instances:
 
-### 4.2 Integration Point
-Designer personas become a depth module or template add-on:
-- `/create-project software --design-persona b2b-dashboard`
-- Loads persona definition, influences all frontend questions
+**B2B SaaS** (`~/.claude/design-personas/b2b-saas.yaml`):
+- Emotional goals: trust, reliability, efficiency
+- Color: muted professional, blue primary
+- Animation: subtle (micro-interactions, loading states only)
+- Typography: compact, scannable, data-dense
+- Accessibility: WCAG AA, keyboard nav required
+
+**TTRPG/Gaming** (`~/.claude/design-personas/ttrpg.yaml`):
+- Emotional goals: excitement, wonder, immersion
+- Color: themed palettes (fantasy, sci-fi variants)
+- Animation: expressive, atmospheric
+- Typography: readable prose, dramatic headers
+- Accessibility: WCAG AA, accommodates long reading sessions
+
+**Youth-Oriented** (`~/.claude/design-personas/youth.yaml`):
+- Emotional goals: fun, engagement, discovery
+- Color: bold, high-contrast, playful
+- Animation: expressive but not distracting
+- Typography: large, clear, scannable
+- Accessibility: WCAG AAA, supports emerging readers
+
+### 4.2 Persona Voiceprint Traits (for fine-tuning)
+
+Optional spectrum-based adjustments within any persona:
+- **Boldness**: conservative ↔ experimental
+- **Density**: minimal ↔ rich
+- **Formality**: playful ↔ corporate
+- **Motion**: static ↔ animated
 
 ---
 
@@ -226,8 +292,12 @@ Defer until remote triggers work. MVP features:
 1. Verify template.yaml accepts `pipeline: direct_to_issues | full_refinement`
 2. Run `/create-project software` and verify depth module activation prompts appear
 3. Create test issue with `needs_refinement` status, verify `[REFINE]` prefix
-4. Run `/create-template` and generate a "functional-spec" template with `direct_to_issues` pipeline
-5. Verify functional-spec skips refine-plan and goes directly to create-issues
+4. Run `/create-template` and verify research phase triggers before file generation
+5. Verify Claude presents domain research findings for user validation
+6. Verify generated template includes all required files (template.yaml, PLANNING_SKILL.md)
+7. Verify design-personas skill auto-activates on frontend design work
+8. Verify persona constraints (colors, animations, accessibility) are applied during component generation
+9. Test persona assignment at both project and issue level
 
 ### Phase 2 Verification
 1. Add debug logging to hook configuration
@@ -248,14 +318,16 @@ Defer until remote triggers work. MVP features:
 | 1.1 | Template pipeline config | Low | None |
 | 1.2 | Issue status schema | Low | 1.1 |
 | 1.3 | Depth modules | Medium | 1.2 |
-| 1.4 | `/create-template` | Medium | 1.3 (for testing) |
-| 1.5 | Design awareness | Low | None |
+| 1.4 | `/create-template` with research phase | Medium | 1.3 (for testing) |
+| 1.5.1 | Design persona categories (research) | Low | None |
+| 1.5.2-4 | Design persona skill implementation | Medium | 1.5.1 |
 | 2.1 | Hook debugging | Low | None |
 | 2.2 | Hookify audit | Low | 2.1 |
 | 3.1 | Inbound triggers | Medium | None |
 | 3.2 | Scheduled jobs | Low | 3.1 |
 | 3.3 | Email monitoring | Medium | 3.1 |
-| 4 | Designer personas | Medium | 1.2, 1.4 |
+| 4.1 | Create core persona instances (B2B, TTRPG, Youth) | Low | 1.5.2-4 |
+| 4.2 | Voiceprint trait fine-tuning | Low | 4.1 |
 | 5 | Daggerhart expansion | High | None (separate project) |
 | 6 | NPC operationalization | Medium | None |
 | 7 | Companion app | High | 3.x complete |
@@ -271,6 +343,8 @@ Defer until remote triggers work. MVP features:
 - `~/.claude/templates/software/PLANNING_SKILL.md`
 - `~/.claude/templates/software/GITHUB_INTEGRATION.md`
 - `~/.claude/templates/software/depth-modules/*.yaml` (new)
+- `~/.claude/skills/design-personas/SKILL.md` (new)
+- `~/.claude/design-personas/*.yaml` (new - persona instances)
 
 **Phase 2:**
 - `~/.claude/settings.json`
