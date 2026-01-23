@@ -19,10 +19,14 @@ export interface DialGroupProps {
   title: string;
   /** Child elements - typically DialCard components */
   children: ReactNode;
+  /** Number of columns at lg breakpoint (default: 3) */
+  lgColumns?: 2 | 3;
 }
 
-export function DialGroup({ title, children }: DialGroupProps) {
+export function DialGroup({ title, children, lgColumns = 3 }: DialGroupProps) {
   const headerId = useId();
+
+  const lgGridClass = lgColumns === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3';
 
   return (
     <section
@@ -50,7 +54,7 @@ export function DialGroup({ title, children }: DialGroupProps) {
       {/* Responsive Grid */}
       <div
         data-testid="dial-group-grid"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass} gap-4`}
       >
         {children}
       </div>

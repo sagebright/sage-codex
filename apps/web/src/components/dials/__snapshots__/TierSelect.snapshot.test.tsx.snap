@@ -11,13 +11,13 @@ exports[`TierSelect Snapshots > Dark Mode > renders disabled state 1`] = `
   </label>
   <div
     aria-label="Party Tier Selection"
-    class="flex gap-2"
+    class="flex flex-wrap gap-2 max-w-2xl"
     role="group"
   >
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
@@ -38,7 +38,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders disabled state 1`] = `
     <button
       aria-pressed="true"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-gold-100 border-gold-400 text-ink-900 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 dark:text-parchment-100
               "
@@ -59,7 +59,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders disabled state 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
@@ -80,7 +80,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders disabled state 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
@@ -113,13 +113,13 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 1 selected 1`] = `
   </label>
   <div
     aria-label="Party Tier Selection"
-    class="flex gap-2"
+    class="flex flex-wrap gap-2 max-w-2xl"
     role="group"
   >
     <button
       aria-pressed="true"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-gold-100 border-gold-400 text-ink-900 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 dark:text-parchment-100
               "
@@ -139,7 +139,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 1 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -159,7 +159,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 1 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -179,7 +179,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 1 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -211,13 +211,13 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 4 selected 1`] = `
   </label>
   <div
     aria-label="Party Tier Selection"
-    class="flex gap-2"
+    class="flex flex-wrap gap-2 max-w-2xl"
     role="group"
   >
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -237,7 +237,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 4 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -257,7 +257,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 4 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -277,7 +277,7 @@ exports[`TierSelect Snapshots > Dark Mode > renders tier 4 selected 1`] = `
     <button
       aria-pressed="true"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-gold-100 border-gold-400 text-ink-900 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 dark:text-parchment-100
               "
@@ -309,13 +309,13 @@ exports[`TierSelect Snapshots > Light Mode > renders disabled state 1`] = `
   </label>
   <div
     aria-label="Party Tier Selection"
-    class="flex gap-2"
+    class="flex flex-wrap gap-2 max-w-2xl"
     role="group"
   >
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
@@ -336,7 +336,7 @@ exports[`TierSelect Snapshots > Light Mode > renders disabled state 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
@@ -357,7 +357,7 @@ exports[`TierSelect Snapshots > Light Mode > renders disabled state 1`] = `
     <button
       aria-pressed="true"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-gold-100 border-gold-400 text-ink-900 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 dark:text-parchment-100
               "
@@ -378,7 +378,7 @@ exports[`TierSelect Snapshots > Light Mode > renders disabled state 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
@@ -411,13 +411,13 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 1 selected 1`] = `
   </label>
   <div
     aria-label="Party Tier Selection"
-    class="flex gap-2"
+    class="flex flex-wrap gap-2 max-w-2xl"
     role="group"
   >
     <button
       aria-pressed="true"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-gold-100 border-gold-400 text-ink-900 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 dark:text-parchment-100
               "
@@ -437,7 +437,7 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 1 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -457,7 +457,7 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 1 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -477,7 +477,7 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 1 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -509,13 +509,13 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 2 selected 1`] = `
   </label>
   <div
     aria-label="Party Tier Selection"
-    class="flex gap-2"
+    class="flex flex-wrap gap-2 max-w-2xl"
     role="group"
   >
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -535,7 +535,7 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 2 selected 1`] = `
     <button
       aria-pressed="true"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-gold-100 border-gold-400 text-ink-900 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 dark:text-parchment-100
               "
@@ -555,7 +555,7 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 2 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "
@@ -575,7 +575,7 @@ exports[`TierSelect Snapshots > Light Mode > renders tier 2 selected 1`] = `
     <button
       aria-pressed="false"
       class="
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:text-parchment-200 dark:hover:bg-gold-900/20 dark:hover:border-gold-600
               "

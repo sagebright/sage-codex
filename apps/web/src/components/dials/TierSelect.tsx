@@ -50,7 +50,7 @@ export function TierSelect({
           {label}
         </label>
       )}
-      <div role="group" aria-label="Party Tier Selection" className="flex gap-2">
+      <div role="group" aria-label="Party Tier Selection" className="flex flex-wrap gap-2 max-w-2xl">
         {TIERS.map((tier) => {
           const info = TIER_INFO[tier];
           const isSelected = tier === value;
@@ -63,7 +63,7 @@ export function TierSelect({
               disabled={disabled}
               aria-pressed={isSelected}
               className={`
-                flex-1 flex flex-col items-center justify-center py-2 px-3
+                flex-1 min-w-[100px] max-w-[180px] flex flex-col items-center justify-center py-2 px-3
                 rounded-fantasy border transition-all duration-200
                 ${
                   isSelected

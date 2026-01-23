@@ -362,12 +362,22 @@ describe('DialTuningPanel', () => {
       // Find all dial group grids
       const grids = screen.getAllByTestId('dial-group-grid');
 
-      // Each should have responsive classes
+      // All groups should have mobile-first and tablet breakpoints
       grids.forEach((grid) => {
         expect(grid).toHaveClass('grid-cols-1');
         expect(grid).toHaveClass('md:grid-cols-2');
-        expect(grid).toHaveClass('lg:grid-cols-3');
       });
+
+      // Party and Session groups use 2 columns at lg for visual balance
+      // Atmosphere and Themes groups use 3 columns at lg for more content
+      // (See issue #80 for layout rebalancing decision)
+      const lgColCounts = grids.map((grid) => {
+        if (grid.className.includes('lg:grid-cols-3')) return 3;
+        if (grid.className.includes('lg:grid-cols-2')) return 2;
+        return 0;
+      });
+      // Party (2), Session (2), Atmosphere (3), Themes (3)
+      expect(lgColCounts).toEqual([2, 2, 3, 3]);
     });
   });
 

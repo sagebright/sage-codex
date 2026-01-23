@@ -172,7 +172,7 @@ export function DialTuningPanel({
       </div>
 
       {/* Party Group */}
-      <DialGroup title="Party">
+      <DialGroup title="Party" lgColumns={2}>
         <DialCard
           label="Party Size"
           description="Number of players at the table"
@@ -207,7 +207,7 @@ export function DialTuningPanel({
       </DialGroup>
 
       {/* Session Group */}
-      <DialGroup title="Session">
+      <DialGroup title="Session" lgColumns={2}>
         <DialCard
           label="Session Length"
           description="Target session duration"
