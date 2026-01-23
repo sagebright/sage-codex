@@ -16,15 +16,24 @@ describe('ToneSelect', () => {
     mockOnChange.mockClear();
   });
 
+  /** Helper to get tone option buttons (excluding regenerate buttons) */
+  const getToneButton = (name: RegExp) => {
+    // Tone buttons have aria-pressed attribute, regenerate buttons don't
+    const buttons = screen.getAllByRole('button');
+    return buttons.find(
+      (btn) => btn.hasAttribute('aria-pressed') && btn.textContent?.match(name)
+    );
+  };
+
   describe('rendering', () => {
     it('renders all five tone options', () => {
       render(<ToneSelect value="balanced" onChange={mockOnChange} />);
 
-      expect(screen.getByRole('button', { name: /grim/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /serious/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /balanced/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /lighthearted/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /whimsical/i })).toBeInTheDocument();
+      expect(getToneButton(/Grim/)).toBeInTheDocument();
+      expect(getToneButton(/Serious/)).toBeInTheDocument();
+      expect(getToneButton(/Balanced/)).toBeInTheDocument();
+      expect(getToneButton(/Lighthearted/)).toBeInTheDocument();
+      expect(getToneButton(/Whimsical/)).toBeInTheDocument();
     });
 
     it('shows descriptions for each tone option', () => {
@@ -40,7 +49,7 @@ describe('ToneSelect', () => {
     it('highlights selected tone with aria-pressed', () => {
       render(<ToneSelect value="serious" onChange={mockOnChange} />);
 
-      const seriousButton = screen.getByRole('button', { name: /serious/i });
+      const seriousButton = getToneButton(/Serious/);
       expect(seriousButton).toHaveAttribute('aria-pressed', 'true');
     });
 
@@ -64,7 +73,8 @@ describe('ToneSelect', () => {
       const user = userEvent.setup();
       render(<ToneSelect value="balanced" onChange={mockOnChange} />);
 
-      await user.click(screen.getByRole('button', { name: /grim/i }));
+      const grimButton = getToneButton(/Grim/);
+      await user.click(grimButton!);
 
       expect(mockOnChange).toHaveBeenCalledWith('grim');
     });
@@ -73,7 +83,8 @@ describe('ToneSelect', () => {
       const user = userEvent.setup();
       render(<ToneSelect value="balanced" onChange={mockOnChange} />);
 
-      await user.click(screen.getByRole('button', { name: /balanced/i }));
+      const balancedButton = getToneButton(/Balanced/);
+      await user.click(balancedButton!);
 
       expect(mockOnChange).not.toHaveBeenCalled();
     });
@@ -81,31 +92,32 @@ describe('ToneSelect', () => {
     it('updates visual selection on value change', () => {
       const { rerender } = render(<ToneSelect value="grim" onChange={mockOnChange} />);
 
-      expect(screen.getByRole('button', { name: /grim/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(getToneButton(/Grim/)).toHaveAttribute('aria-pressed', 'true');
 
       rerender(<ToneSelect value="whimsical" onChange={mockOnChange} />);
 
-      expect(screen.getByRole('button', { name: /grim/i })).toHaveAttribute('aria-pressed', 'false');
-      expect(screen.getByRole('button', { name: /whimsical/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(getToneButton(/Grim/)).toHaveAttribute('aria-pressed', 'false');
+      expect(getToneButton(/Whimsical/)).toHaveAttribute('aria-pressed', 'true');
     });
   });
 
   describe('disabled state', () => {
-    it('disables all buttons when disabled', () => {
+    it('disables all tone buttons when disabled', () => {
       render(<ToneSelect value="balanced" onChange={mockOnChange} disabled />);
 
-      expect(screen.getByRole('button', { name: /grim/i })).toBeDisabled();
-      expect(screen.getByRole('button', { name: /serious/i })).toBeDisabled();
-      expect(screen.getByRole('button', { name: /balanced/i })).toBeDisabled();
-      expect(screen.getByRole('button', { name: /lighthearted/i })).toBeDisabled();
-      expect(screen.getByRole('button', { name: /whimsical/i })).toBeDisabled();
+      expect(getToneButton(/Grim/)).toBeDisabled();
+      expect(getToneButton(/Serious/)).toBeDisabled();
+      expect(getToneButton(/Balanced/)).toBeDisabled();
+      expect(getToneButton(/Lighthearted/)).toBeDisabled();
+      expect(getToneButton(/Whimsical/)).toBeDisabled();
     });
 
     it('does not call onChange when disabled', async () => {
       const user = userEvent.setup();
       render(<ToneSelect value="balanced" onChange={mockOnChange} disabled />);
 
-      await user.click(screen.getByRole('button', { name: /grim/i }));
+      const grimButton = getToneButton(/Grim/);
+      await user.click(grimButton!);
 
       expect(mockOnChange).not.toHaveBeenCalled();
     });
@@ -118,11 +130,69 @@ describe('ToneSelect', () => {
       expect(screen.getByRole('group')).toBeInTheDocument();
     });
 
-    it('buttons have aria-pressed state', () => {
+    it('tone buttons have aria-pressed state', () => {
       render(<ToneSelect value="serious" onChange={mockOnChange} />);
 
-      expect(screen.getByRole('button', { name: /grim/i })).toHaveAttribute('aria-pressed', 'false');
-      expect(screen.getByRole('button', { name: /serious/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(getToneButton(/Grim/)).toHaveAttribute('aria-pressed', 'false');
+      expect(getToneButton(/Serious/)).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
+  describe('AI example stubs', () => {
+    it('displays pop culture example for each tone option', () => {
+      render(<ToneSelect value="balanced" onChange={mockOnChange} />);
+
+      // Check that examples are displayed for each tone
+      expect(screen.getByText(/like 'Game of Thrones'/i)).toBeInTheDocument();
+      expect(screen.getByText(/like 'The Princess Bride'/i)).toBeInTheDocument();
+      expect(screen.getByText(/like 'Monty Python/i)).toBeInTheDocument();
+    });
+
+    it('styles examples as secondary/muted text', () => {
+      render(<ToneSelect value="balanced" onChange={mockOnChange} />);
+
+      const exampleText = screen.getByText(/like 'Game of Thrones'/i);
+      expect(exampleText).toHaveClass('text-ink-400');
+    });
+
+    it('renders regenerate button for each tone option', () => {
+      render(<ToneSelect value="balanced" onChange={mockOnChange} />);
+
+      const regenerateButtons = screen.getAllByRole('button', { name: /regenerate example/i });
+      expect(regenerateButtons).toHaveLength(5); // One for each tone option
+    });
+
+    it('regenerate button logs to console when clicked', async () => {
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const user = userEvent.setup();
+      render(<ToneSelect value="balanced" onChange={mockOnChange} />);
+
+      const regenerateButtons = screen.getAllByRole('button', { name: /regenerate example/i });
+      await user.click(regenerateButtons[0]);
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Regenerate example')
+      );
+      consoleSpy.mockRestore();
+    });
+
+    it('regenerate button does not trigger tone change', async () => {
+      const user = userEvent.setup();
+      render(<ToneSelect value="balanced" onChange={mockOnChange} />);
+
+      const regenerateButtons = screen.getAllByRole('button', { name: /regenerate example/i });
+      await user.click(regenerateButtons[0]);
+
+      expect(mockOnChange).not.toHaveBeenCalled();
+    });
+
+    it('regenerate button is visible within each option', () => {
+      render(<ToneSelect value="grim" onChange={mockOnChange} />);
+
+      const regenerateButtons = screen.getAllByRole('button', { name: /regenerate example/i });
+      regenerateButtons.forEach((button) => {
+        expect(button).toBeVisible();
+      });
     });
   });
 });
