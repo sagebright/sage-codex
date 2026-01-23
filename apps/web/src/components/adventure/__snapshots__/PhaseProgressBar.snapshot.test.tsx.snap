@@ -312,7 +312,7 @@ exports[`PhaseProgressBar Snapshots > at complete phase > renders correctly with
         <div
           class="
                     w-2 h-2 rounded-full transition-all duration-300
-                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow
                   "
           data-testid="phase-dot"
         />
@@ -510,7 +510,7 @@ exports[`PhaseProgressBar Snapshots > at mid-phase (scenes) > renders correctly 
         <div
           class="
                     w-2 h-2 rounded-full transition-all duration-300
-                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow
                   "
           data-testid="phase-dot"
         />
@@ -736,7 +736,7 @@ exports[`PhaseProgressBar Snapshots > at setup phase > renders correctly with lo
         <div
           class="
                     w-2 h-2 rounded-full transition-all duration-300
-                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow
                   "
           data-testid="phase-dot"
         />
@@ -1074,7 +1074,7 @@ exports[`PhaseProgressBar Snapshots > at setup phase > renders correctly with sh
         <div
           class="
                     w-2 h-2 rounded-full transition-all duration-300
-                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow
                   "
           data-testid="phase-dot"
         />
@@ -1468,7 +1468,7 @@ exports[`PhaseProgressBar Snapshots > dark mode > has proper dark mode classes 1
         <div
           class="
                     w-2 h-2 rounded-full transition-all duration-300
-                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow
                   "
           data-testid="phase-dot"
         />
@@ -1778,7 +1778,7 @@ exports[`PhaseProgressBar Snapshots > with default name > renders correctly with
         <div
           class="
                     w-2 h-2 rounded-full transition-all duration-300
-                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow
                   "
           data-testid="phase-dot"
         />

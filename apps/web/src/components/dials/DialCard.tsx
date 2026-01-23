@@ -55,7 +55,9 @@ export function DialCard({
       className={`
         w-full flex flex-col gap-2 p-4 rounded-fantasy border
         shadow-fantasy
-        transition-opacity duration-300 ease-in-out
+        transition-all duration-300 ease-in-out
+        motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-gold-glow-subtle
+        motion-reduce:transition-none
         ${shouldShowReducedOpacity ? 'opacity-60' : 'opacity-100'}
         ${
           isSet

@@ -273,4 +273,35 @@ describe('PhaseProgressBar', () => {
       expect(container).toHaveClass('mt-4');
     });
   });
+
+  describe('animations', () => {
+    it('current phase dot has motion-safe pulse animation', () => {
+      render(
+        <PhaseProgressBar currentPhase="dial-tuning" adventureName="Test" />
+      );
+
+      const indicators = screen.getAllByTestId('phase-indicator');
+      const dialTuningIndex = PHASES.findIndex(p => p.id === 'dial-tuning');
+      const currentDot = within(indicators[dialTuningIndex]).getByTestId('phase-dot');
+
+      // Current phase should have the glow animation (motion-safe)
+      expect(currentDot.className).toMatch(/motion-safe:animate-phase-glow/);
+    });
+
+    it('completed and pending phase dots do not have pulse animation', () => {
+      render(
+        <PhaseProgressBar currentPhase="scenes" adventureName="Test" />
+      );
+
+      const indicators = screen.getAllByTestId('phase-indicator');
+
+      // First indicator (setup - completed) should not have animation
+      const completedDot = within(indicators[0]).getByTestId('phase-dot');
+      expect(completedDot.className).not.toMatch(/animate-phase-glow/);
+
+      // Last indicator (complete - pending) should not have animation
+      const pendingDot = within(indicators[9]).getByTestId('phase-dot');
+      expect(pendingDot.className).not.toMatch(/animate-phase-glow/);
+    });
+  });
 });

@@ -136,7 +136,7 @@ export function PhaseProgressBar({
                       isCompleted
                         ? 'bg-gold-500 dark:bg-gold-400'
                         : isCurrent
-                          ? 'bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800'
+                          ? 'bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800 motion-safe:animate-phase-glow'
                           : 'bg-ink-300 dark:bg-shadow-500'
                     }
                   `}

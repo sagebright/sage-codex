@@ -315,4 +315,121 @@
     @apply outline-none ring-0;
     box-shadow: 0 0 0 3px rgba(215, 169, 100, 0.3);
   }
+
+  /* ==========================================================================
+   * Fantasy Animation Utilities
+   *
+   * Atmospheric animations for TTRPG persona - "expressive, atmospheric"
+   * All non-essential animations respect prefers-reduced-motion
+   * ========================================================================== */
+
+  /* Selection glow animation - subtle pulse when item is selected */
+  @keyframes selection-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(215, 169, 100, 0);
+    }
+    50% {
+      box-shadow: 0 0 12px 2px rgba(215, 169, 100, 0.4);
+    }
+  }
+
+  /* Soft pulse animation for active elements */
+  @keyframes soft-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+
+  /* Phase dot glow animation for current phase indicator */
+  @keyframes phase-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(215, 169, 100, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 8px 3px rgba(215, 169, 100, 0.3);
+    }
+  }
+
+  /* Progress bar shimmer effect */
+  @keyframes progress-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Animation utility classes with reduced motion support */
+  .animate-selection-glow {
+    animation: selection-glow 2s ease-in-out;
+  }
+
+  .animate-soft-pulse {
+    animation: soft-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-phase-glow {
+    animation: phase-glow 2s ease-in-out infinite;
+  }
+
+  /* Hover glow effect for interactive elements */
+  .hover-glow {
+    @apply transition-shadow duration-200;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 15px rgba(215, 169, 100, 0.25);
+  }
+
+  .dark .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(215, 169, 100, 0.3);
+  }
+
+  /* Hover lift effect for cards */
+  .hover-lift {
+    @apply transition-all duration-200;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Progress bar with shimmer effect */
+  .progress-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* Reduced motion support - disable non-essential animations */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-selection-glow,
+    .animate-soft-pulse,
+    .animate-phase-glow {
+      animation: none;
+    }
+
+    .hover-lift:hover {
+      transform: none;
+    }
+
+    .progress-shimmer {
+      animation: none;
+      background: none;
+    }
+
+    /* Remove transition delays for faster response */
+    .hover-glow,
+    .hover-lift {
+      transition-duration: 0.01ms;
+    }
+  }
 }

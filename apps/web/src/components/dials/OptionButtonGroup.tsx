@@ -107,13 +107,14 @@ export function OptionButtonGroup({
                 flex flex-col items-start px-4 py-2 rounded-lg border-2 transition-all
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:shadow-gold-glow-subtle motion-reduce:transition-none
                 ${
                   showAsDefault
                     ? // Default (unconfirmed) state - grayed/muted appearance with dashed border
                       'bg-ink-50 border-ink-300 border-dashed text-ink-600 dark:bg-shadow-700/50 dark:border-shadow-500 dark:text-parchment-400 hover:border-gold-400 hover:bg-gold-50/50 dark:hover:border-gold-600 dark:hover:bg-gold-900/20'
                     : isSelected
-                      ? // Confirmed or user-selected state - full gold styling
-                        'bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100'
+                      ? // Confirmed or user-selected state - full gold styling with selection glow
+                        'bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow'
                       : // Unselected state
                         'bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700'
                 }

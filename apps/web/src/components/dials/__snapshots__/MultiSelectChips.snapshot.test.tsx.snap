@@ -32,7 +32,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders at max selections (dis
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -45,7 +47,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders at max selections (dis
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -58,7 +62,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders at max selections (dis
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -100,7 +106,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders disabled state 1`] = `
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       disabled=""
       type="button"
@@ -114,6 +122,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders disabled state 1`] = `
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
       disabled=""
@@ -128,6 +138,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders disabled state 1`] = `
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
       disabled=""
@@ -171,7 +183,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with multiple selectio
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -184,7 +198,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with multiple selectio
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -197,6 +213,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with multiple selectio
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -239,6 +257,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with no selection 1`] 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -252,6 +272,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with no selection 1`] 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -265,6 +287,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with no selection 1`] 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -307,7 +331,9 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with single selection 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -320,6 +346,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with single selection 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -333,6 +361,8 @@ exports[`MultiSelectChips Snapshots > Dark Mode > renders with single selection 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -375,7 +405,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders at max selections (di
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -388,7 +420,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders at max selections (di
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -401,7 +435,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders at max selections (di
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -443,7 +479,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders disabled state 1`] = 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       disabled=""
       type="button"
@@ -457,6 +495,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders disabled state 1`] = 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
       disabled=""
@@ -471,6 +511,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders disabled state 1`] = 
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-ink-100 border-ink-200 text-ink-400 cursor-not-allowed dark:bg-shadow-700 dark:border-shadow-600 dark:text-shadow-400
               "
       disabled=""
@@ -514,7 +556,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with multiple selecti
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -527,7 +571,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with multiple selecti
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -540,6 +586,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with multiple selecti
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -582,6 +630,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with no selection 1`]
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -595,6 +645,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with no selection 1`]
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -608,6 +660,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with no selection 1`]
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -650,7 +704,9 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with single selection
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
+                bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100 motion-safe:animate-selection-glow
               "
       type="button"
     >
@@ -663,6 +719,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with single selection
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
@@ -676,6 +734,8 @@ exports[`MultiSelectChips Snapshots > Light Mode > renders with single selection
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
                 focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                motion-safe:hover:scale-[1.02] motion-safe:hover:-translate-y-0.5
+                motion-reduce:transition-none
                 bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
               "
       type="button"
