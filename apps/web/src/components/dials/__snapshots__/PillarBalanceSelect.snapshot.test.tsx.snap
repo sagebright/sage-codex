@@ -6,7 +6,7 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
 >
   <span
     class="text-sm font-medium text-ink-700 dark:text-parchment-200"
-    id=":r3:-label"
+    id=":r6:-label"
   >
     Pillar Balance
   </span>
@@ -29,8 +29,15 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
       3rd
     </span>
   </div>
+  <div
+    class="sr-only"
+    id=":r6:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
   <ol
-    aria-labelledby=":r3:-label"
+    aria-describedby=":r6:-instructions"
+    aria-labelledby=":r6:-label"
     class="flex gap-2"
     role="group"
   >
@@ -38,14 +45,19 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
       class="flex-1"
     >
       <button
-        aria-label="Combat - 1st priority"
+        aria-disabled="false"
+        aria-label="Combat - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -64,14 +76,19 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
       class="flex-1"
     >
       <button
-        aria-label="Exploration - 2nd priority"
+        aria-disabled="false"
+        aria-label="Exploration - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -90,14 +107,19 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
       class="flex-1"
     >
       <button
-        aria-label="Social - 3rd priority"
+        aria-disabled="false"
+        aria-label="Social - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -113,10 +135,27 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
       </button>
     </li>
   </ol>
+  <div
+    id="DndDescribedBy-6"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-6"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
   <p
     class="text-xs text-ink-500 dark:text-parchment-500 text-center"
   >
-    Click a pillar to promote it to primary
+    Drag pillars to reorder priority
   </p>
 </div>
 `;
@@ -127,7 +166,7 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
 >
   <span
     class="text-sm font-medium text-ink-700 dark:text-parchment-200"
-    id=":r5:-label"
+    id=":r8:-label"
   >
     Pillar Balance
   </span>
@@ -150,8 +189,15 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
       3rd
     </span>
   </div>
+  <div
+    class="sr-only"
+    id=":r8:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
   <ol
-    aria-labelledby=":r5:-label"
+    aria-describedby=":r8:-instructions"
+    aria-labelledby=":r8:-label"
     class="flex gap-2"
     role="group"
   >
@@ -159,15 +205,20 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
       class="flex-1"
     >
       <button
-        aria-label="Exploration - 1st priority"
+        aria-disabled="true"
+        aria-label="Exploration - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
-                  opacity-50 cursor-not-allowed
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          opacity-50 cursor-not-allowed
+        "
         disabled=""
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -186,15 +237,20 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
       class="flex-1"
     >
       <button
-        aria-label="Combat - 2nd priority"
+        aria-disabled="true"
+        aria-label="Combat - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  opacity-50 cursor-not-allowed
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          opacity-50 cursor-not-allowed
+        "
         disabled=""
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -213,15 +269,20 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
       class="flex-1"
     >
       <button
-        aria-label="Social - 3rd priority"
+        aria-disabled="true"
+        aria-label="Social - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  opacity-50 cursor-not-allowed
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          opacity-50 cursor-not-allowed
+        "
         disabled=""
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -237,10 +298,27 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
       </button>
     </li>
   </ol>
+  <div
+    id="DndDescribedBy-8"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-8"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
   <p
     class="text-xs text-ink-500 dark:text-parchment-500 text-center"
   >
-    Click a pillar to promote it to primary
+    Drag pillars to reorder priority
   </p>
 </div>
 `;
@@ -251,7 +329,7 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
 >
   <span
     class="text-sm font-medium text-ink-700 dark:text-parchment-200"
-    id=":r4:-label"
+    id=":r7:-label"
   >
     Pillar Balance
   </span>
@@ -274,8 +352,15 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
       3rd
     </span>
   </div>
+  <div
+    class="sr-only"
+    id=":r7:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
   <ol
-    aria-labelledby=":r4:-label"
+    aria-describedby=":r7:-instructions"
+    aria-labelledby=":r7:-label"
     class="flex gap-2"
     role="group"
   >
@@ -283,14 +368,19 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
       class="flex-1"
     >
       <button
-        aria-label="Social - 1st priority"
+        aria-disabled="false"
+        aria-label="Social - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -309,14 +399,19 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
       class="flex-1"
     >
       <button
-        aria-label="Exploration - 2nd priority"
+        aria-disabled="false"
+        aria-label="Exploration - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -335,14 +430,19 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
       class="flex-1"
     >
       <button
-        aria-label="Combat - 3rd priority"
+        aria-disabled="false"
+        aria-label="Combat - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -358,11 +458,242 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
       </button>
     </li>
   </ol>
+  <div
+    id="DndDescribedBy-7"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-7"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
   <p
     class="text-xs text-ink-500 dark:text-parchment-500 text-center"
   >
-    Click a pillar to promote it to primary
+    Drag pillars to reorder priority
   </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Drag-and-Drop States > renders draggable items with correct attributes 1`] = `
+<ol
+  aria-describedby=":r9:-instructions"
+  aria-labelledby=":r9:-label"
+  class="flex gap-2"
+  role="group"
+>
+  <li
+    class="flex-1"
+  >
+    <button
+      aria-disabled="false"
+      aria-label="Combat - 1st priority. Drag to reorder."
+      aria-roledescription="sortable"
+      class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+      role="button"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+      >
+        1st
+      </span>
+      <span
+        class="font-medium"
+      >
+        Combat
+      </span>
+    </button>
+  </li>
+  <li
+    class="flex-1"
+  >
+    <button
+      aria-disabled="false"
+      aria-label="Exploration - 2nd priority. Drag to reorder."
+      aria-roledescription="sortable"
+      class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+      role="button"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+      >
+        2nd
+      </span>
+      <span
+        class="font-medium"
+      >
+        Exploration
+      </span>
+    </button>
+  </li>
+  <li
+    class="flex-1"
+  >
+    <button
+      aria-disabled="false"
+      aria-label="Social - 3rd priority. Drag to reorder."
+      aria-roledescription="sortable"
+      class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+      role="button"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+      >
+        3rd
+      </span>
+      <span
+        class="font-medium"
+      >
+        Social
+      </span>
+    </button>
+  </li>
+</ol>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Drag-and-Drop States > renders list items with correct structure for sorting > list-item-0 1`] = `
+<li
+  class="flex-1"
+>
+  <button
+    aria-disabled="false"
+    aria-label="Social - 1st priority. Drag to reorder."
+    aria-roledescription="sortable"
+    class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+    role="button"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+    >
+      1st
+    </span>
+    <span
+      class="font-medium"
+    >
+      Social
+    </span>
+  </button>
+</li>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Drag-and-Drop States > renders list items with correct structure for sorting > list-item-1 1`] = `
+<li
+  class="flex-1"
+>
+  <button
+    aria-disabled="false"
+    aria-label="Combat - 2nd priority. Drag to reorder."
+    aria-roledescription="sortable"
+    class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+    role="button"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+    >
+      2nd
+    </span>
+    <span
+      class="font-medium"
+    >
+      Combat
+    </span>
+  </button>
+</li>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Drag-and-Drop States > renders list items with correct structure for sorting > list-item-2 1`] = `
+<li
+  class="flex-1"
+>
+  <button
+    aria-disabled="false"
+    aria-label="Exploration - 3rd priority. Drag to reorder."
+    aria-roledescription="sortable"
+    class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+    role="button"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+    >
+      3rd
+    </span>
+    <span
+      class="font-medium"
+    >
+      Exploration
+    </span>
+  </button>
+</li>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Drag-and-Drop States > renders screen reader instructions 1`] = `
+<div
+  class="sr-only"
+  id=":ra:-instructions"
+>
+  Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
 </div>
 `;
 
@@ -395,7 +726,14 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary bal
       3rd
     </span>
   </div>
+  <div
+    class="sr-only"
+    id=":r0:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
   <ol
+    aria-describedby=":r0:-instructions"
     aria-labelledby=":r0:-label"
     class="flex gap-2"
     role="group"
@@ -404,14 +742,19 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary bal
       class="flex-1"
     >
       <button
-        aria-label="Combat - 1st priority"
+        aria-disabled="false"
+        aria-label="Combat - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -430,14 +773,19 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary bal
       class="flex-1"
     >
       <button
-        aria-label="Exploration - 2nd priority"
+        aria-disabled="false"
+        aria-label="Exploration - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -456,14 +804,19 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary bal
       class="flex-1"
     >
       <button
-        aria-label="Social - 3rd priority"
+        aria-disabled="false"
+        aria-label="Social - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -479,10 +832,27 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary bal
       </button>
     </li>
   </ol>
+  <div
+    id="DndDescribedBy-0"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-0"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
   <p
     class="text-xs text-ink-500 dark:text-parchment-500 text-center"
   >
-    Click a pillar to promote it to primary
+    Drag pillars to reorder priority
   </p>
 </div>
 `;
@@ -493,7 +863,7 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
 >
   <span
     class="text-sm font-medium text-ink-700 dark:text-parchment-200"
-    id=":r2:-label"
+    id=":r3:-label"
   >
     Pillar Balance
   </span>
@@ -516,8 +886,15 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
       3rd
     </span>
   </div>
+  <div
+    class="sr-only"
+    id=":r3:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
   <ol
-    aria-labelledby=":r2:-label"
+    aria-describedby=":r3:-instructions"
+    aria-labelledby=":r3:-label"
     class="flex gap-2"
     role="group"
   >
@@ -525,15 +902,20 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
       class="flex-1"
     >
       <button
-        aria-label="Social - 1st priority"
+        aria-disabled="true"
+        aria-label="Social - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
-                  opacity-50 cursor-not-allowed
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          opacity-50 cursor-not-allowed
+        "
         disabled=""
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -552,15 +934,20 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
       class="flex-1"
     >
       <button
-        aria-label="Combat - 2nd priority"
+        aria-disabled="true"
+        aria-label="Combat - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  opacity-50 cursor-not-allowed
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          opacity-50 cursor-not-allowed
+        "
         disabled=""
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -579,15 +966,20 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
       class="flex-1"
     >
       <button
-        aria-label="Exploration - 3rd priority"
+        aria-disabled="true"
+        aria-label="Exploration - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  opacity-50 cursor-not-allowed
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          opacity-50 cursor-not-allowed
+        "
         disabled=""
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -603,10 +995,27 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
       </button>
     </li>
   </ol>
+  <div
+    id="DndDescribedBy-3"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-3"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
   <p
     class="text-xs text-ink-500 dark:text-parchment-500 text-center"
   >
-    Click a pillar to promote it to primary
+    Drag pillars to reorder priority
   </p>
 </div>
 `;
@@ -640,7 +1049,14 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primar
       3rd
     </span>
   </div>
+  <div
+    class="sr-only"
+    id=":r1:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
   <ol
+    aria-describedby=":r1:-instructions"
     aria-labelledby=":r1:-label"
     class="flex gap-2"
     role="group"
@@ -649,14 +1065,19 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primar
       class="flex-1"
     >
       <button
-        aria-label="Exploration - 1st priority"
+        aria-disabled="false"
+        aria-label="Exploration - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -675,14 +1096,19 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primar
       class="flex-1"
     >
       <button
-        aria-label="Social - 2nd priority"
+        aria-disabled="false"
+        aria-label="Social - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -701,14 +1127,19 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primar
       class="flex-1"
     >
       <button
-        aria-label="Combat - 3rd priority"
+        aria-disabled="false"
+        aria-label="Combat - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
         class="
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
-                  cursor-pointer
-                "
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
         type="button"
       >
         <span
@@ -724,10 +1155,500 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primar
       </button>
     </li>
   </ol>
+  <div
+    id="DndDescribedBy-1"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-1"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
   <p
     class="text-xs text-ink-500 dark:text-parchment-500 text-center"
   >
-    Click a pillar to promote it to primary
+    Drag pillars to reorder priority
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Light Mode > renders social-primary balance 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r2:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <div
+    class="sr-only"
+    id=":r2:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
+  <ol
+    aria-describedby=":r2:-instructions"
+    aria-labelledby=":r2:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Social - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Combat - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Exploration - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+  </ol>
+  <div
+    id="DndDescribedBy-2"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-2"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Drag pillars to reorder priority
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Light Mode > renders with custom className 1`] = `
+<div
+  class="flex flex-col gap-3 custom-wrapper-class"
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r5:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <div
+    class="sr-only"
+    id=":r5:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
+  <ol
+    aria-describedby=":r5:-instructions"
+    aria-labelledby=":r5:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Combat - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Exploration - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Social - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+  </ol>
+  <div
+    id="DndDescribedBy-5"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-5"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Drag pillars to reorder priority
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Light Mode > renders without label 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <div
+    class="sr-only"
+    id=":r4:-instructions"
+  >
+    Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+  </div>
+  <ol
+    aria-describedby=":r4:-instructions"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Combat - 1st priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Exploration - 2nd priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-disabled="false"
+        aria-label="Social - 3rd priority. Drag to reorder."
+        aria-roledescription="sortable"
+        class="
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          
+          bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+          cursor-grab active:cursor-grabbing
+        "
+        role="button"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+  </ol>
+  <div
+    id="DndDescribedBy-4"
+    style="display: none;"
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="DndLiveRegion-4"
+    role="status"
+    style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px); clip-path: inset(100%); white-space: nowrap;"
+  />
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Drag pillars to reorder priority
   </p>
 </div>
 `;

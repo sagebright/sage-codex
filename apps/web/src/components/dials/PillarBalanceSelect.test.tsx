@@ -1,13 +1,14 @@
 /**
  * PillarBalanceSelect Component Tests
  *
- * TDD tests for pillar balance priority ranking UI
+ * TDD tests for pillar balance priority ranking UI with drag-and-drop
  */
 
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PillarBalanceSelect } from './PillarBalanceSelect';
+import { reorderPillars } from './pillar-utils';
 import type { PillarBalance } from '@dagger-app/shared-types';
 
 describe('PillarBalanceSelect', () => {
@@ -67,55 +68,11 @@ describe('PillarBalanceSelect', () => {
 
       expect(container.firstChild).toHaveClass('custom-class');
     });
-  });
 
-  describe('click-to-assign interaction', () => {
-    it('allows clicking a pillar to cycle it to primary position', async () => {
-      const user = userEvent.setup();
-      const value: PillarBalance = {
-        primary: 'combat',
-        secondary: 'exploration',
-        tertiary: 'social',
-      };
-      render(<PillarBalanceSelect value={value} onChange={mockOnChange} />);
-
-      // Click on Social (currently tertiary) to make it primary
-      await user.click(screen.getByRole('button', { name: /social/i }));
-
-      // Should swap social to primary, and shift others
-      expect(mockOnChange).toHaveBeenCalledWith({
-        primary: 'social',
-        secondary: 'combat',
-        tertiary: 'exploration',
-      });
-    });
-
-    it('does not call onChange when clicking already-primary pillar', async () => {
-      const user = userEvent.setup();
+    it('displays drag instruction text', () => {
       render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
 
-      await user.click(screen.getByRole('button', { name: /combat/i }));
-
-      // Primary is already combat, so no change
-      expect(mockOnChange).not.toHaveBeenCalled();
-    });
-
-    it('clicking secondary promotes it to primary and demotes current primary', async () => {
-      const user = userEvent.setup();
-      const value: PillarBalance = {
-        primary: 'combat',
-        secondary: 'exploration',
-        tertiary: 'social',
-      };
-      render(<PillarBalanceSelect value={value} onChange={mockOnChange} />);
-
-      await user.click(screen.getByRole('button', { name: /exploration/i }));
-
-      expect(mockOnChange).toHaveBeenCalledWith({
-        primary: 'exploration',
-        secondary: 'combat',
-        tertiary: 'social',
-      });
+      expect(screen.getByText('Drag pillars to reorder priority')).toBeInTheDocument();
     });
   });
 
@@ -128,19 +85,6 @@ describe('PillarBalanceSelect', () => {
       expect(screen.getByText('Exploration')).toBeInTheDocument();
       expect(screen.getByText('Social')).toBeInTheDocument();
     });
-
-    it('enforces unique pillar assignments (no duplicates)', async () => {
-      const user = userEvent.setup();
-      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
-
-      // After any interaction, all three pillars should still be unique
-      await user.click(screen.getByRole('button', { name: /social/i }));
-
-      const calledWith = mockOnChange.mock.calls[0][0] as PillarBalance;
-      const pillars = [calledWith.primary, calledWith.secondary, calledWith.tertiary];
-      const uniquePillars = new Set(pillars);
-      expect(uniquePillars.size).toBe(3);
-    });
   });
 
   describe('disabled state', () => {
@@ -151,15 +95,6 @@ describe('PillarBalanceSelect', () => {
       buttons.forEach((button) => {
         expect(button).toBeDisabled();
       });
-    });
-
-    it('does not call onChange when disabled', async () => {
-      const user = userEvent.setup();
-      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} disabled />);
-
-      await user.click(screen.getByRole('button', { name: /social/i }));
-
-      expect(mockOnChange).not.toHaveBeenCalled();
     });
   });
 
@@ -184,6 +119,20 @@ describe('PillarBalanceSelect', () => {
       expect(within(explorationButton).getByText('2nd')).toBeInTheDocument();
       expect(within(socialButton).getByText('3rd')).toBeInTheDocument();
     });
+
+    it('shows cursor-grab styling on interactive items', () => {
+      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
+
+      const button = screen.getByRole('button', { name: /combat/i });
+      expect(button.className).toMatch(/cursor-grab/);
+    });
+
+    it('shows cursor-not-allowed styling when disabled', () => {
+      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} disabled />);
+
+      const button = screen.getByRole('button', { name: /combat/i });
+      expect(button.className).toMatch(/cursor-not-allowed/);
+    });
   });
 
   describe('accessibility', () => {
@@ -193,13 +142,156 @@ describe('PillarBalanceSelect', () => {
       expect(screen.getByRole('group')).toBeInTheDocument();
     });
 
-    it('buttons have accessible names', () => {
+    it('buttons have accessible names with drag instruction', () => {
       render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
 
       const buttons = screen.getAllByRole('button');
       buttons.forEach((button) => {
         expect(button).toHaveAccessibleName();
+        // Each button should mention "Drag to reorder"
+        expect(button.getAttribute('aria-label')).toMatch(/Drag to reorder/);
       });
+    });
+
+    it('provides screen reader instructions for keyboard users', () => {
+      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
+
+      // The sr-only instructions should be present
+      expect(screen.getByText(/Press Space or Enter to start dragging/)).toBeInTheDocument();
+    });
+
+    it('buttons are keyboard focusable', async () => {
+      const user = userEvent.setup();
+      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
+
+      const firstButton = screen.getByRole('button', { name: /combat/i });
+
+      await user.tab();
+      expect(firstButton).toHaveFocus();
+    });
+  });
+
+  describe('drag-and-drop reordering', () => {
+    it('renders sortable items in list', () => {
+      const value: PillarBalance = {
+        primary: 'combat',
+        secondary: 'exploration',
+        tertiary: 'social',
+      };
+      render(<PillarBalanceSelect value={value} onChange={mockOnChange} />);
+
+      // Get the sortable items
+      const items = screen.getAllByRole('listitem');
+      expect(items).toHaveLength(3);
+
+      // Each item should contain a button
+      items.forEach((item) => {
+        expect(item.querySelector('button')).toBeInTheDocument();
+      });
+    });
+
+    it('items have drag-and-drop attributes', () => {
+      render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
+
+      const buttons = screen.getAllByRole('button');
+      // @dnd-kit adds tabindex and data attributes for keyboard navigation
+      buttons.forEach((button) => {
+        expect(button).toHaveAttribute('tabindex');
+      });
+    });
+  });
+
+  describe('reorderPillars utility function', () => {
+    it('moves item from first to last position', () => {
+      const reordered = reorderPillars(
+        ['combat', 'exploration', 'social'],
+        0, // from index
+        2  // to index
+      );
+
+      expect(reordered).toEqual(['exploration', 'social', 'combat']);
+    });
+
+    it('moves item from last to first position', () => {
+      const reordered = reorderPillars(
+        ['combat', 'exploration', 'social'],
+        2, // from index
+        0  // to index
+      );
+
+      expect(reordered).toEqual(['social', 'combat', 'exploration']);
+    });
+
+    it('swaps adjacent items', () => {
+      const reordered = reorderPillars(
+        ['combat', 'exploration', 'social'],
+        0, // from index
+        1  // to index
+      );
+
+      expect(reordered).toEqual(['exploration', 'combat', 'social']);
+    });
+
+    it('maintains pillar identity during reorder', () => {
+      const original = ['combat', 'exploration', 'social'] as const;
+      const reordered = reorderPillars([...original], 1, 0);
+
+      // All original pillars should be present
+      expect(reordered).toContain('combat');
+      expect(reordered).toContain('exploration');
+      expect(reordered).toContain('social');
+      expect(reordered).toHaveLength(3);
+    });
+
+    it('returns same array when from and to are equal', () => {
+      const original: ['combat', 'exploration', 'social'] = ['combat', 'exploration', 'social'];
+      const reordered = reorderPillars([...original], 1, 1);
+
+      expect(reordered).toEqual(original);
+    });
+  });
+
+  describe('order persistence', () => {
+    it('displays pillars in the order specified by value prop', () => {
+      const value: PillarBalance = {
+        primary: 'social',
+        secondary: 'combat',
+        tertiary: 'exploration',
+      };
+      render(<PillarBalanceSelect value={value} onChange={mockOnChange} />);
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons[0]).toHaveTextContent('Social');
+      expect(buttons[1]).toHaveTextContent('Combat');
+      expect(buttons[2]).toHaveTextContent('Exploration');
+    });
+
+    it('updates display when value prop changes', () => {
+      const initialValue: PillarBalance = {
+        primary: 'combat',
+        secondary: 'exploration',
+        tertiary: 'social',
+      };
+
+      const { rerender } = render(
+        <PillarBalanceSelect value={initialValue} onChange={mockOnChange} />
+      );
+
+      // Verify initial order
+      let buttons = screen.getAllByRole('button');
+      expect(buttons[0]).toHaveTextContent('Combat');
+
+      // Change value
+      const newValue: PillarBalance = {
+        primary: 'social',
+        secondary: 'combat',
+        tertiary: 'exploration',
+      };
+      rerender(<PillarBalanceSelect value={newValue} onChange={mockOnChange} />);
+
+      // Verify updated order
+      buttons = screen.getAllByRole('button');
+      expect(buttons[0]).toHaveTextContent('Social');
     });
   });
 });

@@ -2,12 +2,31 @@
  * PillarBalanceSelect Component
  *
  * A priority ranking UI for the three TTRPG pillars: Combat, Exploration, Social.
- * Click a pillar to promote it to primary position. The previous pillars shift down.
+ * Uses drag-and-drop reordering with @dnd-kit for intuitive priority management.
  * Fantasy-themed with gold accent for primary pillar.
  */
 
-import { useId, useCallback } from 'react';
+import { useId, useCallback, useState } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { Pillar, PillarBalance } from '@dagger-app/shared-types';
+import { reorderPillars, arrayToBalance, balanceToArray } from './pillar-utils';
 
 export interface PillarBalanceSelectProps {
   /** Current pillar balance configuration */
@@ -32,37 +51,93 @@ const PILLAR_INFO: Record<Pillar, { label: string; description: string }> = {
 /** Position labels */
 const POSITION_LABELS = ['1st', '2nd', '3rd'] as const;
 
-/** Get the position of a pillar in the balance */
-function getPillarPosition(pillar: Pillar, balance: PillarBalance): 0 | 1 | 2 {
-  if (balance.primary === pillar) return 0;
-  if (balance.secondary === pillar) return 1;
-  return 2;
+interface SortablePillarItemProps {
+  pillar: Pillar;
+  index: number;
+  disabled: boolean;
+  isDragging: boolean;
 }
 
-/** Promote a pillar to primary, shifting others down */
-function promoteToPrimary(pillar: Pillar, current: PillarBalance): PillarBalance {
-  const position = getPillarPosition(pillar, current);
+/** Individual sortable pillar item */
+function SortablePillarItem({
+  pillar,
+  index,
+  disabled,
+  isDragging,
+}: SortablePillarItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging: isItemDragging,
+  } = useSortable({
+    id: pillar,
+    disabled,
+  });
 
-  // Already primary, no change
-  if (position === 0) {
-    return current;
-  }
-
-  // Promote from secondary: swap with primary
-  if (position === 1) {
-    return {
-      primary: pillar,
-      secondary: current.primary,
-      tertiary: current.tertiary,
-    };
-  }
-
-  // Promote from tertiary: shift all up
-  return {
-    primary: pillar,
-    secondary: current.primary,
-    tertiary: current.secondary,
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
   };
+
+  const info = PILLAR_INFO[pillar];
+  const isPrimary = index === 0;
+
+  return (
+    <li ref={setNodeRef} style={style} className="flex-1">
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        disabled={disabled}
+        aria-label={`${info.label} - ${POSITION_LABELS[index]} priority. Drag to reorder.`}
+        aria-describedby={isDragging ? 'dnd-instructions' : undefined}
+        className={`
+          w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+          focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+          focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+          ${isItemDragging ? 'opacity-50 scale-105 z-10' : ''}
+          ${
+            isPrimary
+              ? 'bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100'
+              : 'bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700'
+          }
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'}
+        `}
+      >
+        <span className="text-xs text-ink-500 dark:text-parchment-400 mb-1">
+          {POSITION_LABELS[index]}
+        </span>
+        <span className="font-medium">{info.label}</span>
+      </button>
+    </li>
+  );
+}
+
+/** Drag overlay component shown while dragging */
+function DragOverlayItem({ pillar, index }: { pillar: Pillar; index: number }) {
+  const info = PILLAR_INFO[pillar];
+  const isPrimary = index === 0;
+
+  return (
+    <div
+      className={`
+        flex flex-col items-center px-3 py-3 rounded-lg border-2 shadow-lg
+        ${
+          isPrimary
+            ? 'bg-gold-100 border-gold-500 text-ink-900'
+            : 'bg-parchment-50 border-ink-300 text-ink-700'
+        }
+      `}
+    >
+      <span className="text-xs text-ink-500 mb-1">
+        {POSITION_LABELS[index]}
+      </span>
+      <span className="font-medium">{info.label}</span>
+    </div>
+  );
 }
 
 export function PillarBalanceSelect({
@@ -74,27 +149,50 @@ export function PillarBalanceSelect({
 }: PillarBalanceSelectProps) {
   const groupId = useId();
   const labelId = `${groupId}-label`;
+  const instructionsId = `${groupId}-instructions`;
 
-  const handlePillarClick = useCallback(
-    (pillar: Pillar) => {
-      if (disabled) return;
+  const [activeId, setActiveId] = useState<Pillar | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
-      const newBalance = promoteToPrimary(pillar, value);
-
-      // Only call onChange if the balance actually changed
-      if (
-        newBalance.primary !== value.primary ||
-        newBalance.secondary !== value.secondary ||
-        newBalance.tertiary !== value.tertiary
-      ) {
-        onChange(newBalance);
-      }
-    },
-    [disabled, value, onChange]
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
 
-  // Get pillars in display order (by their assigned position)
-  const pillarsInOrder: Pillar[] = [value.primary, value.secondary, value.tertiary];
+  const pillarsArray = balanceToArray(value);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const id = event.active.id as Pillar;
+    setActiveId(id);
+    setActiveIndex(pillarsArray.indexOf(id));
+  }, [pillarsArray]);
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      setActiveId(null);
+
+      if (!over || active.id === over.id) {
+        return;
+      }
+
+      const oldIndex = pillarsArray.indexOf(active.id as Pillar);
+      const newIndex = pillarsArray.indexOf(over.id as Pillar);
+
+      const newPillars = reorderPillars(pillarsArray, oldIndex, newIndex);
+      const newBalance = arrayToBalance(newPillars);
+
+      onChange(newBalance);
+    },
+    [pillarsArray, onChange]
+  );
 
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
@@ -111,47 +209,53 @@ export function PillarBalanceSelect({
         <span className="flex-1 text-center">3rd</span>
       </div>
 
-      {/* Pillar list showing current order */}
-      <ol
-        role="group"
-        aria-labelledby={label ? labelId : undefined}
-        className="flex gap-2"
-      >
-        {pillarsInOrder.map((pillar, index) => {
-          const info = PILLAR_INFO[pillar];
-          const isPrimary = index === 0;
+      {/* Screen reader instructions for keyboard users */}
+      <div id={instructionsId} className="sr-only">
+        Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.
+      </div>
 
-          return (
-            <li key={pillar} className="flex-1">
-              <button
-                type="button"
-                onClick={() => handlePillarClick(pillar)}
+      {/* Drag overlay announcement for screen readers */}
+      {activeId && (
+        <div id="dnd-instructions" className="sr-only" role="status" aria-live="polite">
+          Dragging {PILLAR_INFO[activeId].label}. Use arrow keys to reorder.
+        </div>
+      )}
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={pillarsArray} strategy={horizontalListSortingStrategy}>
+          {/* Pillar list showing current order */}
+          <ol
+            role="group"
+            aria-labelledby={label ? labelId : undefined}
+            aria-describedby={instructionsId}
+            className="flex gap-2"
+          >
+            {pillarsArray.map((pillar, index) => (
+              <SortablePillarItem
+                key={pillar}
+                pillar={pillar}
+                index={index}
                 disabled={disabled}
-                aria-label={`${info.label} - ${POSITION_LABELS[index]} priority`}
-                className={`
-                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
-                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
-                  ${
-                    isPrimary
-                      ? 'bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100'
-                      : 'bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700'
-                  }
-                  ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                `}
-              >
-                <span className="text-xs text-ink-500 dark:text-parchment-400 mb-1">
-                  {POSITION_LABELS[index]}
-                </span>
-                <span className="font-medium">{info.label}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ol>
+                isDragging={activeId !== null}
+              />
+            ))}
+          </ol>
+        </SortableContext>
+
+        <DragOverlay>
+          {activeId ? (
+            <DragOverlayItem pillar={activeId} index={activeIndex} />
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       <p className="text-xs text-ink-500 dark:text-parchment-500 text-center">
-        Click a pillar to promote it to primary
+        Drag pillars to reorder priority
       </p>
     </div>
   );
