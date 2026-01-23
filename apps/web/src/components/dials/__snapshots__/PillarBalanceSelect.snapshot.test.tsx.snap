@@ -1,0 +1,733 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary balance 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r3:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <ol
+    aria-labelledby=":r3:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Combat - 1st priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Exploration - 2nd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Social - 3rd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+  </ol>
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Click a pillar to promote it to primary
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r5:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <ol
+    aria-labelledby=":r5:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Exploration - 1st priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                  opacity-50 cursor-not-allowed
+                "
+        disabled=""
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Combat - 2nd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  opacity-50 cursor-not-allowed
+                "
+        disabled=""
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Social - 3rd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  opacity-50 cursor-not-allowed
+                "
+        disabled=""
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+  </ol>
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Click a pillar to promote it to primary
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary balance 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r4:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <ol
+    aria-labelledby=":r4:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Social - 1st priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Exploration - 2nd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Combat - 3rd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+  </ol>
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Click a pillar to promote it to primary
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary balance 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r0:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <ol
+    aria-labelledby=":r0:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Combat - 1st priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Exploration - 2nd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Social - 3rd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+  </ol>
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Click a pillar to promote it to primary
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r2:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <ol
+    aria-labelledby=":r2:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Social - 1st priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                  opacity-50 cursor-not-allowed
+                "
+        disabled=""
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Combat - 2nd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  opacity-50 cursor-not-allowed
+                "
+        disabled=""
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Exploration - 3rd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  opacity-50 cursor-not-allowed
+                "
+        disabled=""
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+  </ol>
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Click a pillar to promote it to primary
+  </p>
+</div>
+`;
+
+exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primary balance 1`] = `
+<div
+  class="flex flex-col gap-3 "
+>
+  <span
+    class="text-sm font-medium text-ink-700 dark:text-parchment-200"
+    id=":r1:-label"
+  >
+    Pillar Balance
+  </span>
+  <div
+    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
+  >
+    <span
+      class="flex-1 text-center"
+    >
+      1st
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      2nd
+    </span>
+    <span
+      class="flex-1 text-center"
+    >
+      3rd
+    </span>
+  </div>
+  <ol
+    aria-labelledby=":r1:-label"
+    class="flex gap-2"
+    role="group"
+  >
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Exploration - 1st priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          1st
+        </span>
+        <span
+          class="font-medium"
+        >
+          Exploration
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Social - 2nd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          2nd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Social
+        </span>
+      </button>
+    </li>
+    <li
+      class="flex-1"
+    >
+      <button
+        aria-label="Combat - 3rd priority"
+        class="
+                  w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
+                  bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700
+                  cursor-pointer
+                "
+        type="button"
+      >
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mb-1"
+        >
+          3rd
+        </span>
+        <span
+          class="font-medium"
+        >
+          Combat
+        </span>
+      </button>
+    </li>
+  </ol>
+  <p
+    class="text-xs text-ink-500 dark:text-parchment-500 text-center"
+  >
+    Click a pillar to promote it to primary
+  </p>
+</div>
+`;

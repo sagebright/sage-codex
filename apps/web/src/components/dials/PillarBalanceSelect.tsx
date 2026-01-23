@@ -99,13 +99,13 @@ export function PillarBalanceSelect({
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
       {label && (
-        <span id={labelId} className="text-sm font-medium text-parchment-200">
+        <span id={labelId} className="text-sm font-medium text-ink-700 dark:text-parchment-200">
           {label}
         </span>
       )}
 
       {/* Priority slots header */}
-      <div className="flex gap-2 text-xs text-parchment-400 px-1">
+      <div className="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1">
         <span className="flex-1 text-center">1st</span>
         <span className="flex-1 text-center">2nd</span>
         <span className="flex-1 text-center">3rd</span>
@@ -130,16 +130,17 @@ export function PillarBalanceSelect({
                 aria-label={`${info.label} - ${POSITION_LABELS[index]} priority`}
                 className={`
                   w-full flex flex-col items-center px-3 py-3 rounded-lg border-2 transition-all
-                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 focus:ring-offset-shadow-900
+                  focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                  focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
                   ${
                     isPrimary
-                      ? 'bg-gold-600/20 border-gold-500 text-parchment-100'
-                      : 'bg-shadow-800 border-shadow-600 text-parchment-300 hover:border-shadow-500 hover:bg-shadow-700'
+                      ? 'bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100'
+                      : 'bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
               >
-                <span className="text-xs text-parchment-400 mb-1">
+                <span className="text-xs text-ink-500 dark:text-parchment-400 mb-1">
                   {POSITION_LABELS[index]}
                 </span>
                 <span className="font-medium">{info.label}</span>
@@ -149,7 +150,7 @@ export function PillarBalanceSelect({
         })}
       </ol>
 
-      <p className="text-xs text-parchment-500 text-center">
+      <p className="text-xs text-ink-500 dark:text-parchment-500 text-center">
         Click a pillar to promote it to primary
       </p>
     </div>

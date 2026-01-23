@@ -49,6 +49,7 @@ import { exportAdventure, type ExportData } from '@/services/adventureService';
 
 // UI Components
 import { ErrorModal } from '@/components/ui/ErrorModal';
+import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 // Stores
 import {
@@ -72,37 +73,6 @@ import {
   selectConfirmedNPCIds,
   selectCanProceedToAdversaries,
 } from '@/stores/contentStore';
-
-// =============================================================================
-// Dark Mode Toggle (shared component)
-// =============================================================================
-
-function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDark]);
-
-  return (
-    <button
-      onClick={() => setIsDark(!isDark)}
-      className="btn-secondary text-sm"
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      {isDark ? 'Light' : 'Dark'}
-    </button>
-  );
-}
 
 // =============================================================================
 // Setup Phase Component

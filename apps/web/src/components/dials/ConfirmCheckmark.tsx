@@ -41,11 +41,12 @@ export function ConfirmCheckmark({
       className={`
         inline-flex items-center justify-center w-6 h-6 rounded-full
         border-2 transition-all
-        focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 focus:ring-offset-shadow-900
+        focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+        focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
         ${
           confirmed
-            ? 'bg-gold-600 border-gold-500 text-shadow-900'
-            : 'bg-shadow-800 border-shadow-600 text-parchment-400 hover:border-shadow-500'
+            ? 'bg-gold-500 border-gold-600 text-ink-900 dark:bg-gold-600 dark:border-gold-500 dark:text-shadow-900'
+            : 'bg-parchment-100 border-ink-300 text-ink-400 hover:border-ink-400 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-400 dark:hover:border-shadow-500'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         ${className}

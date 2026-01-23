@@ -1,34 +1,7 @@
-import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import type { HealthResponse } from '@dagger-app/shared-types';
 import { AdventurePage } from '@/pages/AdventurePage';
-
-function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDark]);
-
-  return (
-    <button
-      onClick={() => setIsDark(!isDark)}
-      className="btn-secondary"
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      {isDark ? 'Light Mode' : 'Dark Mode'}
-    </button>
-  );
-}
+import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 function HomePage() {
   const health: HealthResponse = { status: 'ok', timestamp: new Date().toISOString() };

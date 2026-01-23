@@ -59,7 +59,7 @@ export function OptionButtonGroup({
       {label && (
         <span
           id={labelId}
-          className="text-sm font-medium text-parchment-200"
+          className="text-sm font-medium text-ink-700 dark:text-parchment-200"
         >
           {label}
         </span>
@@ -81,18 +81,19 @@ export function OptionButtonGroup({
               onClick={() => handleClick(option.value)}
               className={`
                 flex flex-col items-start px-4 py-2 rounded-lg border-2 transition-all
-                focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 focus:ring-offset-shadow-900
+                focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+                focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
                 ${
                   isSelected
-                    ? 'bg-gold-600/20 border-gold-500 text-parchment-100'
-                    : 'bg-shadow-800 border-shadow-600 text-parchment-300 hover:border-shadow-500 hover:bg-shadow-700'
+                    ? 'bg-gold-100 border-gold-500 text-ink-900 dark:bg-gold-600/20 dark:border-gold-500 dark:text-parchment-100'
+                    : 'bg-parchment-50 border-ink-300 text-ink-700 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-600 dark:text-parchment-300 dark:hover:border-shadow-500 dark:hover:bg-shadow-700'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >
               <span className="font-medium">{option.label}</span>
               {option.description && (
-                <span className="text-xs text-parchment-400 mt-0.5">
+                <span className="text-xs text-ink-500 dark:text-parchment-400 mt-0.5">
                   {option.description}
                 </span>
               )}
