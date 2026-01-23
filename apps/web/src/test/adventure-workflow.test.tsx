@@ -191,7 +191,9 @@ describe('Adventure Workflow Integration Tests', () => {
       render(<PhaseProgressBar currentPhase="frame" />);
 
       // Phase label is "Frame" from PHASES constant
-      expect(screen.getByText('Frame')).toBeInTheDocument();
+      // Multiple "Frame" labels exist: header + indicator label(s)
+      const frameLabels = screen.getAllByText('Frame');
+      expect(frameLabels.length).toBeGreaterThan(0);
     });
 
     it('displays progress percentage', () => {

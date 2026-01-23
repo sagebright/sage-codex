@@ -1,0 +1,2029 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PhaseProgressBar Snapshots > at complete phase > renders correctly with all phases completed 1`] = `
+<div
+  class="bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 "
+  data-testid="phase-progress-bar"
+>
+  <div
+    class="flex items-center justify-between px-4 py-2"
+  >
+    <div
+      class="flex items-center gap-3 min-w-0"
+    >
+      <h2
+        class="font-serif font-bold text-ink-800 dark:text-parchment-100"
+      >
+        Test Quest
+      </h2>
+      <span
+        class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0"
+      >
+        |
+      </span>
+      <span
+        class="text-sm font-medium text-gold-700 dark:text-gold-400 flex-shrink-0"
+      >
+        Complete
+      </span>
+    </div>
+    <span
+      class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0 ml-2"
+    >
+      100
+      % Complete
+    </span>
+  </div>
+  <div
+    class="px-4 pb-3"
+  >
+    <div
+      aria-label="Adventure progress: 100% - Complete"
+      aria-valuemax="100"
+      aria-valuemin="0"
+      aria-valuenow="100"
+      class="h-2 bg-ink-200 dark:bg-shadow-600 rounded-full overflow-hidden"
+      role="progressbar"
+    >
+      <div
+        class="h-full bg-gradient-to-r from-gold-500 to-gold-400 dark:from-gold-600 dark:to-gold-500 transition-all duration-500 ease-out"
+        style="width: 100%;"
+      />
+    </div>
+    <div
+      class="flex justify-between mt-2"
+    >
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dial Tuning
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dials
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Adversaries
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Foes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Complete
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Done
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PhaseProgressBar Snapshots > at mid-phase (scenes) > renders correctly showing completed and pending states 1`] = `
+<div
+  class="bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 "
+  data-testid="phase-progress-bar"
+>
+  <div
+    class="flex items-center justify-between px-4 py-2"
+  >
+    <div
+      class="flex items-center gap-3 min-w-0"
+    >
+      <h2
+        class="font-serif font-bold text-ink-800 dark:text-parchment-100"
+      >
+        Test Quest
+      </h2>
+      <span
+        class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0"
+      >
+        |
+      </span>
+      <span
+        class="text-sm font-medium text-gold-700 dark:text-gold-400 flex-shrink-0"
+      >
+        Scenes
+      </span>
+    </div>
+    <span
+      class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0 ml-2"
+    >
+      44
+      % Complete
+    </span>
+  </div>
+  <div
+    class="px-4 pb-3"
+  >
+    <div
+      aria-label="Adventure progress: 44% - Scenes"
+      aria-valuemax="100"
+      aria-valuemin="0"
+      aria-valuenow="44"
+      class="h-2 bg-ink-200 dark:bg-shadow-600 rounded-full overflow-hidden"
+      role="progressbar"
+    >
+      <div
+        class="h-full bg-gradient-to-r from-gold-500 to-gold-400 dark:from-gold-600 dark:to-gold-500 transition-all duration-500 ease-out"
+        style="width: 44%;"
+      />
+    </div>
+    <div
+      class="flex justify-between mt-2"
+    >
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dial Tuning
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dials
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Scenes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Scenes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Adversaries
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Foes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Complete
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Done
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PhaseProgressBar Snapshots > at setup phase > renders correctly with long name 1`] = `
+<div
+  class="bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 "
+  data-testid="phase-progress-bar"
+>
+  <div
+    class="flex items-center justify-between px-4 py-2"
+  >
+    <div
+      class="flex items-center gap-3 min-w-0"
+    >
+      <h2
+        class="font-serif font-bold text-ink-800 dark:text-parchment-100"
+      >
+        The Incredible Journey Through Ancient Lands
+      </h2>
+      <span
+        class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0"
+      >
+        |
+      </span>
+      <span
+        class="text-sm font-medium text-gold-700 dark:text-gold-400 flex-shrink-0"
+      >
+        Setup
+      </span>
+    </div>
+    <span
+      class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0 ml-2"
+    >
+      0
+      % Complete
+    </span>
+  </div>
+  <div
+    class="px-4 pb-3"
+  >
+    <div
+      aria-label="Adventure progress: 0% - Setup"
+      aria-valuemax="100"
+      aria-valuemin="0"
+      aria-valuenow="0"
+      class="h-2 bg-ink-200 dark:bg-shadow-600 rounded-full overflow-hidden"
+      role="progressbar"
+    >
+      <div
+        class="h-full bg-gradient-to-r from-gold-500 to-gold-400 dark:from-gold-600 dark:to-gold-500 transition-all duration-500 ease-out"
+        style="width: 0%;"
+      />
+    </div>
+    <div
+      class="flex justify-between mt-2"
+    >
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Setup
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Setup
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dial Tuning
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dials
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Adversaries
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Foes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Complete
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Done
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PhaseProgressBar Snapshots > at setup phase > renders correctly with short name 1`] = `
+<div
+  class="bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 "
+  data-testid="phase-progress-bar"
+>
+  <div
+    class="flex items-center justify-between px-4 py-2"
+  >
+    <div
+      class="flex items-center gap-3 min-w-0"
+    >
+      <h2
+        class="font-serif font-bold text-ink-800 dark:text-parchment-100"
+      >
+        Test Quest
+      </h2>
+      <span
+        class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0"
+      >
+        |
+      </span>
+      <span
+        class="text-sm font-medium text-gold-700 dark:text-gold-400 flex-shrink-0"
+      >
+        Setup
+      </span>
+    </div>
+    <span
+      class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0 ml-2"
+    >
+      0
+      % Complete
+    </span>
+  </div>
+  <div
+    class="px-4 pb-3"
+  >
+    <div
+      aria-label="Adventure progress: 0% - Setup"
+      aria-valuemax="100"
+      aria-valuemin="0"
+      aria-valuenow="0"
+      class="h-2 bg-ink-200 dark:bg-shadow-600 rounded-full overflow-hidden"
+      role="progressbar"
+    >
+      <div
+        class="h-full bg-gradient-to-r from-gold-500 to-gold-400 dark:from-gold-600 dark:to-gold-500 transition-all duration-500 ease-out"
+        style="width: 0%;"
+      />
+    </div>
+    <div
+      class="flex justify-between mt-2"
+    >
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Setup
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Setup
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dial Tuning
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dials
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Adversaries
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Foes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Complete
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Done
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PhaseProgressBar Snapshots > dark mode > has proper dark mode classes 1`] = `
+<div
+  class="bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 "
+  data-testid="phase-progress-bar"
+>
+  <div
+    class="flex items-center justify-between px-4 py-2"
+  >
+    <div
+      class="flex items-center gap-3 min-w-0"
+    >
+      <h2
+        class="font-serif font-bold text-ink-800 dark:text-parchment-100"
+      >
+        Dark Quest
+      </h2>
+      <span
+        class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0"
+      >
+        |
+      </span>
+      <span
+        class="text-sm font-medium text-gold-700 dark:text-gold-400 flex-shrink-0"
+      >
+        Frame
+      </span>
+    </div>
+    <span
+      class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0 ml-2"
+    >
+      22
+      % Complete
+    </span>
+  </div>
+  <div
+    class="px-4 pb-3"
+  >
+    <div
+      aria-label="Adventure progress: 22% - Frame"
+      aria-valuemax="100"
+      aria-valuemin="0"
+      aria-valuenow="22"
+      class="h-2 bg-ink-200 dark:bg-shadow-600 rounded-full overflow-hidden"
+      role="progressbar"
+    >
+      <div
+        class="h-full bg-gradient-to-r from-gold-500 to-gold-400 dark:from-gold-600 dark:to-gold-500 transition-all duration-500 ease-out"
+        style="width: 22%;"
+      />
+    </div>
+    <div
+      class="flex justify-between mt-2"
+    >
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dial Tuning
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Dials
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Frame
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Frame
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Adversaries
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Foes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Complete
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Done
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PhaseProgressBar Snapshots > with default name > renders correctly without adventure name 1`] = `
+<div
+  class="bg-parchment-100 dark:bg-shadow-800 border-b border-ink-200 dark:border-shadow-600 "
+  data-testid="phase-progress-bar"
+>
+  <div
+    class="flex items-center justify-between px-4 py-2"
+  >
+    <div
+      class="flex items-center gap-3 min-w-0"
+    >
+      <h2
+        class="font-serif font-bold text-ink-800 dark:text-parchment-100"
+      >
+        Untitled Adventure
+      </h2>
+      <span
+        class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0"
+      >
+        |
+      </span>
+      <span
+        class="text-sm font-medium text-gold-700 dark:text-gold-400 flex-shrink-0"
+      >
+        Dial Tuning
+      </span>
+    </div>
+    <span
+      class="text-sm text-ink-500 dark:text-parchment-500 flex-shrink-0 ml-2"
+    >
+      11
+      % Complete
+    </span>
+  </div>
+  <div
+    class="px-4 pb-3"
+  >
+    <div
+      aria-label="Adventure progress: 11% - Dial Tuning"
+      aria-valuemax="100"
+      aria-valuemin="0"
+      aria-valuenow="11"
+      class="h-2 bg-ink-200 dark:bg-shadow-600 rounded-full overflow-hidden"
+      role="progressbar"
+    >
+      <div
+        class="h-full bg-gradient-to-r from-gold-500 to-gold-400 dark:from-gold-600 dark:to-gold-500 transition-all duration-500 ease-out"
+        style="width: 11%;"
+      />
+    </div>
+    <div
+      class="flex justify-between mt-2"
+    >
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Setup
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-gold-500 dark:bg-gold-400 ring-2 ring-gold-300 dark:ring-gold-600 ring-offset-1 ring-offset-parchment-100 dark:ring-offset-shadow-800
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Dial Tuning
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-gold-700 dark:text-gold-400 font-medium
+                  "
+        >
+          Dials
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Frame
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Outline
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Scenes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          NPCs
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Adversaries
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Foes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Items
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Echoes
+        </span>
+      </div>
+      <div
+        class="flex flex-col items-center gap-1"
+        data-testid="phase-indicator"
+      >
+        <div
+          class="
+                    w-2 h-2 rounded-full transition-all duration-300
+                    bg-ink-300 dark:bg-shadow-500
+                  "
+          data-testid="phase-dot"
+        />
+        <span
+          class="
+                    text-[10px] leading-tight text-center hidden sm:block
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Complete
+        </span>
+        <span
+          class="
+                    text-[9px] leading-tight text-center sm:hidden
+                    text-ink-500 dark:text-parchment-500
+                  "
+        >
+          Done
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
