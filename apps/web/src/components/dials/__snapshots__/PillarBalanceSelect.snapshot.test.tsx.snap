@@ -11,25 +11,6 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders combat-primary bala
     Pillar Balance
   </span>
   <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
-  <div
     class="sr-only"
     id=":r6:-instructions"
   >
@@ -170,25 +151,6 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders disabled state 1`] 
   >
     Pillar Balance
   </span>
-  <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
   <div
     class="sr-only"
     id=":r8:-instructions"
@@ -333,25 +295,6 @@ exports[`PillarBalanceSelect Snapshots > Dark Mode > renders social-primary bala
   >
     Pillar Balance
   </span>
-  <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
   <div
     class="sr-only"
     id=":r7:-instructions"
@@ -708,25 +651,6 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders combat-primary bal
     Pillar Balance
   </span>
   <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
-  <div
     class="sr-only"
     id=":r0:-instructions"
   >
@@ -867,25 +791,6 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders disabled state 1`]
   >
     Pillar Balance
   </span>
-  <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
   <div
     class="sr-only"
     id=":r3:-instructions"
@@ -1031,25 +936,6 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders exploration-primar
     Pillar Balance
   </span>
   <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
-  <div
     class="sr-only"
     id=":r1:-instructions"
   >
@@ -1190,25 +1076,6 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders social-primary bal
   >
     Pillar Balance
   </span>
-  <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
   <div
     class="sr-only"
     id=":r2:-instructions"
@@ -1351,25 +1218,6 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders with custom classN
     Pillar Balance
   </span>
   <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
-  <div
     class="sr-only"
     id=":r5:-instructions"
   >
@@ -1504,25 +1352,6 @@ exports[`PillarBalanceSelect Snapshots > Light Mode > renders without label 1`] 
 <div
   class="flex flex-col gap-3 "
 >
-  <div
-    class="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1"
-  >
-    <span
-      class="flex-1 text-center"
-    >
-      1st
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      2nd
-    </span>
-    <span
-      class="flex-1 text-center"
-    >
-      3rd
-    </span>
-  </div>
   <div
     class="sr-only"
     id=":r4:-instructions"

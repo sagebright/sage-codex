@@ -38,31 +38,36 @@ export interface EmotionalRegisterSelectProps {
   customExamples?: Partial<Record<EmotionalRegisterOption, string>>;
 }
 
-/** Emotional register options with AI example stubs */
+/** Emotional register options with descriptions and AI example stubs */
 const EMOTIONAL_REGISTER_OPTIONS = [
   {
     value: 'thrilling',
     label: 'Thrilling',
+    description: 'High-stakes tension and excitement',
     example: "Sweeping emotions like 'Braveheart'",
   },
   {
     value: 'tense',
     label: 'Tense',
+    description: 'Suspense and uncertainty',
     example: "Personal stakes like 'Manchester by the Sea'",
   },
   {
     value: 'heartfelt',
     label: 'Heartfelt',
+    description: 'Emotional depth and connection',
     example: "Emotional depth like 'Up'",
   },
   {
     value: 'bittersweet',
     label: 'Bittersweet',
+    description: 'Joy mixed with loss',
     example: "Cool observation like 'No Country for Old Men'",
   },
   {
     value: 'epic',
     label: 'Epic',
+    description: 'Grand scope and triumph',
     example: "Grand scope like 'Lord of the Rings'",
   },
 ];
@@ -156,6 +161,9 @@ export function EmotionalRegisterSelect({
                 `}
               >
                 <span className="font-medium">{option.label}</span>
+                <span className="text-xs text-ink-500 dark:text-parchment-400 mt-0.5">
+                  {option.description}
+                </span>
               </button>
               <div
                 className={`

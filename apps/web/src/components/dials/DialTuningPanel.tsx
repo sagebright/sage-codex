@@ -93,13 +93,33 @@ const THEME_CHIP_OPTIONS = THEME_OPTIONS.map((t) => ({
 // Helper Functions
 // =============================================================================
 
+/** Capitalize first letter */
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * Format value with optional "(default)" suffix for unconfirmed dials
+ */
+function formatValueWithDefault(
+  value: string | null,
+  defaultValue: string,
+  isConfirmed: boolean
+): string {
+  const displayValue = value || defaultValue;
+  const formatted = capitalize(displayValue);
+  return isConfirmed ? formatted : `${formatted} (default)`;
+}
+
 /**
  * Format pillar balance for display
  */
-function formatPillarBalance(balance: PillarBalance | null): string {
-  if (!balance) return 'Not set';
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-  return `${capitalize(balance.primary)} > ${capitalize(balance.secondary)} > ${capitalize(balance.tertiary)}`;
+function formatPillarBalance(
+  balance: PillarBalance | null,
+  defaultBalance: PillarBalance,
+  isConfirmed: boolean
+): string {
+  const b = balance || defaultBalance;
+  const formatted = `${capitalize(b.primary)} > ${capitalize(b.secondary)} > ${capitalize(b.tertiary)}`;
+  return isConfirmed ? formatted : `${formatted} (default)`;
 }
 
 /**
@@ -246,7 +266,7 @@ export function DialTuningPanel({
         <DialCard
           label="Tone"
           description="Adventure tone from grim to whimsical"
-          value={dials.tone ? dials.tone.charAt(0).toUpperCase() + dials.tone.slice(1) : 'Not set'}
+          value={formatValueWithDefault(dials.tone, 'balanced', dials.confirmedDials.has('tone'))}
           isSet={dials.confirmedDials.has('tone')}
           isConceptual
         >
@@ -262,7 +282,11 @@ export function DialTuningPanel({
         <DialCard
           label="Pillar Balance"
           description="Priority of Combat, Exploration, Social"
-          value={formatPillarBalance(dials.pillarBalance)}
+          value={formatPillarBalance(
+            dials.pillarBalance,
+            { primary: 'combat', secondary: 'exploration', tertiary: 'social' },
+            dials.confirmedDials.has('pillarBalance')
+          )}
           isSet={dials.confirmedDials.has('pillarBalance')}
           isConceptual
         >
@@ -284,7 +308,7 @@ export function DialTuningPanel({
         <DialCard
           label="Lethality"
           description="How dangerous is the adventure?"
-          value={dials.lethality ? dials.lethality.charAt(0).toUpperCase() + dials.lethality.slice(1) : 'Not set'}
+          value={formatValueWithDefault(dials.lethality, 'standard', dials.confirmedDials.has('lethality'))}
           isSet={dials.confirmedDials.has('lethality')}
           isConceptual
         >
@@ -300,7 +324,7 @@ export function DialTuningPanel({
         <DialCard
           label="NPC Density"
           description="Number of named NPCs"
-          value={dials.npcDensity ? dials.npcDensity.charAt(0).toUpperCase() + dials.npcDensity.slice(1) : 'Not set'}
+          value={formatValueWithDefault(dials.npcDensity, 'moderate', dials.confirmedDials.has('npcDensity'))}
           isSet={dials.confirmedDials.has('npcDensity')}
           isConceptual
         >
@@ -316,7 +340,7 @@ export function DialTuningPanel({
         <DialCard
           label="Emotional Register"
           description="Primary emotional journey"
-          value={dials.emotionalRegister ? dials.emotionalRegister.charAt(0).toUpperCase() + dials.emotionalRegister.slice(1) : 'Not set'}
+          value={formatValueWithDefault(dials.emotionalRegister, 'epic', dials.confirmedDials.has('emotionalRegister'))}
           isSet={dials.confirmedDials.has('emotionalRegister')}
           isConceptual
         >

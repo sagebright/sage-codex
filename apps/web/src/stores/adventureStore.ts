@@ -13,6 +13,21 @@ import type { Phase } from '@dagger-app/shared-types';
 import { useChatStore } from './chatStore';
 
 // =============================================================================
+// Utilities
+// =============================================================================
+
+/**
+ * Generate a UUID with fallback for environments without crypto.randomUUID
+ * (e.g., Playwright browser automation context)
+ */
+const generateUUID = (): string =>
+  crypto?.randomUUID?.() ??
+  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+
+// =============================================================================
 // Types
 // =============================================================================
 
@@ -66,7 +81,7 @@ export const useAdventureStore = create<AdventureState>()(
          * @param name - Optional adventure name (defaults to empty string)
          */
         initSession: (name: string = '') => {
-          const sessionId = crypto.randomUUID();
+          const sessionId = generateUUID();
           // Clear chat messages from previous sessions
           useChatStore.getState().clearMessages();
 

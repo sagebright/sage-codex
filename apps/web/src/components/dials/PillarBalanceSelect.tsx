@@ -202,13 +202,6 @@ export function PillarBalanceSelect({
         </span>
       )}
 
-      {/* Priority slots header */}
-      <div className="flex gap-2 text-xs text-ink-500 dark:text-parchment-400 px-1">
-        <span className="flex-1 text-center">1st</span>
-        <span className="flex-1 text-center">2nd</span>
-        <span className="flex-1 text-center">3rd</span>
-      </div>
-
       {/* Screen reader instructions for keyboard users */}
       <div id={instructionsId} className="sr-only">
         Press Space or Enter to start dragging. Use arrow keys to move. Press Space or Enter again to drop.

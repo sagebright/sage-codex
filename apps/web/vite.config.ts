@@ -12,6 +12,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    host: true, // Listen on all interfaces for Docker MCP browser access
+    allowedHosts: ['host.docker.internal'], // Allow Docker container connections
     proxy: {
       '/api': {
         target: 'http://localhost:3001',

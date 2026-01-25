@@ -28,10 +28,10 @@ describe('PillarBalanceSelect', () => {
     it('renders three priority slots labeled 1st, 2nd, 3rd', () => {
       render(<PillarBalanceSelect value={defaultValue} onChange={mockOnChange} />);
 
-      // Each label appears twice: once in header, once in button
-      expect(screen.getAllByText('1st')).toHaveLength(2);
-      expect(screen.getAllByText('2nd')).toHaveLength(2);
-      expect(screen.getAllByText('3rd')).toHaveLength(2);
+      // Each label appears once inside the pillar button
+      expect(screen.getByText('1st')).toBeInTheDocument();
+      expect(screen.getByText('2nd')).toBeInTheDocument();
+      expect(screen.getByText('3rd')).toBeInTheDocument();
     });
 
     it('renders all three pillar options', () => {

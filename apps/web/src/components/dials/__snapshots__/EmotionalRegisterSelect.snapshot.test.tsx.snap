@@ -35,6 +35,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders bittersweet reg
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -100,6 +105,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders bittersweet reg
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -167,6 +177,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders bittersweet reg
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -233,6 +248,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders bittersweet reg
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -298,6 +318,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders bittersweet reg
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -385,6 +410,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders disabled state 
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -452,6 +482,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders disabled state 
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -521,6 +556,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders disabled state 
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -589,6 +629,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders disabled state 
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -656,6 +701,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders disabled state 
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -743,6 +793,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders thrilling regis
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -808,6 +863,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders thrilling regis
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -875,6 +935,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders thrilling regis
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -941,6 +1006,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders thrilling regis
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -1006,6 +1076,11 @@ exports[`EmotionalRegisterSelect Snapshots > Dark Mode > renders thrilling regis
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -1092,6 +1167,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -1157,6 +1237,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -1225,6 +1310,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -1291,6 +1381,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -1356,6 +1451,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -1442,6 +1542,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -1507,6 +1612,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -1575,6 +1685,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -1641,6 +1756,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -1706,6 +1826,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -1792,6 +1917,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -1859,6 +1989,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Tense
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
+        </span>
       </button>
       <div
         class="
@@ -1924,6 +2059,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
           class="font-medium"
         >
           Heartfelt
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
         </span>
       </button>
       <div
@@ -1991,6 +2131,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -2056,6 +2201,11 @@ exports[`EmotionalRegisterSelect Snapshots > Default vs Confirmed States > rende
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -2143,6 +2293,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders disabled state
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -2210,6 +2365,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders disabled state
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -2279,6 +2439,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders disabled state
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -2347,6 +2512,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders disabled state
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -2414,6 +2584,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders disabled state
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -2501,6 +2676,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders epic register 
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -2566,6 +2746,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders epic register 
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -2633,6 +2818,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders epic register 
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -2699,6 +2889,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders epic register 
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -2764,6 +2959,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders epic register 
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -2850,6 +3050,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders heartfelt regi
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -2915,6 +3120,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders heartfelt regi
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -2982,6 +3192,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders heartfelt regi
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -3048,6 +3263,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders heartfelt regi
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -3113,6 +3333,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders heartfelt regi
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
@@ -3199,6 +3424,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders thrilling regi
         >
           Thrilling
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          High-stakes tension and excitement
+        </span>
       </button>
       <div
         class="
@@ -3264,6 +3494,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders thrilling regi
           class="font-medium"
         >
           Tense
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Suspense and uncertainty
         </span>
       </button>
       <div
@@ -3331,6 +3566,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders thrilling regi
         >
           Heartfelt
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Emotional depth and connection
+        </span>
       </button>
       <div
         class="
@@ -3397,6 +3637,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders thrilling regi
         >
           Bittersweet
         </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Joy mixed with loss
+        </span>
       </button>
       <div
         class="
@@ -3462,6 +3707,11 @@ exports[`EmotionalRegisterSelect Snapshots > Light Mode > renders thrilling regi
           class="font-medium"
         >
           Epic
+        </span>
+        <span
+          class="text-xs text-ink-500 dark:text-parchment-400 mt-0.5"
+        >
+          Grand scope and triumph
         </span>
       </button>
       <div
