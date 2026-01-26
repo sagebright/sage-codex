@@ -118,7 +118,7 @@ export function NPCCard({
                 {npc.name}
               </h3>
               <span
-                className={`px-2 py-0.5 text-xs font-medium rounded capitalize ${roleStyle.bg} ${roleStyle.text}`}
+                className={`rounded-lg border-2 px-3 py-1 text-xs font-medium capitalize ${roleStyle.bg} ${roleStyle.text} ${roleStyle.border}`}
               >
                 {npc.role}
               </span>
