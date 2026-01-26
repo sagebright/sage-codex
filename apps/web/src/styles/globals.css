@@ -151,10 +151,44 @@
            focus:ring-[rgba(215,169,100,0.3)] focus:border-gold;
   }
 
-  /* Rarity badge styles */
+  /* ==========================================================================
+   * Badge Size Constants
+   *
+   * Two badge size variants for context-aware sizing:
+   * - Full (badge-full): Standalone badges, feature cards, emphasis areas
+   * - Compact (badge-compact): Inline usage, stacked lists, dense layouts
+   *
+   * Usage Pattern:
+   *   <span class="badge badge-full badge-rare">Rare Item</span>
+   *   <span class="badge badge-compact badge-common">Common</span>
+   *
+   * Both sizes maintain readability in light/dark modes and use consistent
+   * border-2 and rounded-lg styling from the design system.
+   * ========================================================================== */
+
+  /* Base badge styles (shared across all variants) */
   .badge {
-    @apply inline-flex items-center px-3 py-1 text-xs font-semibold uppercase tracking-wide
-           rounded border transition-all duration-200;
+    @apply inline-flex items-center text-xs font-semibold uppercase tracking-wide
+           border transition-all duration-200;
+  }
+
+  /* Full badge: Standalone use, feature emphasis, spacious layouts
+   * Use when: Hero sections, standalone tags, feature cards, modal headers
+   * Provides: Generous padding, prominent visibility, touch-friendly target */
+  .badge-full {
+    @apply rounded-lg border-2 px-4 py-2;
+  }
+
+  /* Compact badge: Inline/stacked use, dense layouts, lists
+   * Use when: Inline with text, tag lists, table cells, dense card grids
+   * Provides: Minimal footprint, prevents visual bloat, maintains readability */
+  .badge-compact {
+    @apply rounded-lg border-2 px-3 py-1;
+  }
+
+  /* Default size fallback (matches compact for backward compatibility) */
+  .badge:not(.badge-full):not(.badge-compact) {
+    @apply rounded border px-3 py-1;
   }
 
   .badge-common {
