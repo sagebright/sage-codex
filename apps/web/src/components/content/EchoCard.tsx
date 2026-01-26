@@ -36,29 +36,29 @@ export interface EchoCardProps {
 
 const categoryStyles: Record<EchoCategory, { bg: string; text: string; border: string }> = {
   complications: {
-    bg: 'bg-blood-100',
-    text: 'text-blood-700',
-    border: 'border-blood-200',
+    bg: 'bg-blood-100 dark:bg-blood-900',
+    text: 'text-blood-700 dark:text-blood-200',
+    border: 'border-blood-200 dark:border-blood-700',
   },
   rumors: {
-    bg: 'bg-gold-100',
-    text: 'text-gold-700',
-    border: 'border-gold-200',
+    bg: 'bg-gold-100 dark:bg-gold-900',
+    text: 'text-gold-700 dark:text-gold-200',
+    border: 'border-gold-200 dark:border-gold-700',
   },
   discoveries: {
-    bg: 'bg-parchment-100',
-    text: 'text-parchment-700',
-    border: 'border-parchment-300',
+    bg: 'bg-parchment-100 dark:bg-parchment-900',
+    text: 'text-parchment-700 dark:text-parchment-200',
+    border: 'border-parchment-300 dark:border-parchment-700',
   },
   intrusions: {
-    bg: 'bg-shadow-100',
-    text: 'text-shadow-700',
-    border: 'border-shadow-200',
+    bg: 'bg-shadow-100 dark:bg-shadow-700',
+    text: 'text-shadow-700 dark:text-shadow-200',
+    border: 'border-shadow-200 dark:border-shadow-600',
   },
   wonders: {
-    bg: 'bg-ink-100',
-    text: 'text-ink-700',
-    border: 'border-ink-200',
+    bg: 'bg-ink-100 dark:bg-ink-900',
+    text: 'text-ink-700 dark:text-ink-200',
+    border: 'border-ink-200 dark:border-ink-700',
   },
 };
 
@@ -85,14 +85,16 @@ export function EchoCard({
       className={`
         relative rounded-lg border p-4 transition-all
         ${styles.border}
-        ${isConfirmed ? 'bg-parchment-50 ring-1 ring-gold-300' : 'bg-white'}
+        ${isConfirmed
+          ? 'bg-parchment-50 dark:bg-shadow-900 ring-1 ring-gold-300 dark:ring-gold-500'
+          : 'bg-parchment-50 dark:bg-shadow-800'}
         ${compact ? 'compact' : ''}
       `}
       aria-labelledby={`echo-title-${echo.id}`}
     >
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-shadow-900/50 rounded-lg">
           <span role="status" className="animate-spin h-5 w-5 border-2 border-gold-500 border-t-transparent rounded-full" />
         </div>
       )}
@@ -133,7 +135,7 @@ export function EchoCard({
       {/* Title */}
       <h3
         id={`echo-title-${echo.id}`}
-        className="text-lg font-semibold text-ink-900 mb-2"
+        className="text-lg font-semibold text-ink-900 dark:text-parchment-100 mb-2"
       >
         {echo.title}
       </h3>
@@ -141,7 +143,7 @@ export function EchoCard({
       {/* Content */}
       <p
         className={`
-          text-ink-700 mb-3
+          text-ink-700 dark:text-parchment-200 mb-3
           ${compact ? 'line-clamp-2' : ''}
         `}
       >
@@ -154,7 +156,7 @@ export function EchoCard({
           {echo.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-block px-2 py-0.5 text-xs bg-parchment-100 text-ink-600 rounded"
+              className="inline-block px-2 py-0.5 text-xs bg-parchment-100 dark:bg-shadow-700 text-ink-600 dark:text-parchment-300 rounded"
             >
               {tag}
             </span>
@@ -163,7 +165,7 @@ export function EchoCard({
       )}
 
       {/* Actions */}
-      <div className="flex gap-2 mt-auto pt-2 border-t border-parchment-200">
+      <div className="flex gap-2 mt-auto pt-2 border-t border-parchment-200 dark:border-shadow-600">
         <button
           type="button"
           onClick={() => onConfirm(echo.id)}
@@ -172,8 +174,8 @@ export function EchoCard({
             flex-1 px-3 py-1.5 text-sm font-medium rounded
             ${
               isConfirmed
-                ? 'bg-parchment-100 text-parchment-400 cursor-not-allowed'
-                : 'bg-gold-500 text-white hover:bg-gold-600'
+                ? 'bg-parchment-100 dark:bg-shadow-700 text-parchment-400 dark:text-shadow-500 cursor-not-allowed'
+                : 'bg-gold-500 text-ink-900 hover:bg-gold-600'
             }
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-colors
@@ -189,8 +191,8 @@ export function EchoCard({
             disabled={isLoading}
             className="
               px-3 py-1.5 text-sm font-medium rounded
-              border border-parchment-300 text-ink-700
-              hover:bg-parchment-50
+              border border-parchment-300 dark:border-shadow-600 text-ink-700 dark:text-parchment-200
+              hover:bg-parchment-50 dark:hover:bg-shadow-700
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors
             "
@@ -206,8 +208,8 @@ export function EchoCard({
             disabled={isLoading}
             className="
               px-3 py-1.5 text-sm font-medium rounded
-              border border-parchment-300 text-ink-700
-              hover:bg-parchment-50
+              border border-parchment-300 dark:border-shadow-600 text-ink-700 dark:text-parchment-200
+              hover:bg-parchment-50 dark:hover:bg-shadow-700
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors
             "

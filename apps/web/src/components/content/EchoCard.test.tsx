@@ -226,4 +226,129 @@ describe('EchoCard', () => {
       expect(screen.getByRole('article')).toBeInTheDocument();
     });
   });
+
+  describe('dark mode support', () => {
+    it('applies dark mode background to card', () => {
+      render(<EchoCard {...defaultProps} />);
+      const card = screen.getByTestId('echo-card');
+      expect(card).toHaveClass('dark:bg-shadow-800');
+    });
+
+    it('applies dark mode background to confirmed card', () => {
+      render(<EchoCard {...defaultProps} echo={mockConfirmedEcho} />);
+      const card = screen.getByTestId('echo-card');
+      expect(card).toHaveClass('dark:bg-shadow-900');
+    });
+
+    it('applies dark mode ring to confirmed card', () => {
+      render(<EchoCard {...defaultProps} echo={mockConfirmedEcho} />);
+      const card = screen.getByTestId('echo-card');
+      expect(card).toHaveClass('dark:ring-gold-500');
+    });
+
+    it('applies dark mode styles to loading overlay', () => {
+      render(<EchoCard {...defaultProps} isLoading />);
+      const loadingOverlay = screen.getByRole('status').parentElement;
+      expect(loadingOverlay).toHaveClass('dark:bg-shadow-900/50');
+    });
+
+    it('applies dark mode text to title', () => {
+      render(<EchoCard {...defaultProps} />);
+      const title = screen.getByRole('heading', { name: 'The Bridge Collapses' });
+      expect(title).toHaveClass('dark:text-parchment-100');
+    });
+
+    it('applies dark mode text to content', () => {
+      render(<EchoCard {...defaultProps} />);
+      const content = screen.getByText(/The ancient bridge begins to crumble/);
+      expect(content).toHaveClass('dark:text-parchment-200');
+    });
+
+    it('applies dark mode styles to tag badges', () => {
+      render(<EchoCard {...defaultProps} />);
+      const tag = screen.getByText('environmental');
+      expect(tag).toHaveClass('dark:bg-shadow-700');
+      expect(tag).toHaveClass('dark:text-parchment-300');
+    });
+
+    it('applies dark mode styles to action border', () => {
+      render(<EchoCard {...defaultProps} />);
+      const editButton = screen.getByRole('button', { name: /edit/i });
+      expect(editButton).toHaveClass('dark:border-shadow-600');
+      expect(editButton).toHaveClass('dark:text-parchment-200');
+    });
+
+    it('applies dark mode hover to action buttons', () => {
+      render(<EchoCard {...defaultProps} />);
+      const editButton = screen.getByRole('button', { name: /edit/i });
+      expect(editButton).toHaveClass('dark:hover:bg-shadow-700');
+    });
+
+    it('applies dark mode styles to confirm button text', () => {
+      render(<EchoCard {...defaultProps} />);
+      const confirmButton = screen.getByRole('button', { name: /confirm/i });
+      expect(confirmButton).toHaveClass('text-ink-900');
+    });
+
+    it('applies dark mode styles to disabled confirm button', () => {
+      render(<EchoCard {...defaultProps} echo={mockConfirmedEcho} />);
+      const confirmButton = screen.getByRole('button', { name: /confirm/i });
+      expect(confirmButton).toHaveClass('dark:bg-shadow-700');
+      expect(confirmButton).toHaveClass('dark:text-shadow-500');
+    });
+
+    it('applies dark mode border to action container', () => {
+      render(<EchoCard {...defaultProps} />);
+      // Find the action container by its border class
+      const card = screen.getByTestId('echo-card');
+      const actionContainer = card.querySelector('.border-t');
+      expect(actionContainer).toHaveClass('dark:border-shadow-600');
+    });
+
+    describe('dark mode category styling', () => {
+      it('applies dark mode complications category styling', () => {
+        render(<EchoCard {...defaultProps} />);
+        const badge = screen.getByText('complications');
+        expect(badge).toHaveClass('dark:bg-blood-900');
+        expect(badge).toHaveClass('dark:text-blood-200');
+      });
+
+      it('applies dark mode rumors category styling', () => {
+        render(<EchoCard {...defaultProps} echo={mockConfirmedEcho} />);
+        const badge = screen.getByText('rumors');
+        expect(badge).toHaveClass('dark:bg-gold-900');
+        expect(badge).toHaveClass('dark:text-gold-200');
+      });
+
+      it('applies dark mode discoveries category styling', () => {
+        const discoveryEcho = { ...mockEcho, category: 'discoveries' as const };
+        render(<EchoCard {...defaultProps} echo={discoveryEcho} />);
+        const badge = screen.getByText('discoveries');
+        expect(badge).toHaveClass('dark:bg-parchment-900');
+        expect(badge).toHaveClass('dark:text-parchment-200');
+      });
+
+      it('applies dark mode intrusions category styling', () => {
+        const intrusionEcho = { ...mockEcho, category: 'intrusions' as const };
+        render(<EchoCard {...defaultProps} echo={intrusionEcho} />);
+        const badge = screen.getByText('intrusions');
+        expect(badge).toHaveClass('dark:bg-shadow-700');
+        expect(badge).toHaveClass('dark:text-shadow-200');
+      });
+
+      it('applies dark mode wonders category styling', () => {
+        const wondersEcho = { ...mockEcho, category: 'wonders' as const };
+        render(<EchoCard {...defaultProps} echo={wondersEcho} />);
+        const badge = screen.getByText('wonders');
+        expect(badge).toHaveClass('dark:bg-ink-900');
+        expect(badge).toHaveClass('dark:text-ink-200');
+      });
+
+      it('applies dark mode border to card for complications', () => {
+        render(<EchoCard {...defaultProps} />);
+        const card = screen.getByTestId('echo-card');
+        expect(card).toHaveClass('dark:border-blood-700');
+      });
+    });
+  });
 });
