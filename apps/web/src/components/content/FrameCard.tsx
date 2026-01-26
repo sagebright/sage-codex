@@ -45,9 +45,13 @@ export function FrameCard({
         flex flex-col items-start p-4 rounded-fantasy border
         w-full text-left
         transition-all duration-200
+        motion-safe:hover:-translate-y-1
+        motion-safe:hover:shadow-gold-glow-subtle
+        focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+        focus:ring-offset-parchment-100 dark:focus:ring-offset-shadow-900
         ${
           isSelected
-            ? 'bg-gold-100 border-gold-400 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500'
+            ? 'bg-gold-100 border-gold-400 shadow-gold-glow dark:bg-gold-900/40 dark:border-gold-500 motion-safe:animate-selection-glow'
             : 'bg-parchment-50 border-ink-300 hover:bg-gold-50 hover:border-gold-300 dark:bg-shadow-800 dark:border-shadow-500 dark:hover:bg-gold-900/20 dark:hover:border-gold-600'
         }
         ${className}

@@ -325,5 +325,88 @@ describe('FrameCard', () => {
       const button = screen.getByRole('button');
       expect(button).toHaveAccessibleName();
     });
+
+    it('has focus ring classes for keyboard navigation', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('focus:ring-2');
+      expect(button).toHaveClass('focus:ring-gold-400');
+      expect(button).toHaveClass('focus:ring-offset-2');
+    });
+  });
+
+  describe('animations', () => {
+    it('has hover lift animation classes (motion-safe)', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('motion-safe:hover:-translate-y-1');
+    });
+
+    it('has hover glow animation classes (motion-safe)', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('motion-safe:hover:shadow-gold-glow-subtle');
+    });
+
+    it('has selection glow animation when selected (motion-safe)', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={true}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('motion-safe:animate-selection-glow');
+    });
+
+    it('does not have selection glow animation when not selected', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).not.toHaveClass('motion-safe:animate-selection-glow');
+    });
+
+    it('has smooth transition classes', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('transition-all');
+      expect(button).toHaveClass('duration-200');
+    });
   });
 });
