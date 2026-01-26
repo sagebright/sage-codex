@@ -372,4 +372,86 @@ describe('NPCCard', () => {
       expect(screen.getByText('Stranger')).toBeInTheDocument();
     });
   });
+
+  // ===========================================================================
+  // Animation Tests
+  // ===========================================================================
+
+  describe('animations', () => {
+    it('has hover lift animation classes (motion-safe)', () => {
+      render(<NPCCard {...defaultProps} />);
+
+      const card = screen.getByRole('article');
+      expect(card).toHaveClass('motion-safe:hover:-translate-y-1');
+    });
+
+    it('has hover glow animation classes (motion-safe)', () => {
+      render(<NPCCard {...defaultProps} />);
+
+      const card = screen.getByRole('article');
+      expect(card).toHaveClass('motion-safe:hover:shadow-gold-glow-subtle');
+    });
+
+    it('has selection glow animation when confirmed (motion-safe)', () => {
+      render(<NPCCard {...defaultProps} isConfirmed />);
+
+      const card = screen.getByRole('article');
+      expect(card).toHaveClass('motion-safe:animate-selection-glow');
+    });
+
+    it('does not have selection glow animation when not confirmed', () => {
+      render(<NPCCard {...defaultProps} isConfirmed={false} />);
+
+      const card = screen.getByRole('article');
+      expect(card).not.toHaveClass('motion-safe:animate-selection-glow');
+    });
+
+    it('has smooth transition classes', () => {
+      render(<NPCCard {...defaultProps} />);
+
+      const card = screen.getByRole('article');
+      expect(card).toHaveClass('transition-all');
+      expect(card).toHaveClass('duration-200');
+    });
+
+    it('applies gold glow shadow when confirmed', () => {
+      render(<NPCCard {...defaultProps} isConfirmed />);
+
+      const card = screen.getByRole('article');
+      expect(card).toHaveClass('shadow-gold-glow');
+    });
+
+    it('does not apply gold glow shadow when not confirmed', () => {
+      render(<NPCCard {...defaultProps} isConfirmed={false} />);
+
+      const card = screen.getByRole('article');
+      expect(card).not.toHaveClass('shadow-gold-glow');
+    });
+  });
+
+  // ===========================================================================
+  // Focus Ring Tests
+  // ===========================================================================
+
+  describe('focus ring accessibility', () => {
+    it('Refine button has focus ring classes', () => {
+      render(<NPCCard {...defaultProps} />);
+
+      const refineButton = screen.getByRole('button', { name: /refine/i });
+      expect(refineButton).toHaveClass('focus:outline-none');
+      expect(refineButton).toHaveClass('focus:ring-2');
+      expect(refineButton).toHaveClass('focus:ring-gold-400');
+      expect(refineButton).toHaveClass('focus:ring-offset-2');
+    });
+
+    it('Confirm button has focus ring classes', () => {
+      render(<NPCCard {...defaultProps} />);
+
+      const confirmButton = screen.getByRole('button', { name: /confirm/i });
+      expect(confirmButton).toHaveClass('focus:outline-none');
+      expect(confirmButton).toHaveClass('focus:ring-2');
+      expect(confirmButton).toHaveClass('focus:ring-gold-400');
+      expect(confirmButton).toHaveClass('focus:ring-offset-2');
+    });
+  });
 });

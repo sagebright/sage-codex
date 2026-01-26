@@ -102,7 +102,10 @@ export function NPCCard({
         bg-parchment-50 dark:bg-shadow-800
         border border-ink-200 dark:border-shadow-600
         rounded-fantasy overflow-hidden
-        ${isConfirmed ? 'border-gold-400 dark:border-gold-600' : ''}
+        transition-all duration-200
+        motion-safe:hover:-translate-y-1
+        motion-safe:hover:shadow-gold-glow-subtle
+        ${isConfirmed ? 'border-gold-400 dark:border-gold-600 shadow-gold-glow motion-safe:animate-selection-glow' : ''}
         ${className}
       `}
     >
@@ -232,6 +235,8 @@ export function NPCCard({
               dark:hover:bg-gold-900/30 dark:hover:border-gold-600
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors
+              focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+              dark:focus:ring-offset-shadow-900
             "
             aria-label="Refine NPC"
           >
@@ -250,6 +255,8 @@ export function NPCCard({
               dark:hover:bg-gold-500 dark:hover:border-gold-400
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors
+              focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2
+              dark:focus:ring-offset-shadow-900
             "
             aria-label="Confirm NPC"
           >
