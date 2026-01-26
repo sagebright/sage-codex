@@ -80,13 +80,13 @@ export function FrameCard({
           {themes.slice(0, expanded ? undefined : 3).map((theme, index) => (
             <span
               key={index}
-              className="px-2 py-0.5 text-xs bg-ink-100 text-ink-700 rounded dark:bg-shadow-700 dark:text-parchment-300"
+              className="rounded-lg border-2 px-3 py-1 text-xs bg-ink-100 text-ink-700 border-ink-300 dark:bg-shadow-700 dark:text-parchment-300 dark:border-shadow-500"
             >
               {theme}
             </span>
           ))}
           {!expanded && themes.length > 3 && (
-            <span className="px-2 py-0.5 text-xs text-ink-500 dark:text-parchment-500">
+            <span className="rounded-lg border-2 px-3 py-1 text-xs text-ink-500 border-ink-200 dark:text-parchment-500 dark:border-shadow-600">
               +{themes.length - 3} more
             </span>
           )}

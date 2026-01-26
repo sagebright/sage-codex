@@ -409,4 +409,36 @@ describe('FrameCard', () => {
       expect(button).toHaveClass('duration-200');
     });
   });
+
+  describe('theme badge styling', () => {
+    it('applies compact badge styling to theme badges', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const themeBadge = screen.getByText('mystery');
+      // Compact badge styling: rounded-lg border-2 px-3 py-1
+      expect(themeBadge).toHaveClass('rounded-lg');
+      expect(themeBadge).toHaveClass('border-2');
+      expect(themeBadge).toHaveClass('px-3');
+      expect(themeBadge).toHaveClass('py-1');
+    });
+
+    it('applies correct text styling to theme badges', () => {
+      render(
+        <FrameCard
+          frame={mockDbFrame}
+          isSelected={false}
+          onSelect={mockOnSelect}
+        />
+      );
+
+      const themeBadge = screen.getByText('mystery');
+      expect(themeBadge).toHaveClass('text-xs');
+    });
+  });
 });
