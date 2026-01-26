@@ -42,26 +42,30 @@ export interface ItemCardProps {
 // Category Styling Helpers
 // =============================================================================
 
-const categoryStyles: Record<ItemCategory, { bg: string; text: string; icon: string }> = {
+const categoryStyles: Record<ItemCategory, { bg: string; text: string; icon: string; border: string }> = {
   item: {
     bg: 'bg-parchment-200 dark:bg-shadow-600',
     text: 'text-ink-600 dark:text-parchment-400',
     icon: '📦',
+    border: 'border-ink-300 dark:border-shadow-500',
   },
   weapon: {
     bg: 'bg-blood-100 dark:bg-blood-900/40',
     text: 'text-blood-700 dark:text-blood-400',
     icon: '⚔️',
+    border: 'border-blood-300 dark:border-blood-700',
   },
   armor: {
     bg: 'bg-ink-100 dark:bg-ink-800',
     text: 'text-ink-600 dark:text-ink-400',
     icon: '🛡️',
+    border: 'border-ink-300 dark:border-ink-600',
   },
   consumable: {
     bg: 'bg-green-100 dark:bg-green-900/40',
     text: 'text-green-700 dark:text-green-400',
     icon: '🧪',
+    border: 'border-green-300 dark:border-green-700',
   },
 };
 
@@ -225,13 +229,13 @@ export function ItemCard({
               </h3>
               {tierStyle && (
                 <span
-                  className={`px-2 py-0.5 text-xs font-medium rounded ${tierStyle.bg} ${tierStyle.text}`}
+                  className={`rounded-lg border-2 px-3 py-1 text-xs font-semibold ${tierStyle.bg} ${tierStyle.text} ${tierStyle.border}`}
                 >
                   T{tier}
                 </span>
               )}
               <span
-                className={`px-2 py-0.5 text-xs font-medium rounded capitalize ${categoryStyle.bg} ${categoryStyle.text}`}
+                className={`rounded-lg border-2 px-3 py-1 text-xs font-semibold capitalize ${categoryStyle.bg} ${categoryStyle.text} ${categoryStyle.border}`}
               >
                 {categoryStyle.icon} {getCategoryDisplayName(item.category)}
               </span>
