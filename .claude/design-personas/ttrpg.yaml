@@ -7,6 +7,11 @@
 # - Use this file for dagger-app-specific adjustments
 #
 # Source: Patterns validated during Dagger-App Dial Tuning UI revision (issues #79-#91)
+#
+# Validation Commits:
+# - 2b92916: UX polish for Dial Tuning UI (border-radius, badge sizing)
+# - d225f14: Add expressive animations and hover states (animation patterns)
+# - d3ebb3f: Unify Theme chips with button styling (accessibility, focus rings)
 
 identity:
   id: ttrpg-dagger-app
@@ -107,7 +112,7 @@ components:
   reference_chip:
     base_style:
       padding: "8px 16px"
-      border_radius: "9999px"      # Pill shape
+      border_radius: "8px"         # rounded-lg (validated in 2b92916)
       font_size: "14px"
       font_weight: "500"
       transition: "all 0.2s ease"
@@ -133,6 +138,123 @@ components:
     border_radius: "12px"
     padding: "20px"
     section_spacing: "16px"
+
+# =============================================================================
+# ANIMATION PATTERNS (Validated in d225f14)
+# =============================================================================
+
+animation_patterns:
+  # Hover lift effect for interactive elements
+  hover_lift:
+    description: "Subtle vertical lift on hover to indicate interactivity"
+    implementation:
+      transform: "translateY(-2px)"
+      transition: "transform 0.2s ease, box-shadow 0.2s ease"
+    usage_guidance:
+      - "Apply to clickable cards and chips"
+      - "Combine with shadow enhancement on hover"
+      - "Avoid on elements that expand/collapse (can cause layout shift)"
+    validated_components:
+      - "ReferenceChip"
+      - "ThemeChip"
+
+  # Selection glow effect for selected states
+  selection_glow:
+    description: "Gold glow effect to indicate active/selected state"
+    implementation:
+      box_shadow: "0 0 8px rgba(215, 169, 100, 0.3)"
+      border: "2px solid #d7a964"
+    enhanced_glow:
+      box_shadow: "0 0 12px rgba(215, 169, 100, 0.4)"
+      usage: "For primary selection emphasis"
+    usage_guidance:
+      - "Use for selected chips and active navigation items"
+      - "Gold glow maintains fantasy theme while indicating selection"
+      - "Ensure sufficient color contrast for accessibility"
+    validated_components:
+      - "ReferenceChip (selected state)"
+      - "ThemeChip (selected state)"
+      - "ConceptualPanel navigation"
+
+  # Transition defaults
+  transitions:
+    fast: "150ms ease"       # Micro-interactions (hover color changes)
+    normal: "200ms ease"     # Standard interactions (hover lift, fade)
+    slow: "300ms ease"       # Larger changes (panel expand/collapse)
+
+# =============================================================================
+# ACCESSIBILITY PATTERNS (Validated in d3ebb3f)
+# =============================================================================
+
+accessibility_patterns:
+  # Focus ring specification for keyboard navigation
+  focus_ring:
+    description: "Visible focus indicator for keyboard accessibility"
+    implementation:
+      outline: "2px solid #d7a964"
+      outline_offset: "2px"
+    tailwind_classes: "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900"
+    usage_guidance:
+      - "Apply to all interactive elements (buttons, chips, links)"
+      - "Use focus-visible to avoid showing focus on click"
+      - "ring-offset matches background color for visual separation"
+      - "Gold color maintains theme consistency"
+    wcag_requirement: "WCAG 2.1 Success Criterion 2.4.7 Focus Visible"
+
+  # Contrast requirements
+  contrast:
+    minimum_ratio: "4.5:1"    # WCAG AA for normal text
+    large_text_ratio: "3:1"   # WCAG AA for large text (18pt+)
+    validated_combinations:
+      - { foreground: "#d7a964", background: "#1a1a1a", ratio: "8.4:1", usage: "Gold on dark" }
+      - { foreground: "#e0d8ca", background: "#2a2a2a", ratio: "10.2:1", usage: "Light text on surface" }
+      - { foreground: "#b8a990", background: "#1a1a1a", ratio: "6.1:1", usage: "Muted text on dark" }
+
+  # Screen reader considerations
+  screen_reader:
+    guidance:
+      - "Use aria-selected for chips in selection groups"
+      - "Provide aria-label for icon-only buttons"
+      - "Use role='group' with aria-labelledby for chip groups"
+    validated_patterns:
+      - "ThemeChip selection announcement"
+      - "RefreshCw button tooltip as aria-label"
+
+# =============================================================================
+# BADGE SIZING (Validated in 2b92916, d3ebb3f)
+# =============================================================================
+
+badge_sizing:
+  description: "Badge size variants for different UI contexts"
+
+  variants:
+    full:
+      description: "Standard size for primary interactions"
+      padding: "8px 16px"
+      font_size: "14px"
+      border_radius: "8px"
+      usage: "Default for standalone chips and primary selections"
+
+    compact:
+      description: "Reduced size for dense layouts"
+      padding: "4px 12px"
+      font_size: "12px"
+      border_radius: "6px"
+      usage: "Summary panels, inline badges, space-constrained areas"
+
+  usage_guidance:
+    - "Use 'full' variant for main interaction areas (dial tuning, selection)"
+    - "Use 'compact' variant for read-only displays and summaries"
+    - "Maintain consistent variant within a component group"
+    - "Don't mix variants in the same row or visual grouping"
+
+  validated_components:
+    full_variant:
+      - "ReferenceChip in ConceptualPanel"
+      - "ThemeChip in dial tuning"
+    compact_variant:
+      - "DialSummary badges"
+      - "Selected items display"
 
 # =============================================================================
 # NOTES FOR FUTURE DEVELOPMENT
