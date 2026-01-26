@@ -97,6 +97,22 @@ describe('AdversaryCard', () => {
 
       expect(screen.getByRole('checkbox', { name: /select dire wolf/i })).toBeInTheDocument();
     });
+
+    it('applies compact badge styling to tier badge', () => {
+      render(<AdversaryCard {...defaultProps} />);
+
+      const tierBadge = screen.getByText('T1');
+      // Compact badge styling: rounded-lg border-2 px-3 py-1
+      expect(tierBadge).toHaveClass('rounded-lg', 'border-2', 'px-3', 'py-1');
+    });
+
+    it('applies compact badge styling to type badge', () => {
+      render(<AdversaryCard {...defaultProps} />);
+
+      const typeBadge = screen.getByText(/beast/i);
+      // Compact badge styling: rounded-lg border-2 px-3 py-1
+      expect(typeBadge).toHaveClass('rounded-lg', 'border-2', 'px-3', 'py-1');
+    });
   });
 
   // ===========================================================================

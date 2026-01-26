@@ -65,42 +65,51 @@ const tierStyles: Record<number, { bg: string; text: string; border: string }> =
   },
 };
 
-const typeStyles: Record<string, { bg: string; text: string }> = {
+const typeStyles: Record<string, { bg: string; text: string; border: string }> = {
   beast: {
     bg: 'bg-green-100 dark:bg-green-900/30',
     text: 'text-green-700 dark:text-green-400',
+    border: 'border-green-300 dark:border-green-700',
   },
   humanoid: {
     bg: 'bg-parchment-200 dark:bg-shadow-600',
     text: 'text-ink-600 dark:text-parchment-400',
+    border: 'border-parchment-400 dark:border-shadow-500',
   },
   undead: {
     bg: 'bg-shadow-200 dark:bg-shadow-700',
     text: 'text-shadow-700 dark:text-shadow-300',
+    border: 'border-shadow-400 dark:border-shadow-500',
   },
   construct: {
     bg: 'bg-ink-200 dark:bg-ink-800',
     text: 'text-ink-600 dark:text-ink-400',
+    border: 'border-ink-400 dark:border-ink-600',
   },
   elemental: {
     bg: 'bg-orange-100 dark:bg-orange-900/30',
     text: 'text-orange-700 dark:text-orange-400',
+    border: 'border-orange-300 dark:border-orange-700',
   },
   fiend: {
     bg: 'bg-blood-100 dark:bg-blood-900/30',
     text: 'text-blood-700 dark:text-blood-400',
+    border: 'border-blood-300 dark:border-blood-700',
   },
   celestial: {
     bg: 'bg-gold-100 dark:bg-gold-900/30',
     text: 'text-gold-700 dark:text-gold-400',
+    border: 'border-gold-300 dark:border-gold-700',
   },
   aberration: {
     bg: 'bg-purple-100 dark:bg-purple-900/30',
     text: 'text-purple-700 dark:text-purple-400',
+    border: 'border-purple-300 dark:border-purple-700',
   },
   default: {
     bg: 'bg-ink-100 dark:bg-shadow-700',
     text: 'text-ink-500 dark:text-parchment-500',
+    border: 'border-ink-300 dark:border-shadow-500',
   },
 };
 
@@ -195,12 +204,12 @@ export function AdversaryCard({
                 {adversary.name}
               </h3>
               <span
-                className={`px-2 py-0.5 text-xs font-medium rounded ${tierStyle.bg} ${tierStyle.text}`}
+                className={`rounded-lg border-2 px-3 py-1 text-xs font-medium ${tierStyle.bg} ${tierStyle.text} ${tierStyle.border}`}
               >
                 T{adversary.tier}
               </span>
               <span
-                className={`px-2 py-0.5 text-xs font-medium rounded capitalize ${typeStyle.bg} ${typeStyle.text}`}
+                className={`rounded-lg border-2 px-3 py-1 text-xs font-medium capitalize ${typeStyle.bg} ${typeStyle.text} ${typeStyle.border}`}
               >
                 {adversary.type}
               </span>
