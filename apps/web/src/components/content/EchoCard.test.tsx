@@ -145,6 +145,65 @@ describe('EchoCard', () => {
   });
 
   describe('category styling', () => {
+    describe('compact badge styling', () => {
+      it('applies compact rounded-lg styling to category badge', () => {
+        render(<EchoCard {...defaultProps} />);
+        const badge = screen.getByText('complications');
+        expect(badge).toHaveClass('rounded-lg');
+      });
+
+      it('applies compact border-2 styling to category badge', () => {
+        render(<EchoCard {...defaultProps} />);
+        const badge = screen.getByText('complications');
+        expect(badge).toHaveClass('border-2');
+      });
+
+      it('applies compact px-3 padding to category badge', () => {
+        render(<EchoCard {...defaultProps} />);
+        const badge = screen.getByText('complications');
+        expect(badge).toHaveClass('px-3');
+      });
+
+      it('applies compact py-1 padding to category badge', () => {
+        render(<EchoCard {...defaultProps} />);
+        const badge = screen.getByText('complications');
+        expect(badge).toHaveClass('py-1');
+      });
+
+      it('applies category-specific border color to complications badge', () => {
+        render(<EchoCard {...defaultProps} />);
+        const badge = screen.getByText('complications');
+        expect(badge).toHaveClass('border-blood-200');
+      });
+
+      it('applies category-specific border color to rumors badge', () => {
+        render(<EchoCard {...defaultProps} echo={mockConfirmedEcho} />);
+        const badge = screen.getByText('rumors');
+        expect(badge).toHaveClass('border-gold-200');
+      });
+
+      it('applies category-specific border color to discoveries badge', () => {
+        const discoveryEcho = { ...mockEcho, category: 'discoveries' as const };
+        render(<EchoCard {...defaultProps} echo={discoveryEcho} />);
+        const badge = screen.getByText('discoveries');
+        expect(badge).toHaveClass('border-parchment-300');
+      });
+
+      it('applies category-specific border color to intrusions badge', () => {
+        const intrusionEcho = { ...mockEcho, category: 'intrusions' as const };
+        render(<EchoCard {...defaultProps} echo={intrusionEcho} />);
+        const badge = screen.getByText('intrusions');
+        expect(badge).toHaveClass('border-shadow-200');
+      });
+
+      it('applies category-specific border color to wonders badge', () => {
+        const wondersEcho = { ...mockEcho, category: 'wonders' as const };
+        render(<EchoCard {...defaultProps} echo={wondersEcho} />);
+        const badge = screen.getByText('wonders');
+        expect(badge).toHaveClass('border-ink-200');
+      });
+    });
+
     it('applies complications category styling', () => {
       render(<EchoCard {...defaultProps} />);
       const badge = screen.getByText('complications');

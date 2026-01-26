@@ -136,8 +136,8 @@ export function EchoCard({
       <div className="mb-2 flex items-start gap-2">
         <span
           className={`
-            inline-block px-2 py-0.5 text-xs font-medium rounded-full
-            ${styles.bg} ${styles.text}
+            inline-block px-3 py-1 text-xs font-medium rounded-lg border-2
+            ${styles.bg} ${styles.text} ${styles.border}
           `}
         >
           {echo.category}
