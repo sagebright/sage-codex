@@ -10,7 +10,7 @@ States: **DONE** (reviewed and iterated), **ITERATION** (mockup exists, under re
 |---|-------|-------|--------|
 | 1 | Invocation | DONE | `documentation/mockups/invocation-immersive.html` |
 | 2 | Attunement | DONE | `documentation/mockups/attunement-immersive.html` |
-| 3 | Binding | ITERATION | `documentation/mockups/binding-immersive.html` |
+| 3 | Binding | ITERATION | `documentation/mockups/binding-immersive.html` — dropped settings, added fixed "Select Frame" button |
 | 4 | Weaving | MOCKUP | `documentation/mockups/weaving-immersive.html` |
 | 5 | Inscription | MOCKUP | `documentation/mockups/inscription-immersive.html` |
 | 6 | Conjuring | MOCKUP | `documentation/mockups/conjuring-immersive.html` |
@@ -137,25 +137,26 @@ The panel shows a **component summary list** grouped into three categories. Each
 
 > *Which frame holds the story?*
 
-Binding the spell to a foundation — selecting the thematic framework (Frame) and a specific narrative anchor point (Setting) within it. Frames are rich multi-section documents sourced from the unified `daggerheart_frames` table; Settings are AI-generated based on the selected frame and the user's tuned components.
+Binding the spell to a foundation — selecting the thematic framework (Frame) that anchors the story. Frames are rich multi-section documents sourced from the unified `daggerheart_frames` table, each including an inciting incident that seeds the adventure.
 
 ### Right Panel
 
-Frame Gallery → Combined Detail + Settings Panel (Attunement-style cross-fade transition)
+Frame Gallery → Frame Detail Panel (Attunement-style cross-fade transition)
 
 **Frame Gallery** (default view):
 - Scrollable frame cards from the database
 - Each card shows **name + pitch** only (pitch is a 1-2 sentence hook)
 - Three card states:
   - **Default** — subtle border, shows frame name + pitch
-  - **Exploring** — white/light border on all sides (clicked, viewing combined panel)
-  - **Selected** — gold left-border + gold-dim background; pitch hidden, replaced by setting name (em dash prefix, serif 14px bold, gold) + 1-line setting description (13px, secondary color)
+  - **Exploring** — white/light border on all sides (clicked, viewing detail panel)
+  - **Active** — gold left-border + gold-dim background, gold frame name (frame confirmed via "Select Frame" button)
 
-**Combined Detail + Settings Panel** (after clicking a frame):
-- Header: "Back to Frames" text button (Attunement pattern) + frame name + pitch (italic)
-- Single scrollable area with two zones:
+**Frame Detail Panel** (after clicking a frame):
+- Header: "Back to Frames" text link (Attunement pattern) + frame name + pitch (italic)
+- Scrollable content area with collapsible detail sections
+- Fixed "Select Frame" button at the bottom — always visible, never scrolls away
 
-**Top — Frame Detail Sections** (collapsible accordion):
+**Frame Detail Sections** (collapsible accordion):
 - Expanded by default (selection-relevant):
   - **Overview** — world background, factions, core conflict
   - **Themes** — thematic pillars (pill row)
@@ -170,35 +171,24 @@ Frame Gallery → Combined Detail + Settings Panel (Attunement-style cross-fade 
   - **Session Zero Questions** — preparation topics
   - **Complexity Rating** — how much the frame deviates from core rules
 
-**Bottom — Settings** (below a divider):
-- Subtitle: "Where does your adventure take root?"
-- 3–5 setting cards, AI-generated based on the selected frame
-- A Setting = single narrative anchor point; description can encompass multiple locations
-- Loading state while settings generate (detail sections are readable immediately)
-
 **Interaction model:**
-- No confirm button — user selects a setting card and clicks "Back to Frames" to confirm
-- Select + back = confirmed: selecting a setting and returning confirms the frame+setting pair
-- Back without selecting = frame reverts to default styling
-- Re-entry: clicking a confirmed frame reopens the combined panel with the previous setting pre-highlighted
-- Continue button: disabled until frame + setting confirmed. Clicking a different frame clears the previous selection.
+- Two exit paths from the detail panel:
+  - **"Back to Frames" link** — returns to gallery with NO frame active (clears exploring state)
+  - **"Select Frame" button** (fixed at bottom) — returns to gallery with frame marked Active (gold treatment)
+- Continue button: disabled until a frame is Active. Selecting a different frame clears the previous selection.
 
 ### Chat Flow
 
-Sage presents available frames. User explores via conversation — Sage describes themes, factions, and connections to tuned components. When the user clicks a frame, the combined panel provides reference while the Sage can elaborate in conversation. After settings generate, Sage elaborates on options. After setting confirmed, Sage acknowledges and invites progression to Weaving.
+Sage presents available frames. User explores via conversation — Sage describes themes, factions, inciting incidents, and connections to tuned components. When the user clicks a frame, the detail panel provides reference while the Sage can elaborate in conversation. After frame confirmed, Sage acknowledges and invites progression to Weaving.
 
 ### Workflows
 
 - Frame detail sections load immediately from database when a frame is clicked
-- AI generates 3–5 setting suggestions asynchronously (loading state visible below detail sections)
-- Users can read full frame details WHILE settings generate — no blocking wait state
-- Users can request edits to setting cards via chat
-- Users CANNOT edit Frames — they are read-only from the database
-- User can describe a custom setting via chat instead of picking a card
+- Users CANNOT edit Frames — they are read-only from the database (but can request custom frames via chat)
 - Clicking a different frame after confirming resets the previous selection
-- Implicit confirmation: selecting a setting card + clicking "Back to Frames" confirms the pair; no explicit confirm button
-- Re-entry to a confirmed frame shows the combined panel with the previously chosen setting pre-highlighted
-- Selected frame card hides pitch; shows setting name (em dash prefix) + description instead. Cleared when selection is reset.
+- Explicit confirmation via "Select Frame" button — no implicit confirm-on-back
+- The "Select Frame" button is fixed at the bottom of the detail panel, visible even when scrolling through dense content
+- Active frame card shows gold treatment with name + pitch visible
 
 ### Schema Migration Plan (Future Dev Task)
 

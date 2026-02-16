@@ -9,40 +9,34 @@
     ==========================================================================
     STAGE 3: BINDING — Which frame holds the story?
     ==========================================================================
-    Panel pattern: FRAME GALLERY → COMBINED DETAIL + SETTINGS PANEL
+    Panel pattern: FRAME GALLERY → FRAME DETAIL PANEL
     The user selects a thematic framework (frame) that anchors the story,
-    explores its full detail, then chooses a setting within that frame.
-    Frames come from the unified daggerheart_frames table. Settings are
-    AI-generated per frame.
+    explores its full detail, then confirms via a fixed "Select Frame" button.
+    Frames come from the unified daggerheart_frames table. Each frame includes
+    an inciting incident that seeds the adventure.
 
     Step 1: Frame Gallery — scrollable frame cards with name + pitch only.
-    Step 2: Combined Panel — cross-fades in when a frame is clicked.
-      Top: Collapsible detail sections (overview, themes, tone/feel,
-           touchstones, distinctions expanded by default; heritage/classes,
-           principles, mechanics, inciting incident, session-zero questions,
-           complexity rating collapsed by default).
-      Bottom: AI-generated setting cards below a divider (with loading state).
+    Step 2: Detail Panel — cross-fades in when a frame is clicked.
+      Collapsible detail sections (overview, themes, tone/feel, touchstones,
+      distinctions expanded by default; heritage/classes, principles, mechanics,
+      inciting incident, session-zero questions, complexity rating collapsed
+      by default).
+      Fixed "Select Frame" button at the bottom — always visible, never
+      scrolls away.
 
     Three frame card states:
       Default   — subtle border, no highlight (name + pitch)
-      Exploring — white/light border (clicked, viewing combined panel)
-      Selected  — gold treatment, pitch hidden, replaced by setting
-                  name (em dash prefix, serif 14px bold, gold) + 1-line
-                  setting description (13px, secondary color)
+      Exploring — white/light border (clicked, viewing detail panel)
+      Active    — gold treatment (frame confirmed via "Select Frame" button)
 
-    Interaction: No confirm button. User selects a setting card and clicks
-    "Back to Frames" — select + back = confirmed. If no setting is selected,
-    back reverts the frame to default. Re-entering a confirmed frame shows
-    the combined panel with the previous setting pre-highlighted.
-
-    KEY UX: Frame detail sections load instantly (from database). Setting
-    cards generate asynchronously (AI). User reads frame details WHILE
-    settings generate — no blocking wait state.
+    Interaction: Two exit paths from the detail panel:
+      "Back to Frames" link — returns to gallery with NO frame active
+      "Select Frame" button — returns to gallery with frame marked Active
 
     DESIGN RATIONALE: Frames are rich multi-section documents (~11 fields),
     not thin cards. The gallery shows only name + pitch for scan-ability.
-    All depth lives in the combined panel. One transition, one back button,
-    no three-level navigation.
+    All depth lives in the detail panel. One transition, two clear exit
+    actions, no ambiguity about confirmation.
     ==========================================================================
   -->
 
@@ -145,8 +139,6 @@
     .message:nth-child(4) { animation-delay: 0.18s; }
     .message:nth-child(5) { animation-delay: 0.24s; }
     .message:nth-child(6) { animation-delay: 0.30s; }
-    .message:nth-child(7) { animation-delay: 0.36s; }
-    .message:nth-child(8) { animation-delay: 0.42s; }
     .thinking-indicator { display: flex; align-items: center; gap: 5px; padding: 4px 0; align-self: flex-start; }
     .thinking-indicator .sage-label { margin-bottom: 0; margin-right: 4px; }
     .thinking-dot {
@@ -230,8 +222,8 @@
     /* === FRAME GALLERY (Binding-specific) ===
        Three states:
          Default   — subtle border, clickable
-         Exploring — white/light border, settings panel is showing
-         Selected  — gold treatment, frame + setting confirmed
+         Exploring — white/light border, detail panel is showing
+         Active    — gold treatment, frame confirmed
     */
     .frame-list {
       flex: 1; overflow-y: auto; padding: 8px var(--panel-padding);
@@ -262,8 +254,8 @@
       border-color: var(--border-hover);
       border-left-color: var(--border-hover);
     }
-    /* Selected state — full gold treatment (frame + setting confirmed) */
-    .frame-card.selected {
+    /* Active state — full gold treatment (frame confirmed) */
+    .frame-card.active {
       background: var(--accent-gold-dim);
       border-color: var(--accent-gold-border);
       border-left-color: var(--accent-gold);
@@ -274,7 +266,7 @@
       font-weight: 600;
       color: var(--text-primary);
     }
-    .frame-card.selected .frame-card-name {
+    .frame-card.active .frame-card-name {
       color: var(--accent-gold-hover);
     }
     .frame-card-pitch {
@@ -284,10 +276,10 @@
       margin-top: 4px;
     }
 
-    /* === COMBINED DETAIL + SETTINGS PANEL ===
+    /* === FRAME DETAIL PANEL ===
        Shown when a frame is clicked. Cross-fades in/out like Attunement's
-       choice panels. Top: collapsible frame detail sections. Bottom:
-       AI-generated setting suggestions below a divider.
+       choice panels. Contains collapsible frame detail sections and a
+       fixed "Select Frame" button at the bottom.
     */
     .detail-panel {
       flex: 1; display: flex; flex-direction: column; min-height: 0;
@@ -319,16 +311,42 @@
       line-height: 1.5;
     }
 
-    /* Scrollable content: detail sections + settings */
+    /* Scrollable content: detail sections */
     .detail-content {
       flex: 1; overflow-y: auto;
-      padding-bottom: 16px;
+      padding-bottom: 8px;
       scrollbar-width: thin;
       scrollbar-color: rgba(255,255,255,0.06) transparent;
     }
     .detail-content::-webkit-scrollbar { width: 5px; }
     .detail-content::-webkit-scrollbar-track { background: transparent; }
     .detail-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+
+    /* Fixed footer — always visible at bottom of detail panel */
+    .detail-panel-footer {
+      flex-shrink: 0;
+      padding: 12px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .btn-select-frame {
+      display: block;
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.2s ease;
+      letter-spacing: 0.01em;
+    }
+    .btn-select-frame:hover {
+      background: var(--accent-gold-hover);
+      box-shadow: 0 0 16px var(--accent-gold-glow);
+    }
 
     /* --- Collapsible Detail Sections --- */
     .detail-section {
@@ -397,55 +415,6 @@
       white-space: nowrap;
     }
 
-    /* --- Settings Divider & Subtitle --- */
-    .settings-divider {
-      height: 1px;
-      background: var(--border-medium);
-      margin: 16px 0;
-    }
-    .settings-subtitle {
-      font-family: var(--font-serif);
-      font-size: 13px;
-      font-style: italic;
-      color: var(--text-muted);
-      padding: 0 0 12px;
-    }
-
-    .setting-card {
-      padding: 16px;
-      border: 1px solid var(--border-medium);
-      border-left: 3px solid transparent;
-      border-radius: var(--radius-sm);
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .setting-card:hover {
-      background: var(--bg-surface);
-      border-color: var(--border-hover);
-      border-left-color: var(--border-hover);
-    }
-    .setting-card.selected {
-      background: var(--accent-gold-dim);
-      border-color: var(--accent-gold-border);
-      border-left-color: var(--accent-gold);
-    }
-    .setting-card-name {
-      font-family: var(--font-serif);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-    .setting-card.selected .setting-card-name {
-      color: var(--accent-gold-hover);
-    }
-    .setting-card-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
     .btn-continue-compact {
       flex-shrink: 0; padding: 7px 16px; border: none; border-radius: var(--radius-sm);
       background: var(--accent-gold); color: var(--bg-primary);
@@ -457,44 +426,17 @@
     .btn-continue-compact:disabled { opacity: 0.3; cursor: default; box-shadow: none; }
     .btn-continue-compact:disabled:hover { background: var(--accent-gold); box-shadow: none; }
 
-    /* === FRAME CARD SETTING (selected state) ===
-       When a frame is confirmed with a setting, the frame description and
-       theme pills are hidden. The setting name + short description replace them.
-       Container is hidden by default, shown only on .frame-card.selected.
-    */
-    .frame-card-setting {
-      display: none;
-    }
-    .frame-card.selected .frame-card-setting {
-      display: block;
-    }
-    .frame-card.selected .frame-card-pitch {
-      display: none;
-    }
-    .frame-card-setting-name {
-      font-family: var(--font-serif);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--accent-gold-hover);
-      margin-bottom: 4px;
-    }
-    .frame-card-setting-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    /* === SETTINGS BACK BUTTON (with text) ===
+    /* === BACK BUTTON (with text) ===
        Matches Attunement's back-btn pattern: icon + text, muted, gold on hover.
     */
-    .settings-back-btn {
+    .back-btn {
       display: flex; align-items: center; gap: 6px;
       background: none; border: none;
       color: var(--text-muted); font-family: var(--font-sans);
       font-size: 13px; cursor: pointer; padding: 4px 0;
       transition: color 0.15s ease;
     }
-    .settings-back-btn:hover { color: var(--accent-gold); }
+    .back-btn:hover { color: var(--accent-gold); }
 
     .streaming-cursor::after {
       content: '\25CB'; color: var(--accent-gold);
@@ -529,12 +471,12 @@
       <div class="message-area">
         <div class="messages">
 
-          <!-- Sage: Opening — mentions both frame and setting -->
+          <!-- Sage: Opening — introduces frame selection -->
           <div class="message message-sage">
             <div class="sage-label">Sage</div>
             <div class="message-text">
-              <p>Your components are tuned and humming. Now we bind the spell to a foundation — a <strong>frame</strong> that anchors your adventure's world, factions, and core conflict, and a <strong>setting</strong> that grounds the story in a specific place.</p>
-              <p>I've pulled the frames from the archive. Take a look at the panel — each card is a world waiting to be explored. Click one to see its full story and the settings I'll suggest for it.</p>
+              <p>Your components are tuned and humming. Now we bind the spell to a foundation — a <strong>frame</strong> that anchors your adventure's world, factions, core conflict, and inciting incident.</p>
+              <p>I've pulled the frames from the archive. Take a look at the panel — each card is a world waiting to be explored. Click one to see its full story.</p>
             </div>
           </div>
 
@@ -555,37 +497,18 @@
             </div>
           </div>
 
-          <!-- User: Wants to explore settings -->
+          <!-- User: Wants to select -->
           <div class="message message-user">
             <div class="message-text">
-              That's exactly the kind of tension I want. What settings do you have in mind for the Witherwild?
+              That's exactly the kind of tension I want. I'm going with the Witherwild.
             </div>
           </div>
 
-          <!-- Sage: Presents settings -->
+          <!-- Sage: Confirms frame selection -->
           <div class="message message-sage">
             <div class="sage-label">Sage</div>
             <div class="message-text">
-              <p>Three settings that fit your components well — each one places the party at a different intersection of the Witherwild's conflict:</p>
-              <p><strong>The Village of Thornhollow</strong> — right on the forest's edge, where the overgrowth creeps closer each day. Wicklings and Havenite refugees rub shoulders uneasily. Good for a story that starts small and personal.</p>
-              <p><strong>The Overgrown Ruins of Fanewick</strong> — deep in the wild's heart, half-consumed by growth. Part temple, part trap. A setting that drops the party straight into mystery and danger.</p>
-              <p><strong>The Haven Bordercamp</strong> — a fortified strip of cleared land where Havenite soldiers cling to survival. The plague behind, the wild ahead. Tense, military, and morally gray.</p>
-              <p>Take a look at the cards in the panel. Any of these calling to you?</p>
-            </div>
-          </div>
-
-          <!-- User: Picks Thornhollow -->
-          <div class="message message-user">
-            <div class="message-text">
-              Thornhollow. I like the idea of starting small and personal, then having the Witherwild close in.
-            </div>
-          </div>
-
-          <!-- Sage: Confirms setting -->
-          <div class="message message-sage">
-            <div class="sage-label">Sage</div>
-            <div class="message-text">
-              <p>The Village of Thornhollow it is. Your adventure is now bound to the Witherwild — rooted in a small settlement where factions collide and the forest presses in from every side.</p>
+              <p>The Witherwild it is. Your adventure is bound to a world of unchecked growth, desperate factions, and moral complexity — with an inciting incident that drops your party right into the heart of the conflict.</p>
               <p>When you're ready, we'll move on to <strong>Weaving</strong> — where we draft the scene-by-scene arc of your story.</p>
             </div>
           </div>
@@ -606,7 +529,7 @@
     </div>
 
     <!-- ================================================================
-         PANEL SIDE (35%) — Frame Gallery + Settings Panel
+         PANEL SIDE (35%) — Frame Gallery + Detail Panel
          ================================================================ -->
     <div class="panel-side">
 
@@ -661,57 +584,46 @@
       <!-- Frame Gallery — scrollable (default view) -->
       <div class="frame-list" id="frame-gallery">
 
-        <!-- The Witherwild — SELECTED (frame + setting confirmed) -->
-        <div class="frame-card selected" data-frame="witherwild" onclick="clickFrame(this)">
+        <!-- The Witherwild — ACTIVE (frame confirmed) -->
+        <div class="frame-card active" data-frame="witherwild" onclick="clickFrame(this)">
           <div class="frame-card-name">The Witherwild</div>
           <div class="frame-card-pitch">A stolen relic triggers endless spring — three factions clash as nature devours everything in its path.</div>
-          <div class="frame-card-setting">
-            <div class="frame-card-setting-name">&mdash; The Village of Thornhollow</div>
-            <div class="frame-card-setting-desc">A Wickling settlement on the forest's edge, where overgrowth creeps closer each day and refugees from Haven arrive in desperate waves.</div>
-          </div>
         </div>
 
         <!-- The Shattered Bastion — unselected -->
         <div class="frame-card" data-frame="bastion" onclick="clickFrame(this)">
           <div class="frame-card-name">The Shattered Bastion</div>
           <div class="frame-card-pitch">A fortress-city tears itself apart as its founding orders wage war over fragments of divine authority.</div>
-          <div class="frame-card-setting"></div>
         </div>
 
         <!-- The Drowned Court — unselected -->
         <div class="frame-card" data-frame="drowned" onclick="clickFrame(this)">
           <div class="frame-card-name">The Drowned Court</div>
           <div class="frame-card-pitch">A sunken kingdom resurfaces after centuries, bringing old debts, undead courtiers, and a vacant throne.</div>
-          <div class="frame-card-setting"></div>
         </div>
 
-        <!-- Continue button — enabled because Witherwild is selected with setting -->
+        <!-- Continue button — enabled because Witherwild is active -->
         <button class="btn-continue-compact" id="btn-continue" style="margin: 16px auto 12px; display: block;">Continue to Weaving</button>
 
       </div>
 
       <!--
-        COMBINED DETAIL + SETTINGS PANEL — replaces the old settings-only panel.
+        FRAME DETAIL PANEL — shows when a frame is clicked.
         Top: Collapsible frame detail sections (11 sections, 5 expanded by default).
-        Bottom: AI-generated setting cards below a divider.
+        Bottom: Fixed "Select Frame" button that never scrolls away.
 
         MOCKUP NOTE: Detail section content is static (Witherwild only).
         In production, clicking any frame populates all sections dynamically
         from the database row. The same collapsible structure applies to all frames.
 
-        PRODUCTION BEHAVIOR: When a frame is clicked:
-        1. Detail sections populate immediately from the frame data (already loaded)
-        2. Settings section shows the loading indicator
-        3. AI generates 3-5 setting suggestions based on frame + user's tuned components
-        4. Loading indicator is replaced by setting cards (fade transition)
-
-        The user can read frame details WHILE settings generate — this is the key
-        UX advantage of the combined panel over a separate settings-only view.
+        Two exit paths:
+          "Back to Frames" link — returns to gallery, no frame active
+          "Select Frame" button — returns to gallery, frame marked active
       -->
       <div class="detail-panel" id="detail-panel">
         <!-- Fixed header -->
         <div class="detail-panel-header">
-          <button class="settings-back-btn" onclick="backToGallery()">
+          <button class="back-btn" onclick="backToGallery()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
@@ -721,7 +633,7 @@
           <div class="detail-frame-pitch" id="detail-frame-pitch">A stolen relic triggers endless spring — three factions clash as nature devours everything in its path.</div>
         </div>
 
-        <!-- Scrollable content: detail sections + settings -->
+        <!-- Scrollable content: detail sections -->
         <div class="detail-content">
 
           <!-- ===== EXPANDED BY DEFAULT (selection-relevant) ===== -->
@@ -857,31 +769,13 @@
             </div>
           </div>
 
-          <!-- ===== SETTINGS SECTION (below detail) ===== -->
-
-          <div class="settings-divider"></div>
-
-          <div class="settings-subtitle">Where does your adventure take root?</div>
-
-          <!-- Setting 1: Thornhollow -->
-          <div class="setting-card" onclick="selectSetting(this)">
-            <div class="setting-card-name">The Village of Thornhollow</div>
-            <div class="setting-card-desc">A Wickling settlement on the forest's edge, where overgrowth creeps closer each day and refugees from Haven arrive in desperate waves.</div>
-          </div>
-
-          <!-- Setting 2: Fanewick Ruins -->
-          <div class="setting-card" onclick="selectSetting(this)">
-            <div class="setting-card-name">The Overgrown Ruins of Fanewick</div>
-            <div class="setting-card-desc">Deep in the Witherwild's heart, the ancient seat of the Great Owl lies half-consumed by growth — part temple, part trap.</div>
-          </div>
-
-          <!-- Setting 3: Haven Bordercamp -->
-          <div class="setting-card" onclick="selectSetting(this)">
-            <div class="setting-card-name">The Haven Bordercamp</div>
-            <div class="setting-card-desc">A fortified encampment where Havenite soldiers cling to a strip of cleared land, caught between the plague behind them and the wild ahead.</div>
-          </div>
-
         </div><!-- /detail-content -->
+
+        <!-- Fixed footer — always visible at bottom -->
+        <div class="detail-panel-footer">
+          <button class="btn-select-frame" onclick="selectFrameAndReturn()">Select Frame</button>
+        </div>
+
       </div><!-- /detail-panel -->
 
     </div>
@@ -892,15 +786,10 @@
   <script>
     // Track state
     let exploringFrame = null;
-    let selectedFrame = null;
-    let selectedSetting = null;
+    let activeFrame = null;
 
-    // Track which setting belongs to which frame (for re-entry)
-    const settingsForFrame = {};
-
-    // Initialize: Witherwild is pre-selected with setting (mockup snapshot)
-    selectedFrame = document.querySelector('.frame-card[data-frame="witherwild"]');
-    settingsForFrame['witherwild'] = 0; // Index of Thornhollow (first setting card)
+    // Initialize: Witherwild is pre-selected (mockup snapshot)
+    activeFrame = document.querySelector('.frame-card[data-frame="witherwild"]');
 
     function toggleSection(header) {
       const section = header.closest('.detail-section');
@@ -910,13 +799,12 @@
     function clickFrame(card) {
       const gallery = document.getElementById('frame-gallery');
       const panel = document.getElementById('detail-panel');
-      const frameName = card.dataset.frame;
 
       // Clear any previous exploring state
       document.querySelectorAll('.frame-card.exploring').forEach(c => c.classList.remove('exploring'));
 
-      // If clicking a new (non-selected) frame, add exploring state
-      if (!card.classList.contains('selected')) {
+      // If clicking a new (non-active) frame, add exploring state
+      if (!card.classList.contains('active')) {
         card.classList.add('exploring');
       }
 
@@ -927,20 +815,6 @@
       const displayPitch = card.querySelector('.frame-card-pitch').textContent;
       document.getElementById('detail-frame-name').textContent = displayName;
       document.getElementById('detail-frame-pitch').textContent = displayPitch;
-
-      // Reset setting selection in panel
-      document.querySelectorAll('.setting-card').forEach(c => c.classList.remove('selected'));
-      selectedSetting = null;
-
-      // Re-entry: if this frame already has a confirmed setting, pre-highlight it
-      if (frameName in settingsForFrame) {
-        const settingIndex = settingsForFrame[frameName];
-        const settingCards = document.querySelectorAll('.setting-card');
-        if (settingCards[settingIndex]) {
-          settingCards[settingIndex].classList.add('selected');
-          selectedSetting = settingCards[settingIndex];
-        }
-      }
 
       // Reset scroll to top so user sees detail first
       const detailContent = panel.querySelector('.detail-content');
@@ -955,33 +829,8 @@
       const gallery = document.getElementById('frame-gallery');
       const panel = document.getElementById('detail-panel');
 
-      if (exploringFrame && selectedSetting) {
-        // A setting was selected — treat as confirmation
-        const frameName = exploringFrame.dataset.frame;
-        const settingName = selectedSetting.querySelector('.setting-card-name').textContent;
-        const settingIndex = Array.from(document.querySelectorAll('.setting-card')).indexOf(selectedSetting);
-
-        const settingDesc = selectedSetting.querySelector('.setting-card-desc').textContent;
-
-        // Clear any previous frame selection and its setting content
-        document.querySelectorAll('.frame-card').forEach(c => {
-          c.classList.remove('selected');
-          c.classList.remove('exploring');
-          c.querySelector('.frame-card-setting').innerHTML = '';
-        });
-
-        // Mark this frame as selected (confirmed with setting)
-        exploringFrame.classList.add('selected');
-        exploringFrame.querySelector('.frame-card-setting').innerHTML =
-          `<div class="frame-card-setting-name">\u2014 ${settingName}</div>` +
-          `<div class="frame-card-setting-desc">${settingDesc}</div>`;
-        selectedFrame = exploringFrame;
-        settingsForFrame[frameName] = settingIndex;
-
-        // Enable continue button
-        document.getElementById('btn-continue').disabled = false;
-      } else if (exploringFrame) {
-        // No setting selected — revert frame to default
+      // Back without selecting — clear exploring state, no frame becomes active
+      if (exploringFrame) {
         exploringFrame.classList.remove('exploring');
       }
 
@@ -992,10 +841,29 @@
       gallery.classList.remove('hidden');
     }
 
-    function selectSetting(card) {
-      document.querySelectorAll('.setting-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedSetting = card;
+    function selectFrameAndReturn() {
+      const gallery = document.getElementById('frame-gallery');
+      const panel = document.getElementById('detail-panel');
+
+      if (!exploringFrame) return;
+
+      // Clear any previous active frame
+      document.querySelectorAll('.frame-card').forEach(c => {
+        c.classList.remove('active');
+        c.classList.remove('exploring');
+      });
+
+      // Mark this frame as active (confirmed)
+      exploringFrame.classList.add('active');
+      activeFrame = exploringFrame;
+      exploringFrame = null;
+
+      // Enable continue button
+      document.getElementById('btn-continue').disabled = false;
+
+      // Cross-fade: detail panel out, gallery in
+      panel.classList.remove('visible');
+      gallery.classList.remove('hidden');
     }
 
     function togglePhaseDropdown() {
