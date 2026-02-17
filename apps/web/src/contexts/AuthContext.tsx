@@ -9,8 +9,6 @@
  */
 
 import {
-  createContext,
-  useContext,
   useState,
   useEffect,
   useCallback,
@@ -18,49 +16,22 @@ import {
   type ReactNode,
 } from 'react';
 
-// =============================================================================
-// Types
-// =============================================================================
-
-interface AuthUser {
-  id: string;
-  email: string;
-}
-
-interface AuthSession {
-  access_token: string;
-  refresh_token: string;
-}
-
-interface AuthState {
-  user: AuthUser | null;
-  session: AuthSession | null;
-  isLoading: boolean;
-  error: string | null;
-}
-
-interface AuthContextValue extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  clearError: () => void;
-}
+import {
+  AuthContext,
+  type AuthState,
+  type AuthSession,
+  type AuthContextValue,
+} from './auth-context-value';
 
 const TOKEN_STORAGE_KEY = 'sage_codex_token';
 const REFRESH_STORAGE_KEY = 'sage_codex_refresh';
-
-// =============================================================================
-// Context
-// =============================================================================
-
-const AuthContext = createContext<AuthContextValue | null>(null);
 
 // =============================================================================
 // API Helpers
 // =============================================================================
 
 interface ApiAuthResponse {
-  user?: AuthUser;
+  user?: { id: string; email: string };
   session?: AuthSession;
   error?: string;
   message?: string;
@@ -234,23 +205,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-// =============================================================================
-// Hook
-// =============================================================================
-
-/**
- * Access authentication state and actions.
- *
- * Must be used within an AuthProvider.
- */
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-
-  return context;
 }

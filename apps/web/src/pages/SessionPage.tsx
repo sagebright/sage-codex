@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useCallback, type FormEvent } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { STAGES } from '@dagger-app/shared-types';
 import type { Stage } from '@dagger-app/shared-types';
 
