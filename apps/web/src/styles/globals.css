@@ -77,24 +77,22 @@
  * ============================================================================= */
 
 @layer components {
-  /* Main app layout — viewport-locked, 65/35 split */
+  /* Main app layout — 65/35 two-column split */
   .app-layout {
     display: grid;
     grid-template-columns: 13fr 7fr;
-    grid-template-rows: 56px 1fr;
-    height: 100vh;
     overflow: hidden;
   }
 
-  /* Header bar */
+  /* Header bar — sits above the grid as a flex sibling */
   .app-header {
-    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     padding: 0 var(--section-padding);
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-subtle);
     height: 56px;
+    flex-shrink: 0;
   }
 
   /* Chat panel (left, 65%) */

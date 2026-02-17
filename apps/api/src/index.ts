@@ -18,8 +18,12 @@ import sessionRouter, { sessionsListRouter } from './routes/session.js';
 import chatRouter from './routes/chat.js';
 import undoRouter from './routes/undo.js';
 import { requireAuth } from './middleware/auth.js';
+import { registerInvokingTools } from './tools/invoking.js';
 
 export const API_VERSION = '0.0.1';
+
+// Register tool handlers for all stages
+registerInvokingTools();
 
 const app: Express = express();
 

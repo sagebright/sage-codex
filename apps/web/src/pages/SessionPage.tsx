@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useCallback, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { STAGES } from '@dagger-app/shared-types';
 import type { Stage } from '@dagger-app/shared-types';
@@ -91,6 +92,7 @@ function findStageLabel(stageId: Stage): string {
 // =============================================================================
 
 export function SessionPage() {
+  const navigate = useNavigate();
   const { session: authSession, logout } = useAuth();
 
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
@@ -164,29 +166,11 @@ export function SessionPage() {
     if (result.data) {
       setActiveSession(result.data);
       setNewTitle('');
-      await loadSessions();
-    }
-
-    setIsCreating(false);
-  };
-
-  /** Resume an existing session */
-  const handleResume = async (sessionId: string) => {
-    setError(null);
-
-    const result = await apiFetch<SessionDetail>(
-      `/api/session/${sessionId}`,
-      token
-    );
-
-    if (result.error) {
-      setError(result.error);
+      navigate('/adventure');
       return;
     }
 
-    if (result.data) {
-      setActiveSession(result.data);
-    }
+    setIsCreating(false);
   };
 
   /** Abandon the active session */
@@ -275,7 +259,7 @@ export function SessionPage() {
                 <button
                   className="footer-button"
                   style={styles.resumeButton}
-                  onClick={() => handleResume(activeSession.session.id)}
+                  onClick={() => navigate('/adventure')}
                   type="button"
                 >
                   Continue Adventure

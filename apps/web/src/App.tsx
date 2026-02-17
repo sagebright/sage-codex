@@ -4,6 +4,7 @@
  * Sets up routing with authentication:
  * - /login route for unauthenticated users
  * - / route shows session picker (start new / resume existing)
+ * - /adventure route shows the active stage (Invoking, etc.)
  * - /design-system route for design system verification
  * - AuthProvider wraps the entire app for auth state
  */
@@ -13,6 +14,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { AuthPage } from '@/pages/AuthPage';
 import { SessionPage } from '@/pages/SessionPage';
+import { AdventurePage } from '@/pages/AdventurePage';
 import { DesignSystem } from '@/pages/DesignSystem';
 
 function App() {
@@ -29,6 +31,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SessionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/adventure"
+            element={
+              <ProtectedRoute>
+                <AdventurePage />
               </ProtectedRoute>
             }
           />

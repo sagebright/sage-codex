@@ -69,6 +69,32 @@ export interface ToolEndEvent {
 }
 
 // =============================================================================
+// Panel Events (tool-driven UI updates)
+// =============================================================================
+
+/** Spark content has been set by the set_spark tool */
+export interface PanelSparkEvent {
+  type: 'panel:spark';
+  data: {
+    name: string;
+    vision: string;
+  };
+}
+
+// =============================================================================
+// UI Events (stage readiness signals)
+// =============================================================================
+
+/** The current stage is ready for advancement */
+export interface UIReadyEvent {
+  type: 'ui:ready';
+  data: {
+    stage: string;
+    summary: string;
+  };
+}
+
+// =============================================================================
 // Session Events
 // =============================================================================
 
@@ -105,6 +131,8 @@ export type SageEvent =
   | ChatEndEvent
   | ToolStartEvent
   | ToolEndEvent
+  | PanelSparkEvent
+  | UIReadyEvent
   | SessionStageEvent
   | SageErrorEvent;
 
