@@ -29,6 +29,9 @@ import { drainBindingEvents } from '../tools/binding.js';
 import { drainWeavingEvents } from '../tools/weaving.js';
 import { logTokenUsage } from '../services/token-tracker.js';
 import { storeMessage, loadConversationHistory } from '../services/message-store.js';
+import { loadSession } from '../services/session-state.js';
+import { buildSystemPrompt } from '../services/system-prompt.js';
+import { getToolsForStage } from '../tools/definitions.js';
 import type { AnthropicMessage, AnthropicContentBlock } from '../services/anthropic.js';
 import type { CollectedToolUse } from '../services/stream-parser.js';
 
@@ -172,6 +175,19 @@ router.post('/', async (req: Request, res: Response) => {
   const { message, sessionId } = validation;
 
   try {
+    // Load session to get the current stage
+    const sessionResult = await loadSession(sessionId, userId);
+    if (sessionResult.error || !sessionResult.data) {
+      res.status(404).json({ error: sessionResult.error ?? 'Session not found' });
+      return;
+    }
+    const { session } = sessionResult.data;
+    const stage = session.stage;
+
+    // Build stage-aware system prompt and tools
+    const systemPrompt = buildSystemPrompt(stage);
+    const tools = getToolsForStage(stage);
+
     // Store the user's message
     await storeMessage({ sessionId, role: 'user', content: message });
 
@@ -195,7 +211,7 @@ router.post('/', async (req: Request, res: Response) => {
     let model = '';
 
     for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
-      const stream = await createStreamingMessage({ messages: apiMessages });
+      const stream = await createStreamingMessage({ messages: apiMessages, systemPrompt, tools });
       const parsed = await parseAnthropicStream(
         stream as unknown as AsyncIterable<StreamEvent>
       );
