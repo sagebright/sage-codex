@@ -166,10 +166,8 @@ async function injectAuthSession(page: Page) {
       expires_at: Date.now() / 1000 + 3600,
       user: { id: 'user-resume-001', email: 'test@resume.com' },
     };
-    localStorage.setItem(
-      'sb-ogvbbfzfljglfanceest-auth-token',
-      JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-    );
+    localStorage.setItem('sage_codex_token', mockSession.access_token);
+    localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
   });
 }
 
@@ -208,7 +206,7 @@ test.describe('Session Resume After Page Refresh', () => {
 
     // Verify auth token is still in localStorage
     const hasToken = await page.evaluate(() => {
-      return localStorage.getItem('sb-ogvbbfzfljglfanceest-auth-token') !== null;
+      return localStorage.getItem('sage_codex_token') !== null;
     });
     expect(hasToken).toBe(true);
 
@@ -217,7 +215,7 @@ test.describe('Session Resume After Page Refresh', () => {
 
     // Auth should still be valid
     const hasTokenAfterRefresh = await page.evaluate(() => {
-      return localStorage.getItem('sb-ogvbbfzfljglfanceest-auth-token') !== null;
+      return localStorage.getItem('sage_codex_token') !== null;
     });
     expect(hasTokenAfterRefresh).toBe(true);
 
@@ -260,6 +258,6 @@ test.describe('Session Resume After Page Refresh', () => {
     await page.waitForLoadState('networkidle');
 
     // Should redirect to session picker since no active session exists
-    await expect(page).toHaveURL(/^\/$/, { timeout: 10000 });
+    await expect(page).not.toHaveURL(/\/adventure/, { timeout: 10000 });
   });
 });

@@ -210,10 +210,8 @@ test.describe('Full Adventure Flow', () => {
         expires_at: Date.now() / 1000 + 3600,
         user: { id: 'user-e2e-001', email: 'test@e2e.com' },
       };
-      localStorage.setItem(
-        'sb-ogvbbfzfljglfanceest-auth-token',
-        JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-      );
+      localStorage.setItem('sage_codex_token', mockSession.access_token);
+      localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
     });
 
     await page.goto('/adventure');
@@ -252,10 +250,8 @@ test.describe('Full Adventure Flow', () => {
         expires_at: Date.now() / 1000 + 3600,
         user: { id: 'user-e2e-001', email: 'test@e2e.com' },
       };
-      localStorage.setItem(
-        'sb-ogvbbfzfljglfanceest-auth-token',
-        JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-      );
+      localStorage.setItem('sage_codex_token', mockSession.access_token);
+      localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
     });
 
     await page.goto('/');
@@ -263,7 +259,7 @@ test.describe('Full Adventure Flow', () => {
 
     // Should show the new session form
     await expect(
-      page.getByText(/begin a new tale|open the codex/i)
+      page.getByRole('heading', { name: /begin a new tale/i })
     ).toBeVisible({ timeout: 10000 });
   });
 
@@ -278,10 +274,8 @@ test.describe('Full Adventure Flow', () => {
         expires_at: Date.now() / 1000 + 3600,
         user: { id: 'user-e2e-001', email: 'test@e2e.com' },
       };
-      localStorage.setItem(
-        'sb-ogvbbfzfljglfanceest-auth-token',
-        JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-      );
+      localStorage.setItem('sage_codex_token', mockSession.access_token);
+      localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
     });
 
     await page.goto('/adventure');
@@ -305,6 +299,17 @@ test.describe('Full Adventure Flow', () => {
 
 test.describe('Adventure Error Scenarios', () => {
   test('should show error when session load fails', async ({ page }) => {
+    // Mock auth to succeed
+    await page.route('**/api/auth/**', async (route: Route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          user: { id: MOCK_USER_ID, email: 'test@e2e.com' },
+        }),
+      });
+    });
+
     // Mock failing sessions endpoint
     await page.route('**/api/sessions', async (route: Route) => {
       await route.fulfill({
@@ -322,10 +327,8 @@ test.describe('Adventure Error Scenarios', () => {
         expires_at: Date.now() / 1000 + 3600,
         user: { id: 'user-e2e-001', email: 'test@e2e.com' },
       };
-      localStorage.setItem(
-        'sb-ogvbbfzfljglfanceest-auth-token',
-        JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-      );
+      localStorage.setItem('sage_codex_token', mockSession.access_token);
+      localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
     });
 
     await page.goto('/');
@@ -357,10 +360,8 @@ test.describe('Adventure Error Scenarios', () => {
         expires_at: Date.now() / 1000 + 3600,
         user: { id: 'user-e2e-001', email: 'test@e2e.com' },
       };
-      localStorage.setItem(
-        'sb-ogvbbfzfljglfanceest-auth-token',
-        JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-      );
+      localStorage.setItem('sage_codex_token', mockSession.access_token);
+      localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
     });
 
     await page.goto('/adventure');
@@ -399,10 +400,8 @@ test.describe('Adventure Error Scenarios', () => {
         expires_at: Date.now() / 1000 + 3600,
         user: { id: 'user-e2e-001', email: 'test@e2e.com' },
       };
-      localStorage.setItem(
-        'sb-ogvbbfzfljglfanceest-auth-token',
-        JSON.stringify({ currentSession: mockSession, expiresAt: Date.now() + 3600000 })
-      );
+      localStorage.setItem('sage_codex_token', mockSession.access_token);
+      localStorage.setItem('sage_codex_refresh', mockSession.refresh_token);
     });
 
     await page.goto('/adventure');
