@@ -30,6 +30,7 @@ import { drainWeavingEvents } from '../tools/weaving.js';
 import { drainInscribingEvents } from '../tools/inscribing.js';
 import { logTokenUsage } from '../services/token-tracker.js';
 import { storeMessage, loadConversationHistory } from '../services/message-store.js';
+import { classifyApiError } from '../middleware/error-handler.js';
 import type { AnthropicMessage, AnthropicContentBlock } from '../services/anthropic.js';
 import type { CollectedToolUse } from '../services/stream-parser.js';
 
@@ -285,19 +286,23 @@ router.post('/', async (req: Request, res: Response) => {
 
     res.end();
   } catch (err) {
-    const errorMessage =
-      err instanceof Error ? err.message : 'Internal server error';
+    const classified = classifyApiError(err);
 
     // If headers already sent (streaming started), send error as SSE
     if (res.headersSent) {
       const errorEvent: SageEvent = {
         type: 'error',
-        data: { code: 'STREAM_ERROR', message: errorMessage },
+        data: { code: classified.code, message: classified.message },
       };
       sendSSEEvent(res, errorEvent);
       res.end();
     } else {
-      res.status(500).json({ error: errorMessage });
+      res.status(classified.httpStatus).json({
+        error: classified.message,
+        code: classified.code,
+        retryable: classified.retryable,
+        ...(classified.retryAfterMs && { retryAfterMs: classified.retryAfterMs }),
+      });
     }
   }
 });

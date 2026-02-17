@@ -21,6 +21,7 @@ import componentRouter from './routes/component.js';
 import frameRouter from './routes/frame.js';
 import sceneRouter from './routes/scene.js';
 import { requireAuth } from './middleware/auth.js';
+import { errorHandler } from './middleware/error-handler.js';
 import { registerInvokingTools } from './tools/invoking.js';
 import { registerAttuningTools } from './tools/attuning.js';
 import { registerBindingTools } from './tools/binding.js';
@@ -56,6 +57,9 @@ app.use('/api/section', requireAuth, undoRouter);
 app.use('/api/component', requireAuth, componentRouter);
 app.use('/api/frame', requireAuth, frameRouter);
 app.use('/api/scene', requireAuth, sceneRouter);
+
+// Error handling middleware (must be registered after all routes)
+app.use(errorHandler);
 
 /**
  * Export the app for testing (supertest) and the start function
