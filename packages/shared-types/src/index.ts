@@ -8,8 +8,11 @@
 // Re-export database types
 export * from './database.js';
 
-// Re-export dial types
+// Re-export dial types (legacy, kept for mcp-bridge compat)
 export * from './dials.js';
+
+// Re-export stage & component types (new Sage Codex model)
+export * from './stages.js';
 
 // Re-export MCP types
 export * from './mcp.js';
