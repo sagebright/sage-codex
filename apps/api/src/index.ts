@@ -26,6 +26,7 @@ import { registerAttuningTools } from './tools/attuning.js';
 import { registerBindingTools } from './tools/binding.js';
 import { registerWeavingTools } from './tools/weaving.js';
 import { registerInscribingTools } from './tools/inscribing.js';
+import { registerDeliveringTools } from './tools/delivering.js';
 
 export const API_VERSION = '0.0.1';
 
@@ -35,6 +36,7 @@ registerAttuningTools();
 registerBindingTools();
 registerWeavingTools();
 registerInscribingTools();
+registerDeliveringTools();
 
 const app: Express = express();
 
