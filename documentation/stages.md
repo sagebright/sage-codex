@@ -1,10 +1,10 @@
-# The Six Stages of Spellweaving
+# The Six Stages of the Unfolding
 
-Each adventure in the Book of Many Paths is woven through a 6-stage ritual. Human and AI are co-casters — the Sage guides, the user decides.
+Each adventure in the Sage Codex unfolds through 6 stages of collaborative creation. The Sage guides, the human storyteller decides — together, they bring a tale from the Codex into the world.
 
 ## Mockup Status
 
-States: **DONE** (reviewed and iterated), **ITERATION** (mockup exists, under revision), **MOCKUP** (first draft complete), **DROPPED** (removed from ritual).
+States: **DONE** (reviewed and iterated), **ITERATION** (mockup exists, under revision), **MOCKUP** (first draft complete), **DROPPED** (no longer active).
 
 | # | Stage | State | Mockup |
 |---|-------|-------|--------|
@@ -13,7 +13,7 @@ States: **DONE** (reviewed and iterated), **ITERATION** (mockup exists, under re
 | 3 | Binding | DONE | `documentation/mockups/binding-immersive.html` — unified button styling, fixed footer placement, gallery cards show inciting incident (not pitch) for upfront decision-making info |
 | 4 | Weaving | DONE | `documentation/mockups/weaving-immersive.html` — redesigned to mirror Inscribing: scene tabs, full arc content per scene, sequential confirmation, pinned footer, 6-stage dropdown |
 | 5 | Inscribing | DONE | `documentation/mockups/inscribing-immersive.html` — full rebuild: three-wave section model (9 sections), gallery↔detail pattern, NPC/adversary/item entity cards, Portents echo drill-in, read-aloud blocks, 6-stage dropdown, three scene tab states, color-coded entity labels, speech bubble speaking icon, gold expanded titles |
-| 6 | Sealing | MOCKUP | `documentation/mockups/sealing-immersive.html` |
+| 6 | Delivering | DONE | `documentation/mockups/delivering-immersive.html` — celebration panel: Spark callback, Frame overview, Inciting Incident, narrative send-off, single "Bring This Tale to Life" download button in fixed footer |
 | — | Conjuring | DROPPED | Subsumed into Inscribing — NPCs Present section |
 | — | Summoning | DROPPED | Subsumed into Inscribing — Adversaries section |
 | — | Enchanting | DROPPED | Subsumed into Inscribing — Items section |
@@ -54,7 +54,7 @@ When updating a stage, always check for workflow details that go beyond the mock
 
 > *What shape will your adventure take?*
 
-Opening the Book — the user shares their initial vision, ideas, and (optionally) a name for the adventure they intend to cast.
+Opening the Codex — the user shares their initial vision, ideas, and (optionally) a name for the adventure that will unfold.
 
 ### Right Panel
 
@@ -82,7 +82,7 @@ The Invoking conversation is freeform — no predefined card choices. The Sage o
 
 > *How should it feel?*
 
-Tuning the spell's frequencies — harmonizing the 8 components that shape the adventure through conversational back-and-forth with the Sage.
+Sensing the tale's character — harmonizing the 8 components that shape the adventure through conversational back-and-forth with the Sage.
 
 ### Right Panel
 
@@ -164,7 +164,7 @@ The panel shows a **component summary list** grouped into three categories. Each
 
 > *Which frame holds the story?*
 
-Binding the spell to a foundation — selecting the thematic framework (Frame) that anchors the story. Frames are rich multi-section documents sourced from the unified `daggerheart_frames` table, each including an inciting incident that seeds the adventure.
+Anchoring the tale to its foundation — selecting the thematic framework (Frame) that grounds the story. Frames are rich multi-section documents sourced from the unified `daggerheart_frames` table, each including an inciting incident that seeds the adventure.
 
 ### Right Panel
 
@@ -276,13 +276,13 @@ The conversation drives content; the panel reflects the result. The Sage updates
 #### Fixed Footer
 
 Footer button fixed at bottom of panel (never scrolls away), matching Inscribing's `.panel-footer` pattern:
-- Scenes 1 through N-1: **"Confirm Scene Summary"** — seals the current scene and advances to the next
-- Final scene (Scene N): **"Continue to Inscribing"** — activates when the user confirms the last scene is good in chat; seals the final scene and advances to Inscribing
+- Scenes 1 through N-1: **"Confirm Scene Summary"** — confirms the current scene and advances to the next
+- Final scene (Scene N): **"Continue to Inscribing"** — activates when the user confirms the last scene is good in chat; confirms the final scene and advances to Inscribing
 - Button is disabled until the Sage signals readiness in conversation
 
 ### Chat Flow
 
-Sage drafts initial outline based on frame + components and populates all scene arcs in the panel. User reviews Scene 1 first — adjusts concepts, requests changes, reorders beats. Sage revises the arc. When the Sage determines a scene is ready, the "Confirm Scene Summary" button enables. User clicks to seal and advance.
+Sage drafts initial outline based on frame + components and populates all scene arcs in the panel. User reviews Scene 1 first — adjusts concepts, requests changes, reorders beats. Sage revises the arc. When the Sage determines a scene is ready, the "Confirm Scene Summary" button enables. User clicks to confirm and advance.
 
 The conversation is scene-focused: while Scene 1 is active, the dialogue centers on Scene 1's arc. Once confirmed, the conversation shifts to Scene 2. The user can reference other scenes in conversation, but only the active scene's arc is editable.
 
@@ -306,7 +306,7 @@ The conversation is scene-focused: while Scene 1 is active, the dialogue centers
 
 > *What unfolds in each scene?*
 
-The most content-dense stage — inscribing each scene into the Book through a draft-feedback-revise cycle with the Sage. Inscribing absorbs the work formerly done in Conjuring (NPCs), Summoning (adversaries), Enchanting (items), and Scrying (echoes), managing all scene content through 9 sections organized in three progressive waves.
+The most content-dense stage — inscribing each scene into the Codex through a draft-feedback-revise cycle with the Sage. Inscribing absorbs the work formerly done in Conjuring (NPCs), Summoning (adversaries), Enchanting (items), and Scrying (echoes), managing all scene content through 9 sections organized in three progressive waves.
 
 ### Right Panel
 
@@ -469,15 +469,15 @@ Transitions, Portents, and GM Notes are dimmed when Waves 1-2 are incomplete:
 #### Fixed Footer
 
 Footer button fixed at bottom of panel (never scrolls away):
-- Per-scene: **"Confirm Scene"** — seals the current scene and advances to the next
-- Once all scenes are confirmed: **"Continue to Sealing"**
+- Per-scene: **"Confirm Scene"** — confirms the current scene and advances to the next
+- Once all scenes are confirmed: **"Continue to Delivering"**
 - The "Confirm Scene" button is disabled until the Sage signals readiness
 
 ### Chat Flow
 
 Per-scene draft-feedback-revise cycle. Sage presents a scene draft, user requests expansions or changes to specific sections. Sage revises. The conversation drives section content — no checkbox progression.
 
-The Sage determines when a scene is ready and signals it conversationally ("I think Scene 2 is complete — shall we confirm?"). The "Confirm Scene" footer button is disabled until the Sage triggers readiness. User clicks to seal. Both LLM and user are involved in the confirmation decision.
+The Sage determines when a scene is ready and signals it conversationally ("I think Scene 2 is complete — shall we confirm?"). The "Confirm Scene" footer button is disabled until the Sage triggers readiness. User clicks to confirm. Both LLM and user are involved in the confirmation decision.
 
 ### Workflows
 
@@ -503,7 +503,7 @@ The Sage determines when a scene is ready and signals it conversationally ("I th
 
 - No status dots — the flow is conversational. The LLM determines when content is ready, not checkboxes.
 - No within-scene locking — sections remain fluid until the entire scene is confirmed.
-- Scene-level confirmation only — the confirm action seals all 9 sections at once and advances to the next scene.
+- Scene-level confirmation only — the confirm action locks all 9 sections at once and advances to the next scene.
 
 #### Shared Patterns
 
@@ -528,24 +528,44 @@ NPCs are currently LLM-generated with no database backing. A GitHub issue should
 
 ---
 
-## 6. Sealing
+## 6. Delivering
 
-> *Is the spell complete?*
+> *Your tale awaits.*
 
-The spell is sealed — the adventure is bound into the Book, ready for export.
+The Sage delivers the completed tale — the adventure emerges from the Codex, ready to bring to life at the table.
 
 ### Right Panel
 
-Three sections: (1) Adventure summary card with title, frame, and stat boxes (scenes/NPCs/adversaries/rewards). (2) Completeness checklist — all 6 stages with gold check marks. (3) Export format selector — three cards (Markdown, PDF, JSON) with selected state using gold treatment. Prominent "Seal the Spell" CTA button at bottom (full-width, larger font, gold glow on hover).
+A celebratory, narrative panel that tells the story of what was created. No checklists, no stat boxes, no format selectors — this is a "see what we did together" moment, not a review screen.
+
+**Content flow (top to bottom):**
+
+1. **Title** — The adventure name in gold serif, prominent
+2. **Spark** — A callback to the very first page: the user's original spark that started the unfolding. Displayed in a subtle card with a label like "Where it began"
+3. **Frame Overview** — The descriptive text from the selected frame, showing the world the adventure lives in
+4. **Inciting Incident** — The event that sets the adventure in motion
+5. **Narrative Send-off** — A block of celebratory text in the Sage's voice: "Your adventure has been delivered. It is now in your hands — take this tale from the pages of the Sage Codex and bring it to life at your table." The exact copy should feel warm, personal, and encourage the user to go run the adventure
+6. **"Bring This Tale to Life" button** — Full-width gold CTA. Downloads a zip file containing Markdown and PDF documents. Also silently saves the adventure to the user's Sage Codex account
+
+**What was removed from the old Sealing design:**
+- Completeness checklist (breaks immersion — feels like "the ride is over")
+- Stat boxes (scenes/NPCs/adversaries/rewards counts)
+- Export format selector (no choice needed — single zip with Markdown + PDF)
+- "Seal the Spell" button and all spell-casting language
 
 ### Chat Flow
 
-Sage presents final summary and congratulates the user. Offers last-chance review. User selects export format and seals the spell. Sage provides table-running advice as a warm send-off.
+Sage presents a warm, celebratory message acknowledging the collaboration. The tone is not "review this" but "look at what we created." The Sage may offer table-running advice if the user asks. The conversation is short — 2-3 messages at most. There is no last-chance review prompt; the panel content speaks for itself.
 
 ### Workflows
 
-(To be documented)
+- **Download action:** Clicking "Bring This Tale to Life" triggers two system actions:
+  1. Downloads a zip file to the user's computer containing the adventure as Markdown (.md) and PDF (.pdf) documents
+  2. Saves the adventure to the user's account (no UI feedback needed — silent save)
+- **No format selection:** Users get both formats in the zip. No JSON export.
+- **No editing on this page:** The user cannot modify content here. If they want changes, the Sage directs them back to the relevant stage via the phase dropdown.
+- **Single user action:** The only interactive element is the download button. Everything else is read-only content.
 
 ### Mockup
 
-`documentation/mockups/sealing-immersive.html`
+`documentation/mockups/delivering-immersive.html`
