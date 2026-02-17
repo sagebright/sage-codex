@@ -108,7 +108,7 @@ A muted pill badge for scene association on content entries. Deliberately NOT go
 | Label format | "Scene 1" (full word) | Immersive — no abbreviations |
 | Multi-scene | Side-by-side separate pills | Each in its own `.scene-badge` span |
 
-Used in: NPC cards (Inscription entity drill-in), adversary cards (Inscription entity drill-in), echo entries (Scrying). Scene selector filter tabs use the same "Scene N" label format for consistency.
+Used in: NPC cards (Inscription entity drill-in), adversary cards (Inscription entity drill-in). Scene selector filter tabs use the same "Scene N" label format for consistency.
 
 ### Read-Aloud Block (Shared Component)
 

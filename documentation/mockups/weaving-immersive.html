@@ -9,20 +9,34 @@
     ==========================================================================
     STAGE 4: WEAVING — How does the plot unfold?
     ==========================================================================
-    Panel pattern: SCENE BRIEF LIST WITH STATUS BADGES
-    The user and Sage collaborate on 3–6 scene briefs, reviewing and locking
-    each one before advancing to Inscription.
+    Panel pattern: SCENE TABS → FULL SCENE ARC CONTENT
+    Mirrors Inscription's scene-tab structure: numbered scene buttons across the
+    top, full content below, sequential confirmation flow. This makes Weaving
+    feel like a natural precursor to Inscription — same spatial model, lighter
+    content.
 
-    Panel shows scrollable scene brief rows with number, title, description,
-    and a status badge (Draft / Reviewed / Locked). The "Continue to
-    Inscription" button is disabled until all scenes are Locked.
+    Scene tab states (matching Inscription):
+      Active    — gold fill, highest visual weight (currently being woven)
+      Confirmed — gold-dim wash, settled (sealed, locked)
+      Inactive  — muted surface, upcoming (not yet reachable)
 
-    DESIGN RATIONALE: Weaving is an iterative draft-feedback loop. The panel
-    needs to communicate progress at a glance — which scenes are settled and
-    which still need attention. Status badges borrow the gold treatment from
-    Binding's selected frame: Locked scenes are "done," Reviewed scenes are
-    close, and Drafts still need work. This gives the user a clear sense of
-    momentum without overwhelming them with detail.
+    Content area shows the full scene arc for the selected scene:
+      - Scene title (serif header)
+      - Full narrative arc description (multiple paragraphs)
+      - This is lighter than Inscription's 8-section accordion — just the
+        outline of what happens in the scene
+
+    Footer button:
+      - Scenes 1–3: "Confirm Scene Summary" (disabled until Sage signals readiness)
+      - Scene 4 (last): "Continue to Inscription" (activates when user confirms
+        in chat that the last scene looks good)
+
+    Sequential flow — Scene 1 is active first. Each confirmation locks the
+    scene and advances to the next. The conversation drives content; the panel
+    reflects the result.
+
+    MOCKUP SNAPSHOT: Scene 1 active, Scenes 2–4 inactive. User and Sage are
+    mid-conversation refining Scene 1's arc. "Confirm Scene Summary" is disabled.
     ==========================================================================
   -->
 
@@ -126,19 +140,6 @@
     .message:nth-child(5) { animation-delay: 0.24s; }
     .message:nth-child(6) { animation-delay: 0.30s; }
     .message:nth-child(7) { animation-delay: 0.36s; }
-    .thinking-indicator { display: flex; align-items: center; gap: 5px; padding: 4px 0; align-self: flex-start; }
-    .thinking-indicator .sage-label { margin-bottom: 0; margin-right: 4px; }
-    .thinking-dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent-gold); opacity: 0.3;
-      animation: thinking-pulse 1.4s ease-in-out infinite;
-    }
-    .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
-    .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes thinking-pulse {
-      0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); }
-      40% { opacity: 0.9; transform: scale(1); }
-    }
 
     /* === INPUT === */
     .input-area { flex-shrink: 0; padding: 12px var(--section-padding) var(--section-padding); }
@@ -206,122 +207,69 @@
     .phase-item-desc { font-size: 11px; font-weight: 400; color: var(--text-muted); }
     .phase-dropdown-item.current .phase-item-desc { color: var(--accent-gold); opacity: 0.7; }
 
-    /* === SCENE BRIEF LIST (Weaving-specific) ===
-       DESIGN RATIONALE: Scene brief rows are compact compared to Binding's
-       frame cards — Weaving is about progress through a sequence, not a
-       single high-stakes selection. The status badges communicate workflow
-       state at a glance: Draft (needs work), Reviewed (close), Locked (done).
-       Locked badges use the same gold-fill treatment as Binding's selected
-       frame — visual continuity across stages. The scene number in gold serif
-       creates a subtle rhythm that reinforces the narrative arc.
+    /* === SCENE TABS (matching Inscription) ===
+       Three states: Active (gold fill), Confirmed (gold-dim wash), Inactive (muted).
+       Sequential flow — Scene 1 is active first. Each confirmation locks the
+       scene and advances to the next.
     */
-    .scene-brief-list {
-      flex: 1; overflow-y: auto; padding: 8px var(--panel-padding);
+    .scene-selector {
+      display: flex; flex-direction: row; gap: 6px;
+      padding: 0 var(--panel-padding); margin-bottom: 12px;
+    }
+    .scene-selector-tab {
+      min-width: 48px; padding: 6px 12px; border-radius: var(--radius-sm);
+      font-family: var(--font-sans); font-size: 13px;
+      text-align: center; border: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .scene-selector-tab.active {
+      background: var(--accent-gold); color: var(--bg-primary); font-weight: 600;
+      cursor: default;
+    }
+    .scene-selector-tab.confirmed {
+      background: var(--accent-gold-dim); color: var(--text-secondary);
+      cursor: default;
+    }
+    .scene-selector-tab.inactive {
+      background: var(--bg-surface); color: var(--text-secondary);
+      cursor: default;
+    }
+
+    /* === SCENE ARC CONTENT (Weaving-specific) ===
+       Full scene arc description shown below the scene tabs.
+       Lighter than Inscription's 8-section accordion — just narrative outline.
+    */
+    .panel-view {
+      display: none; flex-direction: column; flex: 1; min-height: 0;
+      overflow-y: auto; padding: 0 var(--panel-padding);
       scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.06) transparent;
     }
-    .scene-brief-list::-webkit-scrollbar { width: 5px; }
-    .scene-brief-list::-webkit-scrollbar-track { background: transparent; }
-    .scene-brief-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+    .panel-view::-webkit-scrollbar { width: 5px; }
+    .panel-view::-webkit-scrollbar-track { background: transparent; }
+    .panel-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+    .panel-view.active { display: flex; }
 
-    .scene-brief-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px;
-      border: 1px solid var(--border-medium);
-      border-left: 3px solid transparent;
-      border-radius: var(--radius-sm);
-      margin-bottom: 10px;
-      transition: all 0.15s ease;
+    .scene-arc-title {
+      font-family: var(--font-serif); font-size: 16px; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 4px;
     }
-    .scene-brief-row:hover {
-      background: var(--bg-surface);
-      border-color: var(--border-hover);
-      border-left-color: var(--border-hover);
+    .scene-arc-subtitle {
+      font-size: 12px; color: var(--text-muted); margin-bottom: 16px;
     }
-    .scene-brief-row.locked {
-      border-left-color: var(--accent-gold);
-      background: var(--accent-gold-dim);
-      border-color: var(--accent-gold-border);
+    .scene-arc-body {
+      flex: 1; font-size: 14px; color: var(--text-secondary); line-height: 1.65;
     }
-    .scene-brief-row.reviewed {
-      border-left-color: var(--accent-gold-border);
-    }
+    .scene-arc-body p + p { margin-top: 12px; }
 
-    .scene-brief-number {
-      font-family: var(--font-serif);
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--accent-gold);
+    /* === FIXED FOOTER (matching Inscription) === */
+    .panel-footer {
       flex-shrink: 0;
-      width: 24px;
-      text-align: center;
-      line-height: 1;
+      padding: 12px var(--panel-padding) 32px;
+      border-top: 1px solid var(--border-subtle);
     }
-
-    .scene-brief-info {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 0;
-      flex: 1;
-    }
-    .scene-brief-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      line-height: 1.3;
-    }
-    .scene-brief-row.locked .scene-brief-title {
-      color: var(--accent-gold-hover);
-    }
-    .scene-brief-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .scene-status-badge {
-      flex-shrink: 0;
-      font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 10px;
-      border-radius: 12px;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      line-height: 1;
-    }
-    .scene-status-badge.draft {
-      border: 1px solid var(--border-medium);
-      color: var(--text-muted);
-      background: none;
-    }
-    .scene-status-badge.reviewed {
-      border: 1px solid var(--accent-gold-border);
-      color: var(--accent-gold);
-      background: none;
-    }
-    .scene-status-badge.locked {
-      border: 1px solid var(--accent-gold);
-      color: var(--bg-primary);
-      background: var(--accent-gold);
-    }
-    .scene-status-badge .badge-check {
-      width: 10px;
-      height: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     .btn-continue-compact {
-      flex-shrink: 0; padding: 7px 16px; border: none; border-radius: var(--radius-sm);
+      display: block; width: 100%;
+      padding: 7px 16px; border: none; border-radius: var(--radius-sm);
       background: var(--accent-gold); color: var(--bg-primary);
       font-family: var(--font-sans); font-size: 13px; font-weight: 600;
       cursor: pointer; transition: background 0.15s ease, box-shadow 0.2s ease;
@@ -358,7 +306,7 @@
     <div class="app-layout">
 
     <!-- ================================================================
-         CHAT SIDE (60%)
+         CHAT SIDE (65%)
          ================================================================ -->
     <div class="chat-side">
       <div class="message-area">
@@ -370,39 +318,40 @@
             <div class="message-text">
               <p>The frame is bound and the Witherwild stirs. Now we weave the threads of your story into a pattern — a scene-by-scene arc that'll carry your players from first steps to final reckoning.</p>
               <p>Based on your frame and the components you've tuned — balanced tenor, discovery-led pillars, four party members at tier two — I've drafted four scenes in the panel. They move from investigation to negotiation to exploration to confrontation, which gives your players room to breathe between the tense moments.</p>
-              <p>Take a look and tell me what feels right, what doesn't, and where you'd push things in a different direction.</p>
+              <p>Take a look at Scene 1 and tell me what feels right, what doesn't, and where you'd push things in a different direction.</p>
             </div>
           </div>
 
-          <!-- User: Adjusts Scene 3 concept -->
+          <!-- User: Adjusts Scene 1 concept -->
           <div class="message message-user">
             <div class="message-text">
-              I like the overall flow but Scene 3 feels too passive. I don't want the party just "searching" for the artifact — I want them to have to earn it. Maybe there's a guardian or a trial?
+              I like the overgrown road concept but the opening feels too slow. Can you give the party more urgency? Maybe they find something that makes it clear this isn't just abandoned infrastructure — something happened here recently.
             </div>
           </div>
 
-          <!-- Sage: Revises Scene 3 -->
+          <!-- Sage: Revises Scene 1 -->
           <div class="message message-sage">
             <div class="sage-label">Sage</div>
             <div class="message-text">
-              <p>Good instinct — a passive search at tier two would feel flat. I've reworked Scene 3. Instead of stumbling onto the Eye, the party discovers it's guarded by <strong>the Reaping Eye's own defense</strong> — an overgrown sanctum where the forest itself tests intruders. Think living bramble walls, shifting paths, and a final trial that forces the party to prove they understand what the Eye actually does.</p>
-              <p>That gives you a discovery-pillar scene that's earned, not handed over. I've updated the brief in the panel — check Scene 3 and let me know if that's closer to what you want.</p>
+              <p>Good instinct — opening scenes at tier two should hit the ground running. I've reworked the arc. Instead of a slow discovery, the party arrives to find a merchant caravan <strong>still burning</strong> — the attack happened within the hour. Scattered cargo, overturned wagons, and drag marks leading into the overgrowth.</p>
+              <p>That gives you immediate stakes: someone might still be alive in there. The investigation pillar kicks in naturally — the party has to read the scene to understand what attacked, and the drag marks create a ticking clock.</p>
+              <p>I've updated the arc in the panel. Take a look and let me know if that's the urgency you wanted.</p>
             </div>
           </div>
 
-          <!-- User: Approves, locks first two, reviews Scene 3 -->
+          <!-- User: Approves, asks about survivors -->
           <div class="message message-user">
             <div class="message-text">
-              That's much better. Scenes 1 and 2 are solid — lock those. Scene 3 is close but I want to review it one more time before locking.
+              Much better. The burning caravan is great. But what about survivors? I don't want the party to just find bodies — I want them to find someone who can tell them what's happening.
             </div>
           </div>
 
-          <!-- Sage: Confirms status updates -->
+          <!-- Sage: Adds survivor beat, streaming -->
           <div class="message message-sage">
             <div class="sage-label">Sage</div>
             <div class="message-text">
-              <p>Done — Scenes 1 and 2 are locked and sealed. Scene 3 is marked as Reviewed so you can revisit it whenever you're ready. Scene 4 is still in draft, waiting for your attention.</p>
-              <p>Once all four are locked, we'll move into <strong>Inscription</strong> — where each scene gets fully written out with encounters, dialogue hooks, and decision points. Take your time; we're building the bones of the story right now.</p>
+              <p>Perfect — a survivor gives you a voice for the exposition instead of making the party read environmental clues alone. I've added <strong>Merchant Ves</strong> to the arc: a half-conscious trader pinned under a collapsed wagon, babbling about vines that moved like they were hunting. She's injured but lucid enough to describe what she saw — and to beg the party not to follow the drag marks.</p>
+              <p>That sets up a clean choice: help Ves and lose time, or follow the drag marks while the trail is fresh. Both are valid and both have consequences. I've updated the panel — this is feeling close to ready.<span class="streaming-cursor"></span></p>
             </div>
           </div>
 
@@ -411,7 +360,7 @@
 
       <div class="input-area">
         <div class="input-container">
-          <textarea class="chat-input" placeholder="Adjust a scene, lock it, or ask for alternatives…" rows="3"></textarea>
+          <textarea class="chat-input" placeholder="Adjust the scene arc, request changes, or confirm when ready…" rows="3"></textarea>
           <button class="submit-btn" aria-label="Send message">
             <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
               <polygon points="12,2 16,12 12,22 8,12"></polygon>
@@ -422,7 +371,7 @@
     </div>
 
     <!-- ================================================================
-         PANEL SIDE (40%) — Scene Brief List
+         PANEL SIDE (35%) — Scene Tabs + Scene Arc Content
          ================================================================ -->
     <div class="panel-side">
 
@@ -430,8 +379,9 @@
         <div class="app-header-phase" onclick="togglePhaseDropdown()" role="button" tabindex="0" aria-expanded="false" aria-haspopup="true">
           <span class="phase-name">Weaving</span>
           <span class="phase-progress">How does the plot unfold?</span>
-          <span class="phase-chevron" id="phase-chevron">&#x25BE;</span>
+          <span class="phase-chevron" id="phase-chevron">&#9662;</span>
 
+          <!-- 6-stage dropdown (Conjuring/Summoning/Enchanting/Scrying absorbed into Inscription) -->
           <div class="phase-dropdown" id="phase-dropdown" role="menu">
             <div class="phase-dropdown-item completed" role="menuitem" tabindex="0">
               <div class="phase-item-text"><span>Invocation</span><span class="phase-item-desc">What shape will your adventure take?</span></div>
@@ -450,22 +400,6 @@
               <span class="phase-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             </div>
             <div class="phase-dropdown-item future" role="menuitem" tabindex="-1">
-              <div class="phase-item-text"><span>Conjuring</span><span class="phase-item-desc">Who will the party meet?</span></div>
-              <span class="phase-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-            </div>
-            <div class="phase-dropdown-item future" role="menuitem" tabindex="-1">
-              <div class="phase-item-text"><span>Summoning</span><span class="phase-item-desc">What stands in their way?</span></div>
-              <span class="phase-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-            </div>
-            <div class="phase-dropdown-item future" role="menuitem" tabindex="-1">
-              <div class="phase-item-text"><span>Enchanting</span><span class="phase-item-desc">What treasures await?</span></div>
-              <span class="phase-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-            </div>
-            <div class="phase-dropdown-item future" role="menuitem" tabindex="-1">
-              <div class="phase-item-text"><span>Scrying</span><span class="phase-item-desc">What might happen at the table?</span></div>
-              <span class="phase-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-            </div>
-            <div class="phase-dropdown-item future" role="menuitem" tabindex="-1">
               <div class="phase-item-text"><span>Sealing</span><span class="phase-item-desc">Is the spell complete?</span></div>
               <span class="phase-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             </div>
@@ -473,58 +407,66 @@
         </div>
       </div>
 
-      <!-- Scene Brief List — scrollable -->
-      <div class="scene-brief-list">
+      <!-- Scene Tabs — Scene 1 active, Scenes 2–4 inactive -->
+      <div class="scene-selector">
+        <button class="scene-selector-tab active">Scene 1</button>
+        <button class="scene-selector-tab inactive">Scene 2</button>
+        <button class="scene-selector-tab inactive">Scene 3</button>
+        <button class="scene-selector-tab inactive">Scene 4</button>
+      </div>
 
-        <!-- Scene 1 — Locked -->
-        <div class="scene-brief-row locked">
-          <div class="scene-brief-number">1</div>
-          <div class="scene-brief-info">
-            <div class="scene-brief-title">The Overgrown Road</div>
-            <div class="scene-brief-desc">The party discovers a trade route consumed by the Witherwild, with an overturned merchant caravan and signs of a desperate last stand.</div>
-          </div>
-          <div class="scene-status-badge locked">
-            <span class="badge-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"></polyline></svg></span>
-            Locked
-          </div>
+      <!-- ============================================================
+           VIEW: Scene 1 — The Overgrown Road (active)
+           ============================================================ -->
+      <div class="panel-view active" id="scene-1-view">
+        <div class="scene-arc-title">The Overgrown Road</div>
+        <div class="scene-arc-body">
+          <p>The party arrives at a trade route consumed by the Witherwild to find a merchant caravan still burning — the attack happened within the hour. Scattered cargo, overturned wagons, and drag marks leading into the overgrowth. This isn't ancient history. Something is actively hunting.</p>
+          <p>Pinned under a collapsed wagon, they find <strong>Merchant Ves</strong> — a half-conscious trader babbling about vines that moved like they were hunting. She's injured but lucid enough to describe what she saw: tendrils erupting from the road surface, grabbing her guards, dragging them into the tree line. She begs the party not to follow.</p>
+          <p>The drag marks create a ticking clock. The investigation pillar kicks in naturally — the party has to read the scene to understand what attacked and decide what to do. Two paths emerge: help Ves and lose time (she knows the road, can describe what's ahead), or follow the drag marks while the trail is fresh (might find survivors, but the overgrowth is closing in).</p>
+          <p>Either choice feeds into Scene 2. Helping Ves earns an ally with local knowledge. Following the drag marks leads to a first encounter with the Witherwild's active hostility — and a terrified survivor who knows about Wickling Hollow.</p>
         </div>
+      </div>
 
-        <!-- Scene 2 — Locked -->
-        <div class="scene-brief-row locked">
-          <div class="scene-brief-number">2</div>
-          <div class="scene-brief-info">
-            <div class="scene-brief-title">Wickling Hollow</div>
-            <div class="scene-brief-desc">A hidden forest settlement where the party must negotiate with Wickling elders who distrust outsiders — especially anyone connected to Haven.</div>
-          </div>
-          <div class="scene-status-badge locked">
-            <span class="badge-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"></polyline></svg></span>
-            Locked
-          </div>
+      <!-- ============================================================
+           VIEW: Scene 2 — Wickling Hollow (inactive, not shown)
+           ============================================================ -->
+      <div class="panel-view" id="scene-2-view">
+        <div class="scene-arc-title">Wickling Hollow</div>
+        <div class="scene-arc-body">
+          <p>A hidden forest settlement where the party must negotiate with Wickling elders who distrust outsiders — especially anyone connected to Haven. Elder Thornveil offers guarded hospitality but demands to know their purpose.</p>
+          <p>The core tension is negotiation: the Wicklings possess knowledge of the Reaping Eye's location, but they won't share it freely. A Blightcrawler nest threatens the Hollow's water supply, and Thornveil offers a trade — help purge the nest, and she'll share what she knows.</p>
+          <p>A complication arrives in the form of Corporal Dace, a wounded Havenite scout held prisoner. He claims a shortcut to the Eye. The party faces a three-way choice: side with the Wicklings, trust Dace, or negotiate a compromise that unites both factions' knowledge.</p>
         </div>
+      </div>
 
-        <!-- Scene 3 — Reviewed -->
-        <div class="scene-brief-row reviewed">
-          <div class="scene-brief-number">3</div>
-          <div class="scene-brief-info">
-            <div class="scene-brief-title">The Reaping Eye</div>
-            <div class="scene-brief-desc">Deep into the overgrowth, the party searches for the stolen artifact that triggered the Witherwild's uncontrolled expansion.</div>
-          </div>
-          <div class="scene-status-badge reviewed">Reviewed</div>
+      <!-- ============================================================
+           VIEW: Scene 3 — The Reaping Eye (inactive, not shown)
+           ============================================================ -->
+      <div class="panel-view" id="scene-3-view">
+        <div class="scene-arc-title">The Reaping Eye</div>
+        <div class="scene-arc-body">
+          <p>Deep into the overgrowth, the party discovers the stolen artifact isn't just sitting in a clearing — it's guarded by the forest itself. An overgrown sanctum where the Witherwild tests intruders with living bramble walls, shifting paths, and a final trial.</p>
+          <p>The trial forces the party to prove they understand what the Reaping Eye actually does — not just a weapon or a tool, but a lens through which the forest sees and judges. Discovery-pillar scene that's earned, not handed over.</p>
+          <p>The consequences of Scene 2 ripple through here: Wickling allies make the sanctum navigable; Dace's shortcut triggers incendiary charges that accelerate the Witherwild's hostility; the compromise path provides the most resources but the sanctum is harder.</p>
         </div>
+      </div>
 
-        <!-- Scene 4 — Draft -->
-        <div class="scene-brief-row">
-          <div class="scene-brief-number">4</div>
-          <div class="scene-brief-info">
-            <div class="scene-brief-title">Nikta's Judgment</div>
-            <div class="scene-brief-desc">Confrontation at the Great Owl's corrupted sanctum, where the party must choose between restoring the Eye or destroying it.</div>
-          </div>
-          <div class="scene-status-badge draft">Draft</div>
+      <!-- ============================================================
+           VIEW: Scene 4 — Nikta's Judgment (inactive, not shown)
+           ============================================================ -->
+      <div class="panel-view" id="scene-4-view">
+        <div class="scene-arc-title">Nikta's Judgment</div>
+        <div class="scene-arc-body">
+          <p>Confrontation at the Great Owl Nikta's corrupted sanctum, where the party must choose between restoring the Eye or destroying it. Nikta is not a simple antagonist — she let Haven take the Eye as a test, and now she's judging whether mortals deserve the forest's trust.</p>
+          <p>The party's choices across all three previous scenes determine Nikta's disposition: allies earned, bridges burned, and knowledge gained all factor into how this final scene unfolds. Multiple endings are possible, from alliance to destruction to a fragile compromise.</p>
+          <p>The confrontation pillar finally takes center stage, but the resolution depends on everything that came before. A party that fought its way here faces a very different Nikta than one that earned the forest's respect.</p>
         </div>
+      </div>
 
-        <!-- Continue button — disabled (not all scenes locked) -->
-        <button class="btn-continue-compact" style="margin: 16px auto 12px; display: block;" disabled>Continue to Inscription</button>
-
+      <!-- Fixed Footer — always visible at bottom of panel -->
+      <div class="panel-footer">
+        <button class="btn-continue-compact" disabled>Confirm Scene Summary</button>
       </div>
 
     </div>
@@ -533,6 +475,7 @@
   </div><!-- /app-shell -->
 
   <script>
+    /* === Phase Dropdown === */
     function togglePhaseDropdown() {
       const dropdown = document.getElementById('phase-dropdown');
       const chevron = document.getElementById('phase-chevron');
@@ -568,12 +511,14 @@
       }
     });
 
+    /* === Textarea Auto-resize === */
     const textarea = document.querySelector('.chat-input');
     textarea.addEventListener('input', function() {
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 180) + 'px';
     });
 
+    /* === Scroll chat to bottom === */
     document.querySelector('.message-area').scrollTop = document.querySelector('.message-area').scrollHeight;
   </script>
 
