@@ -47,6 +47,8 @@ export interface CreditStoreState {
   createCheckout: (token: string, packageId: string) => Promise<string | null>;
   /** Create a Stripe Customer Portal session and return the redirect URL */
   createPortal: (token: string) => Promise<string | null>;
+  /** Clear the current error message */
+  clearError: () => void;
   /** Reset the store to initial state */
   reset: () => void;
 }
@@ -190,6 +192,8 @@ export const useCreditStore = create<CreditStoreState>((set) => ({
 
     return result.data?.url ?? null;
   },
+
+  clearError: () => set({ error: null }),
 
   reset: () => set({ ...INITIAL_STATE }),
 }));

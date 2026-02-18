@@ -13,16 +13,16 @@ Dagger-App is a local web application for generating Daggerheart TTRPG adventure
 ## Architecture
 
 ```
-┌─────────────────┐     HTTP/WS      ┌─────────────────┐     MCP      ┌─────────────────┐
-│  React Frontend │ ◄──────────────► │  MCP Bridge     │ ◄──────────► │  Claude Code    │
-│  (Vite + TS)    │                  │  Server (Node)  │              │  (Your sub)     │
-└────────┬────────┘                  └────────┬────────┘              └─────────────────┘
+┌─────────────────┐     HTTP/WS      ┌─────────────────┐     Anthropic  ┌─────────────────┐
+│  React Frontend │ ◄──────────────► │  API Server     │ ◄───── SDK ──► │  Claude         │
+│  (Vite + TS)    │                  │  (Express/Node) │                │  (Anthropic API)│
+└────────┬────────┘                  └────────┬────────┘                └─────────────────┘
          │                                    │
          │                                    │
          ▼                                    ▼
 ┌─────────────────┐                  ┌─────────────────┐
 │  Local Browser  │                  │  Supabase JMK   │
-│                 │                  │  (12 content    │
+│                 │                  │  (14 content    │
 └─────────────────┘                  │  tables)        │
                                      └─────────────────┘
 ```
@@ -30,10 +30,10 @@ Dagger-App is a local web application for generating Daggerheart TTRPG adventure
 ### Data Flow
 
 1. **User → Frontend:** Chat messages, component adjustments, content requests
-2. **Frontend → Bridge:** HTTP REST + WebSocket for real-time updates
-3. **Bridge → Claude:** MCP tool invocations for AI generation
-4. **Bridge → Supabase:** Queries for Daggerheart content (frames, adversaries, items, etc.)
-5. **Bridge → Frontend:** Streaming responses, draft content, phase updates
+2. **Frontend → API:** HTTP REST + WebSocket for real-time updates
+3. **API → Claude:** Anthropic SDK for AI generation
+4. **API → Supabase:** Queries for Daggerheart content (frames, adversaries, items, etc.)
+5. **API → Frontend:** Streaming responses, draft content, phase updates
 
 ## Project Structure
 
@@ -50,15 +50,16 @@ dagger-app/
 │   │   ├── vite.config.ts      # Vite config with proxy to bridge
 │   │   └── tailwind.config.ts  # Fantasy theme colors
 │   │
-│   └── mcp-bridge/             # Node.js bridge server (port 3001)
+│   └── api/                    # Express API server (port 3001)
 │       ├── src/
-│       │   ├── index.ts        # Express + WebSocket entry point
+│       │   ├── index.ts        # Express entry point
 │       │   ├── config.ts       # Environment configuration
-│       │   ├── routes/         # REST endpoints (health.ts)
-│       │   ├── middleware/     # cors.ts, logger.ts
-│       │   ├── websocket/      # WebSocket handler
-│       │   └── services/       # supabase.ts, daggerheart-queries.ts
-│       └── .env.example        # Environment template
+│       │   ├── startup/        # Startup validation (validate-env.ts)
+│       │   ├── routes/         # REST endpoints (health, auth, credits, chat, session, etc.)
+│       │   ├── middleware/     # cors, logger, auth, rate-limit, error-handler
+│       │   ├── tools/          # Stage-specific tool handlers (invoking, attuning, etc.)
+│       │   └── services/       # supabase, stripe, credits, daggerheart-queries
+│       └── .env                # Environment variables (not committed)
 │
 ├── packages/
 │   └── shared-types/           # TypeScript types shared between apps
@@ -95,7 +96,7 @@ Colors: `parchment`, `ink`, `gold`, `blood`, `shadow` (each with 50-950 shades)
 
 ### Supabase Client
 
-The bridge uses a singleton pattern for Supabase:
+The API server uses a singleton pattern for Supabase:
 
 ```typescript
 import { getSupabase, checkSupabaseHealth } from './services/supabase.js';
@@ -106,7 +107,7 @@ const frames = await supabase.from('daggerheart_frames').select('*');
 
 ### WebSocket Events (Planned)
 
-Real-time communication between frontend and bridge:
+Real-time communication between frontend and API server:
 
 - `chat:assistant_message` - Streaming AI responses
 - `content:draft_ready` - Generated content available
@@ -135,15 +136,15 @@ Real-time communication between frontend and bridge:
 ### Development
 
 ```bash
-# Start both frontend and bridge in parallel
+# Start both frontend and API in parallel
 pnpm dev
 
 # Start individual apps
-pnpm --filter web dev        # Frontend on http://localhost:5173
-pnpm --filter mcp-bridge dev # Bridge on http://localhost:3001
+pnpm --filter web dev   # Frontend on http://localhost:5173
+pnpm --filter api dev   # API server on http://localhost:3001
 
 # Health check
-curl http://localhost:3001/health
+curl http://localhost:3001/api/health
 ```
 
 ### Build & Quality
@@ -170,7 +171,7 @@ pnpm test
 
 # Run tests for specific package
 pnpm --filter web test
-pnpm --filter mcp-bridge test
+pnpm --filter api test
 ```
 
 ## Project Skills
@@ -208,7 +209,7 @@ Agents auto-activate based on task context, or invoke explicitly:
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` in `apps/mcp-bridge/`:
+Configure `.env` in `apps/api/`:
 
 ```bash
 # Server
@@ -218,7 +219,17 @@ ALLOWED_ORIGINS=http://localhost:5173
 
 # Supabase (JMK project)
 SUPABASE_URL=https://ogvbbfzfljglfanceest.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_jwt_here  # Must be JWT (eyJ...), NOT Management API secret
+
+# Anthropic
+ANTHROPIC_API_KEY=your_anthropic_key_here
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_or_sk_live_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+STRIPE_PRICE_1_CREDIT=price_id_for_starter_package
+STRIPE_PRICE_5_CREDITS=price_id_for_adventurer_package
+STRIPE_PRICE_15_CREDITS=price_id_for_guild_package
 ```
 
 ## Daggerheart Content Tables

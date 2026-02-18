@@ -242,9 +242,11 @@ export function SessionPage() {
           Sage Codex
         </span>
         <div style={styles.headerActions}>
-          <span style={styles.creditBadge}>
-            {balance} {balance === 1 ? 'credit' : 'credits'}
-          </span>
+          <Link to="/settings" style={{ textDecoration: 'none' }}>
+            <span style={{ ...styles.creditBadge, cursor: 'pointer' }}>
+              {balance} {balance === 1 ? 'credit' : 'credits'}
+            </span>
+          </Link>
           <Link to="/settings" style={styles.navLink}>
             Settings
           </Link>

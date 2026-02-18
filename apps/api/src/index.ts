@@ -7,6 +7,7 @@
  */
 
 import 'dotenv/config';
+import { validateEnv } from './startup/validate-env.js';
 import express, { type Express } from 'express';
 import { config } from './config.js';
 import { createCorsMiddleware } from './middleware/cors.js';
@@ -34,6 +35,9 @@ import { registerInscribingTools } from './tools/inscribing.js';
 import { registerDeliveringTools } from './tools/delivering.js';
 
 export const API_VERSION = '0.0.1';
+
+// Validate environment variables at startup
+validateEnv();
 
 // Register tool handlers for all stages
 registerInvokingTools();
