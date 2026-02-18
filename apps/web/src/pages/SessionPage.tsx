@@ -12,8 +12,11 @@ import { useState, useEffect, useCallback, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useCreditStore } from '@/stores/creditStore';
+import { useAdventureStore } from '@/stores/adventureStore';
+import { useChatStore } from '@/stores/chatStore';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { STAGES } from '@dagger-app/shared-types';
-import type { Stage } from '@dagger-app/shared-types';
+import type { Stage, SerializableComponentsState, BoundFrame } from '@dagger-app/shared-types';
 
 // =============================================================================
 // Types
@@ -112,8 +115,12 @@ export function SessionPage() {
   const [needsCredits, setNeedsCredits] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [resumeTarget, setResumeTarget] = useState<SessionSummary | null>(null);
+  const [isResuming, setIsResuming] = useState(false);
 
   const token = authSession?.access_token ?? '';
+  const initializeAdventure = useAdventureStore((s) => s.initialize);
+  const clearChatMessages = useChatStore((s) => s.clearMessages);
 
   /** Load sessions list and check for active session */
   const loadSessions = useCallback(async () => {
@@ -209,6 +216,57 @@ export function SessionPage() {
 
     setActiveSession(null);
     await loadSessions();
+  };
+
+  /** Open the confirmation dialog before resuming a past session */
+  const handleResumeClick = (session: SessionSummary) => {
+    setResumeTarget(session);
+  };
+
+  /** Cancel the resume dialog and return to Sessions page unchanged */
+  const handleResumeCancel = () => {
+    setResumeTarget(null);
+  };
+
+  /** Confirm resume: load session via API, update stores, navigate */
+  const handleResumeConfirm = async () => {
+    if (!resumeTarget) return;
+
+    setIsResuming(true);
+    setError(null);
+
+    const result = await apiFetch<SessionDetail>(
+      `/api/session/${resumeTarget.id}`,
+      token
+    );
+
+    if (result.error) {
+      setError(result.error);
+      setIsResuming(false);
+      setResumeTarget(null);
+      return;
+    }
+
+    if (result.data) {
+      clearChatMessages();
+      const { session: loadedSession, adventureState } = result.data;
+      initializeAdventure(loadedSession.id, {
+        stage: loadedSession.stage,
+        spark: null,
+        components: adventureState.components as unknown as SerializableComponentsState,
+        frame: adventureState.frame as unknown as BoundFrame | null,
+        sceneArcs: [],
+        inscribedScenes: [],
+        versionHistory: {},
+        adventureName: loadedSession.title,
+      });
+      setResumeTarget(null);
+      navigate('/adventure');
+      return;
+    }
+
+    setIsResuming(false);
+    setResumeTarget(null);
   };
 
   // ---------------------------------------------------------------------------
@@ -354,7 +412,21 @@ export function SessionPage() {
             <h2 style={styles.sectionTitle}>Past Sessions</h2>
             <div style={styles.sessionList}>
               {pastSessions.map((s) => (
-                <div key={s.id} className="detail-card" style={styles.pastCard}>
+                <div
+                  key={s.id}
+                  className="detail-card"
+                  style={styles.pastCardClickable}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Resume session: ${s.title}`}
+                  onClick={() => handleResumeClick(s)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleResumeClick(s);
+                    }
+                  }}
+                >
                   <div style={styles.sessionHeader}>
                     <span style={styles.pastTitle}>{s.title}</span>
                     <span style={styles.pastStage}>
@@ -370,6 +442,21 @@ export function SessionPage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Dialog */}
+      {resumeTarget && (
+        <ConfirmDialog
+          title="Switch Session?"
+          isLoading={isResuming}
+          onConfirm={handleResumeConfirm}
+          onCancel={handleResumeCancel}
+        >
+          <p style={{ margin: 0 }}>
+            Resume <strong>{resumeTarget.title}</strong>? Your current session
+            will be paused and chat history will be cleared.
+          </p>
+        </ConfirmDialog>
+      )}
     </div>
   );
 }
@@ -406,7 +493,7 @@ const styles: Record<string, React.CSSProperties> = {
   label: { fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' },
   input: { padding: '10px 14px', background: 'var(--bg-secondary)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', fontSize: 15, outline: 'none', transition: 'border-color 0.2s ease, box-shadow 0.2s ease' },
   sessionList: { display: 'flex', flexDirection: 'column', gap: 8 },
-  pastCard: { padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+  pastCardClickable: { padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', transition: 'border-color 0.2s ease, box-shadow 0.2s ease' },
   pastTitle: { fontFamily: 'var(--font-serif)', fontSize: 16, fontWeight: 600, color: 'var(--accent-gold)' },
   pastStage: { fontSize: 13, color: 'var(--text-secondary)' },
   pastDate: { fontSize: 11, color: 'var(--text-muted)', whiteSpace: 'nowrap', marginLeft: 12 },
