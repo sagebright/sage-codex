@@ -175,6 +175,7 @@ export function SettingsPage() {
     fetchTransactions,
     createCheckout,
     createPortal,
+    clearError,
   } = useCreditStore();
 
   const [processingPackageId, setProcessingPackageId] = useState<string | null>(null);
@@ -314,8 +315,16 @@ export function SettingsPage() {
 
         {/* Error Banner */}
         {error && (
-          <div style={styles.errorBanner} role="alert">
-            {error}
+          <div style={{ ...styles.errorBanner, display: 'flex', alignItems: 'flex-start', gap: 8 }} role="alert">
+            <span style={{ flex: 1 }}>{error}</span>
+            <button
+              onClick={clearError}
+              type="button"
+              aria-label="Dismiss error"
+              style={styles.dismissButton}
+            >
+              &times;
+            </button>
           </div>
         )}
 
@@ -426,4 +435,5 @@ const styles: Record<string, React.CSSProperties> = {
   transactionDate: { fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' as const },
   portalButton: { background: 'none', border: '1px solid var(--border-medium)', color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer', fontFamily: 'var(--font-sans)', padding: '10px 20px', borderRadius: 'var(--radius-sm)', width: '100%' },
   backButton: { background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 13, cursor: 'pointer', fontFamily: 'var(--font-sans)', padding: '6px 0', textDecoration: 'underline' },
+  dismissButton: { background: 'none', border: 'none', color: 'var(--accent-error)', fontSize: 18, lineHeight: 1, cursor: 'pointer', padding: '0 2px', flexShrink: 0 },
 };
