@@ -29,6 +29,12 @@ const ENV_CHECKS: EnvCheck[] = [
     hint: 'Must be the JWT service role key from Supabase Dashboard > Settings > API (not the Management API secret)',
   },
   {
+    name: 'ANTHROPIC_API_KEY',
+    required: true,
+    prefix: 'sk-ant-',
+    hint: 'Anthropic API key from console.anthropic.com (starts with sk-ant-)',
+  },
+  {
     name: 'STRIPE_SECRET_KEY',
     required: true,
     prefix: 'sk_',
