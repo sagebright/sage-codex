@@ -395,7 +395,7 @@ const styles: Record<string, React.CSSProperties> = {
   section: { marginBottom: 32 },
   sectionTitle: { fontFamily: 'var(--font-serif)', fontSize: 18, fontWeight: 600, color: 'var(--accent-gold)', marginBottom: 16, marginTop: 0 },
   activeCard: { padding: '20px' },
-  sessionHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+  sessionHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, gap: 8 },
   sessionTitle: { fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: 0 },
   sessionMeta: { fontSize: 12, color: 'var(--text-muted)', margin: '0 0 16px 0' },
   actionRow: { display: 'flex', gap: 12, alignItems: 'center' },
@@ -407,7 +407,7 @@ const styles: Record<string, React.CSSProperties> = {
   input: { padding: '10px 14px', background: 'var(--bg-secondary)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', fontSize: 15, outline: 'none', transition: 'border-color 0.2s ease, box-shadow 0.2s ease' },
   sessionList: { display: 'flex', flexDirection: 'column', gap: 8 },
   pastCard: { padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
-  pastTitle: { fontSize: 14, color: 'var(--text-primary)' },
-  pastStage: { fontSize: 11, color: 'var(--text-muted)' },
+  pastTitle: { fontFamily: 'var(--font-serif)', fontSize: 16, fontWeight: 600, color: 'var(--accent-gold)' },
+  pastStage: { fontSize: 13, color: 'var(--text-secondary)' },
   pastDate: { fontSize: 11, color: 'var(--text-muted)', whiteSpace: 'nowrap', marginLeft: 12 },
 };
