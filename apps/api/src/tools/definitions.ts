@@ -69,9 +69,10 @@ const UNIVERSAL_TOOLS: ToolDefinition[] = [SIGNAL_READY, SUGGEST_ADVENTURE_NAME]
 const SET_SPARK: ToolDefinition = {
   name: 'set_spark',
   description:
-    'Capture the user\'s initial adventure vision (the "spark"). ' +
-    'Call this once the user has shared enough context about what ' +
-    'kind of adventure they want to create.',
+    'Capture or update the adventure vision (the "spark"). Can be called ' +
+    'multiple times — each call replaces the previous spark with a refined ' +
+    'version. Call as soon as the storyteller shares a substantive vision, ' +
+    'and again when the vision meaningfully evolves.',
   inputSchema: {
     type: 'object',
     properties: {

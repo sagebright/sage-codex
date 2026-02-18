@@ -161,6 +161,7 @@ async function runStreamingLoop(
   let finalText = '';
   let finalToolCalls: Record<string, unknown>[] = [];
   let model = '';
+  const allTextParts: string[] = [];
 
   for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
     const stream = await createStreamingMessage({ messages: apiMessages, systemPrompt, tools });
@@ -177,9 +178,14 @@ async function runStreamingLoop(
       sendSSEEvent(res, event);
     }
 
+    // Accumulate text from every turn for complete message storage
+    if (parsed.fullText) {
+      allTextParts.push(parsed.fullText);
+    }
+
     // If no tool calls, we're done
     if (parsed.toolUseBlocks.length === 0) {
-      finalText = parsed.fullText;
+      finalText = allTextParts.join('\n\n');
       break;
     }
 
@@ -213,8 +219,11 @@ async function runStreamingLoop(
       parsed.toolUseBlocks,
       dispatch.toolResults
     );
+  }
 
-    finalText = parsed.fullText;
+  // Ensure finalText includes all accumulated text (handles max tool turns case)
+  if (!finalText && allTextParts.length > 0) {
+    finalText = allTextParts.join('\n\n');
   }
 
   return { finalText, finalToolCalls, totalInputTokens, totalOutputTokens, model };
@@ -292,20 +301,23 @@ router.post('/', async (req: Request, res: Response) => {
     const { session } = sessionResult.data;
     const stage = session.stage;
 
-    // Store the user's message
-    await storeMessage({ sessionId, role: 'user', content: message });
-
-    // Load conversation history + adventure state
+    // Load conversation history + adventure state BEFORE storing the new message
     const historyResult = await loadConversationHistory(sessionId);
     const history = historyResult.data ?? [];
     const adventureState = await loadAdventureState(sessionId, stage);
 
+    // Store the user's message (after loading history so it's excluded naturally)
+    const userStoreResult = await storeMessage({ sessionId, role: 'user', content: message });
+    if (userStoreResult.error) {
+      console.error(`Failed to store user message: ${userStoreResult.error}`);
+    }
+
     // Assemble full context: system prompt + adventure state + compressed history + tools
-    // Excludes the just-stored message from history (it's passed as userMessage)
+    // History was loaded before the user message was stored, so no exclusion needed
     const { streamOptions } = assembleAnthropicPayload({
       state: adventureState,
       stage,
-      conversationHistory: history.slice(0, -1),
+      conversationHistory: history,
       userMessage: message,
     });
 
@@ -316,13 +328,16 @@ router.post('/', async (req: Request, res: Response) => {
     );
 
     // Store the assistant's response
-    await storeMessage({
+    const assistantStoreResult = await storeMessage({
       sessionId,
       role: 'assistant',
       content: result.finalText,
       toolCalls: result.finalToolCalls.length > 0 ? result.finalToolCalls : null,
       tokenCount: result.totalInputTokens + result.totalOutputTokens,
     });
+    if (assistantStoreResult.error) {
+      console.error(`Failed to store assistant message: ${assistantStoreResult.error}`);
+    }
 
     // Log token usage (non-fatal)
     await logTokenUsage({
@@ -383,6 +398,15 @@ router.post('/greet', async (req: Request, res: Response) => {
       return;
     }
 
+    // Store a lightweight session-start marker so history always begins
+    // with a user-role message (Anthropic API requirement).
+    // Note: GREETING_TRIGGER is sent to Anthropic in-flight (never stored),
+    // while this marker anchors the persistent history with a user role.
+    const startResult = await storeMessage({ sessionId, role: 'user', content: '[Session started]' });
+    if (startResult.error) {
+      console.error(`Failed to store session-start marker: ${startResult.error}`);
+    }
+
     // Assemble context with the synthetic greeting trigger
     const { streamOptions } = assembleAnthropicPayload({
       state: adventureState,
@@ -397,14 +421,17 @@ router.post('/greet', async (req: Request, res: Response) => {
       res, streamOptions.messages, streamOptions.systemPrompt, streamOptions.tools
     );
 
-    // Store only the assistant's response (NOT the synthetic trigger)
-    await storeMessage({
+    // Store the assistant's greeting response
+    const greetStoreResult = await storeMessage({
       sessionId,
       role: 'assistant',
       content: result.finalText,
       toolCalls: result.finalToolCalls.length > 0 ? result.finalToolCalls : null,
       tokenCount: result.totalInputTokens + result.totalOutputTokens,
     });
+    if (greetStoreResult.error) {
+      console.error(`Failed to store greeting response: ${greetStoreResult.error}`);
+    }
 
     await logTokenUsage({
       sessionId,

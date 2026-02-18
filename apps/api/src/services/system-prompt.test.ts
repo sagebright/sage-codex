@@ -43,6 +43,14 @@ describe('buildSystemPrompt', () => {
     expect(weavingPrompt).toContain('scene arc');
   });
 
+  it('should include progressive spark capture instructions for invoking', () => {
+    const prompt = buildSystemPrompt('invoking');
+    expect(prompt).toContain('set_spark');
+    expect(prompt).toContain('signal_ready');
+    expect(prompt).toContain('again');
+    expect(prompt).toContain('Progressive spark capture');
+  });
+
   it('should include available tool names for invoking', () => {
     const prompt = buildSystemPrompt('invoking');
     expect(prompt).toContain('signal_ready');

@@ -251,7 +251,7 @@ describe('POST /api/chat', () => {
           });
         });
 
-      // First call should be the user message
+      // User message should be stored (after history is loaded)
       expect(mockStore).toHaveBeenCalledWith(
         expect.objectContaining({
           sessionId: 'session-001',

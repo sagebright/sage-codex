@@ -138,8 +138,24 @@ describe('compressConversationHistory', () => {
 
       const result = compressConversationHistory(messages);
 
-      // Should drop the leading assistant message
+      // Should prepend a synthetic user message, preserving the greeting
       expect(result.messages[0].role).toBe('user');
+      expect(result.messages[0].content).toBe('[Session started]');
+      expect(result.messages[1].role).toBe('assistant');
+      expect(result.messages[1].content).toBe('Welcome!');
+    });
+
+    it('should handle history with only assistant messages', () => {
+      const messages: SageMessage[] = [
+        createMessage(0, 'assistant', 'Welcome!'),
+      ];
+
+      const result = compressConversationHistory(messages);
+
+      expect(result.messages[0].role).toBe('user');
+      expect(result.messages[0].content).toBe('[Session started]');
+      expect(result.messages[1].role).toBe('assistant');
+      expect(result.messages[1].content).toBe('Welcome!');
     });
   });
 

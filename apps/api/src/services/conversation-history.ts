@@ -139,7 +139,9 @@ export function compressConversationHistory(
  * Ensure the message array starts with a 'user' role message.
  *
  * The Anthropic API requires the first message to be from the user.
- * If the first message is from the assistant, prepend a context message.
+ * If the first message is from the assistant (e.g. the Sage's greeting),
+ * prepend a synthetic user message to satisfy the constraint while
+ * preserving the full conversation context.
  */
 function ensureFirstMessageIsUser(
   messages: AnthropicMessage[]
@@ -147,8 +149,9 @@ function ensureFirstMessageIsUser(
   if (messages.length === 0) return messages;
   if (messages[0].role === 'user') return messages;
 
-  // Drop leading assistant messages until we find a user message
-  const firstUserIndex = messages.findIndex((m) => m.role === 'user');
-  if (firstUserIndex === -1) return messages;
-  return messages.slice(firstUserIndex);
+  // Prepend a synthetic user message to preserve the assistant greeting
+  return [
+    { role: 'user', content: '[Session started]' },
+    ...messages,
+  ];
 }
