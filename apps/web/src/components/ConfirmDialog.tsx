@@ -6,7 +6,7 @@
  * Uses fantasy theme design tokens from CSS custom properties.
  */
 
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 // =============================================================================
 // Props
@@ -42,6 +42,44 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap: auto-focus dialog on mount, restore focus on unmount
+  useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    boxRef.current?.focus();
+
+    return () => {
+      previouslyFocused?.focus();
+    };
+  }, []);
+
+  // Trap Tab within the dialog box
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onCancel();
+      return;
+    }
+
+    if (e.key !== 'Tab' || !boxRef.current) return;
+
+    const focusable = boxRef.current.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
     <div
       style={styles.overlay}
@@ -49,14 +87,13 @@ export function ConfirmDialog({
       aria-modal="true"
       aria-label={title}
       onClick={onCancel}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') onCancel();
-      }}
+      onKeyDown={handleKeyDown}
     >
       <div
+        ref={boxRef}
         style={styles.box}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
       >
         <h3 style={styles.heading}>{title}</h3>
         <div style={styles.body}>{children}</div>

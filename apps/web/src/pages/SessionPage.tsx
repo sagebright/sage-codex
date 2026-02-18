@@ -16,7 +16,7 @@ import { useAdventureStore } from '@/stores/adventureStore';
 import { useChatStore } from '@/stores/chatStore';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { STAGES } from '@dagger-app/shared-types';
-import type { Stage, SerializableComponentsState, BoundFrame } from '@dagger-app/shared-types';
+import type { Stage, AdventureState, SerializableComponentsState, BoundFrame } from '@dagger-app/shared-types';
 
 // =============================================================================
 // Types
@@ -95,6 +95,45 @@ function formatDate(isoDate: string): string {
 
 function findStageLabel(stageId: Stage): string {
   return STAGES.find((s) => s.id === stageId)?.label ?? stageId;
+}
+
+/**
+ * Map raw API adventure state to a typed AdventureState with safe defaults.
+ */
+function mapApiState(
+  raw: SessionDetail['adventureState'],
+  session: SessionSummary
+): AdventureState {
+  const DEFAULT_COMPONENTS: SerializableComponentsState = {
+    span: null,
+    scenes: null,
+    members: null,
+    tier: null,
+    tenor: null,
+    pillars: null,
+    chorus: null,
+    threads: [],
+    confirmedComponents: [],
+  };
+
+  return {
+    stage: session.stage,
+    spark: null,
+    components: isPlainObject(raw.components)
+      ? (raw.components as unknown as SerializableComponentsState)
+      : DEFAULT_COMPONENTS,
+    frame: isPlainObject(raw.frame)
+      ? (raw.frame as unknown as BoundFrame)
+      : null,
+    sceneArcs: [],
+    inscribedScenes: [],
+    versionHistory: {},
+    adventureName: session.title,
+  };
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 // =============================================================================
@@ -250,16 +289,10 @@ export function SessionPage() {
     if (result.data) {
       clearChatMessages();
       const { session: loadedSession, adventureState } = result.data;
-      initializeAdventure(loadedSession.id, {
-        stage: loadedSession.stage,
-        spark: null,
-        components: adventureState.components as unknown as SerializableComponentsState,
-        frame: adventureState.frame as unknown as BoundFrame | null,
-        sceneArcs: [],
-        inscribedScenes: [],
-        versionHistory: {},
-        adventureName: loadedSession.title,
-      });
+      initializeAdventure(
+        loadedSession.id,
+        mapApiState(adventureState, loadedSession)
+      );
       setResumeTarget(null);
       navigate('/adventure');
       return;
