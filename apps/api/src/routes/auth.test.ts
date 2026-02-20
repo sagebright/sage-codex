@@ -13,9 +13,10 @@ import authRouter from './auth.js';
 // Mock the supabase service
 vi.mock('../services/supabase.js', () => ({
   getSupabase: vi.fn(),
+  createSupabaseAuthClient: vi.fn(),
 }));
 
-import { getSupabase } from '../services/supabase.js';
+import { getSupabase, createSupabaseAuthClient } from '../services/supabase.js';
 
 // =============================================================================
 // Test App Setup
@@ -57,7 +58,7 @@ describe('POST /api/auth/signup', () => {
 
   beforeEach(() => {
     mockAuth = createMockAuth();
-    vi.mocked(getSupabase).mockReturnValue({ auth: mockAuth } as never);
+    vi.mocked(createSupabaseAuthClient).mockReturnValue({ auth: mockAuth } as never);
   });
 
   it('returns 400 when email is missing', async () => {
@@ -130,7 +131,7 @@ describe('POST /api/auth/login', () => {
 
   beforeEach(() => {
     mockAuth = createMockAuth();
-    vi.mocked(getSupabase).mockReturnValue({ auth: mockAuth } as never);
+    vi.mocked(createSupabaseAuthClient).mockReturnValue({ auth: mockAuth } as never);
   });
 
   it('returns 400 when email is missing', async () => {
@@ -183,7 +184,7 @@ describe('POST /api/auth/logout', () => {
 
   beforeEach(() => {
     mockAuth = createMockAuth();
-    vi.mocked(getSupabase).mockReturnValue({ auth: mockAuth } as never);
+    vi.mocked(createSupabaseAuthClient).mockReturnValue({ auth: mockAuth } as never);
   });
 
   it('returns success on logout', async () => {
