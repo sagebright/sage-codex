@@ -1,14 +1,43 @@
 # Orchestrate Issues
 
 **Argument:** `$ARGUMENTS` = space-separated issue numbers or "branch" keyword
+**Command:** `/orchestrate-issues`
 
 Execute multiple GitHub issues sequentially using fresh-context subagents. Each issue is handled by an independent agent that follows the full `/execute-issue` workflow.
+
+---
+
+## Project Configuration
+
+### Package Manager Detection
+
+Auto-detect from project lockfiles:
+
+```bash
+if [ -f "pnpm-lock.yaml" ]; then
+  PKG_CMD="pnpm"
+  BUILD_CMD="pnpm build"
+  LINT_CMD="pnpm lint"
+  TEST_CMD="pnpm test"
+elif [ -f "yarn.lock" ]; then
+  PKG_CMD="yarn"
+  BUILD_CMD="yarn build"
+  LINT_CMD="yarn lint"
+  TEST_CMD="yarn test"
+else
+  PKG_CMD="npm"
+  BUILD_CMD="npm run build"
+  LINT_CMD="npm run lint"
+  TEST_CMD="npm run test"
+fi
+```
 
 ---
 
 ## 1. Parse Arguments & Setup
 
 ### 1.1 Parse Issue Numbers
+
 - If `$ARGUMENTS` contains numbers: parse as space-separated issue numbers
 - If `$ARGUMENTS` is "branch": fetch all open issues for current branch
 - If empty: show usage and exit
@@ -22,12 +51,14 @@ gh issue list --state open --json number,title,labels
 ```
 
 ### 1.2 Validate Environment
+
 - [ ] Verify current branch exists and is checked out
 - [ ] Verify git status is clean (no uncommitted changes)
-- [ ] Run `pnpm build` to ensure baseline is passing
+- [ ] Run build validation to ensure baseline is passing
 
 ```bash
 git status --porcelain
+$BUILD_CMD
 ```
 
 **If uncommitted changes exist:**
@@ -38,6 +69,7 @@ Please commit or stash your changes first.
 **STOP** - return control to user.
 
 ### 1.3 Create Orchestration Directory
+
 ```bash
 mkdir -p .claude/orchestration
 ```
@@ -49,6 +81,7 @@ mkdir -p .claude/orchestration
 ### 2.1 Fetch All Issue Details
 
 For each issue number, fetch full details:
+
 ```bash
 gh issue view {N} --json number,title,body,labels
 ```
@@ -104,7 +137,7 @@ If two issues share files in their "Files Involved" sections:
 Sort issues to respect dependencies:
 1. Issues with no dependencies first
 2. Issues depending on others after their dependencies
-3. Circular dependencies → report error, skip affected issues
+3. Circular dependencies - report error, skip affected issues
 
 ### 3.4 Present Execution Plan
 
@@ -141,9 +174,9 @@ For each issue in execution order:
 ### 4.1 Check Dependency Status
 
 Before executing issue #{N}:
-- If it depends on a **failed** issue → mark as `skipped`, log reason, continue to next
-- If it depends on a **completed** issue → proceed
-- If it has no dependencies → proceed
+- If it depends on a **failed** issue - mark as `skipped`, log reason, continue to next
+- If it depends on a **completed** issue - proceed
+- If it has no dependencies - proceed
 
 ### 4.2 Spawn Subagent
 
@@ -171,16 +204,20 @@ files_changed:
   - <file1>
   - <file2>
 tests_passed: true|false
+e2e_status: passed|failed|skipped
+e2e_skip_reason: <reason or "none">
+visual_status: passed|failed|skipped
+visual_skip_reason: <reason or "none">
 blockers: <description or "none">
 summary: <1-2 sentences>
 ---
 ```
 
 **Handle based on status:**
-- `completed` → Record success, proceed to next issue
-- `failed` → Log failure, mark dependent issues as skipped, continue with independent issues
-- `blocked` → Log blocker, mark dependent issues as skipped, continue with independent issues
-- `needs_refinement` → Log that manual `/execute-issue` is required
+- `completed` - Record success, proceed to next issue
+- `failed` - Log failure, mark dependent issues as skipped, continue with independent issues
+- `blocked` - Log blocker, mark dependent issues as skipped, continue with independent issues
+- `needs_refinement` - Log that manual `/execute-issue` is required
 
 ### 4.4 Update Progress
 
@@ -196,11 +233,31 @@ After each issue completes (success or failure):
 ### 5.1 Run Full Validation
 
 After all issues have been processed:
+
 ```bash
-pnpm build && pnpm lint && pnpm test
+$BUILD_CMD && $LINT_CMD && $TEST_CMD
 ```
 
-### 5.2 Generate Summary Report
+### 5.2 Final E2E Validation
+
+After build/lint/test pass, run the full E2E suite to catch cross-issue regressions:
+
+```bash
+# Check if Playwright is configured
+ls playwright.config.{ts,js,mjs} 2>/dev/null
+
+# If configured, run full suite
+$PKG_CMD dev &
+DEV_PID=$!
+npx wait-on http://localhost:${DEV_PORT:-5173} --timeout 30000
+npx playwright test --reporter=list
+E2E_EXIT=$?
+kill $DEV_PID
+```
+
+If E2E fails at this stage, report which tests failed and which issues likely caused the failure (based on files changed per issue).
+
+### 5.3 Generate Summary Report
 
 ```
 ## Orchestration Complete
@@ -220,10 +277,20 @@ Skipped: {skipped_count}
 | #40 | [title] | Skipped (depends on #39) | - |
 | #41 | [title] | Completed | def5678 |
 
+### E2E Results Per Issue
+
+| Issue | E2E Status | Visual Status | Notes |
+|-------|-----------|---------------|-------|
+| #38 | Passed | Passed | — |
+| #39 | Failed | — | E2E failures caused issue failure |
+| #40 | Skipped | Skipped | Dependency on #39 |
+| #41 | Passed | Passed | — |
+
 ### Final Validation
 - Build: [Pass/Fail]
 - Lint: [Pass/Fail]
-- Tests: [Pass/Fail]
+- Unit Tests: [Pass/Fail]
+- E2E Tests (full suite): [Pass/Fail/Skipped]
 
 ### Commits Made
 ```
@@ -257,40 +324,45 @@ Before doing ANYTHING else, read these files to load your execution context:
 
 1. Read `.claude/commands/execute-issue.md` - This is your PRIMARY workflow document
 2. Read `CLAUDE.md` - Project context and patterns
-3. Read `documentation/PLAN.md` - Architecture reference
+3. Read any project documentation referenced in CLAUDE.md
 
 DO NOT proceed until you have read execute-issue.md. This file contains:
-- Label-based approach routing (TDD vs Coverage Guard)
+- Label-based approach routing
 - Pre-flight checklist requirements
-- Clean Code standards (Section 5.1)
-- Safe refactoring patterns (Section 5.2)
-- Test-fix-commit workflow (Section 7)
-- Compliance checks (Section 8)
-- Issue commenting and closing procedures (Sections 10-11)
+- Clean Code standards
+- Safe refactoring patterns
+- Test-fix-commit workflow
+- Compliance checks
+- Issue commenting and closing procedures
 
 ## STEP 2: Execute the Workflow
 
 Now execute issue #{N} following the execute-issue.md workflow EXACTLY:
 
 1. **Section 1:** Fetch & analyze issue via `gh issue view {N}`
-2. **Section 2:** Validate labels & load context (you already loaded context in Step 1)
+2. **Section 2:** Validate labels & load context
 3. **Section 3:** Pre-flight checklist (git clean, build passes)
 4. **Section 4:** Setup TodoWrite with issue tasks
-5. **Section 5:** Execute implementation (with Clean Code standards from 5.1)
+5. **Section 5:** Execute implementation (with Clean Code standards)
 6. **Section 6:** Validation sequence (build, lint, targeted tests)
 7. **Section 7:** Test, fix, commit workflow (LOCAL ONLY - NO PUSH)
-8. **Section 8:** Compliance check
-9. **Section 9:** Test coverage validation
-10. **Section 10:** Comment results on issue
-11. **Section 11:** Close issue if all acceptance criteria pass
+8. **Section 7.5:** E2E test execution (detect capability, evaluate risk triggers, write/run E2E tests)
+9. **Section 7.6:** Visual review (take screenshots, analyze with vision, fix visual issues)
+10. **Section 8:** Compliance check (includes E2E and visual status)
+11. **Section 9:** Test coverage validation
+12. **Section 10:** Comment results on issue (includes E2E and visual results)
+13. **Section 11:** Close issue if all acceptance criteria pass
 
 ## CRITICAL RULES
 
 - **NO PUSH** - Commit locally only. The orchestrator handles coordination.
-- **NO SKIPPING SECTIONS** - Follow execute-issue.md sequentially
+- **NO SKIPPING SECTIONS** - Follow execute-issue.md sequentially, INCLUDING Sections 7.5 and 7.6
+- **E2E REQUIRED** - Run E2E tests per Section 7.5. Do NOT skip unless graceful degradation applies.
+- **VISUAL REVIEW REQUIRED** - Run visual review per Section 7.6. Do NOT skip unless skip conditions apply.
 - **IF BLOCKED** - Stop immediately and report the blocker clearly
-- **IF TESTS FAIL** - Follow Section 7.2 (max 5 fix attempts), then report failure
+- **IF TESTS FAIL** - Follow test-fix cycle (max 5 unit, 3 E2E, 2 visual attempts), then report failure
 - **REFINE LABEL** - If issue unexpectedly has `refine` label, report back immediately
+- **TWO-TIER E2E** - This project uses two E2E tiers: Tier 1 (`e2e/`) allows mocking for UI integration tests; Tier 2 (`e2e-integration/`) uses real backend (no mocking). Write new E2E tests in `e2e-integration/`. Run both tiers for regression.
 
 ## OUTPUT FORMAT
 
@@ -305,6 +377,10 @@ files_changed:
   - <relative path to file 1>
   - <relative path to file 2>
 tests_passed: true|false
+e2e_status: passed|failed|skipped
+e2e_skip_reason: <reason or "none">
+visual_status: passed|failed|skipped
+visual_skip_reason: <reason or "none">
 blockers: <describe any blockers, or "none">
 summary: <1-2 sentence summary of what was implemented>
 ---
@@ -346,7 +422,7 @@ Pausing orchestration. Please resolve conflicts manually:
 
 ### 7.3 Final Validation Failure
 
-If the final `pnpm build && pnpm lint && pnpm test` fails:
+If the final build/lint/test fails:
 ```
 Final validation failed after orchestration.
 
@@ -379,15 +455,18 @@ Marking issue #{N} as failed. Continuing with independent issues.
 ## Usage Examples
 
 ### Execute specific issues
+
 ```
 /orchestrate-issues 38 39 40 41 42
 ```
 
 ### Execute all open issues on current branch
+
 ```
 /orchestrate-issues branch
 ```
 
 ---
 
-**Version:** 1.0.0
+**Version:** 2.0.0 (canonical)
+**Changelog:** Added per-issue E2E + visual review, final E2E validation, extended ORCHESTRATION_RESULT format

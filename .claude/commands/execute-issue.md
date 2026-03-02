@@ -4,6 +4,26 @@
 
 ---
 
+## Project Configuration
+
+> **Note:** This is the canonical version. Projects can override specific settings.
+
+**Package Manager:** Detect from project (`pnpm` if pnpm-lock.yaml, `npm` if package-lock.json, `yarn` if yarn.lock)
+
+**Build Commands:**
+- Build: `$PKG build`
+- Lint: `$PKG lint`
+- Test: `$PKG test`
+- Coverage: `$PKG test --coverage`
+
+**Baseline Documentation:**
+- Primary: `PLAN.md` or `documentation/PLAN.md` (if exists)
+- Project config: `CLAUDE.md` (if exists)
+
+**Core Labels:** `bug`, `enhancement`, `refactor`, `test`, `documentation`, `refine`
+
+---
+
 ## 1. Fetch & Analyze Issue
 
 ```bash
@@ -20,14 +40,9 @@ gh issue view $ARGUMENTS
 
 ### 2.0 Baseline Documentation
 
-**Always load:**
-- [ ] `documentation/PLAN.md` — Architecture, project structure, tech stack
-
-<!-- TODO: Add CLAUDE_*.md docs as project matures:
-- CLAUDE.md — Project overview, patterns, dev workflow
-- CLAUDE_coding_standards.md — Clean Code principles
-- CLAUDE_testing.md — Testing standards
--->
+**Always load (if exists):**
+- [ ] `PLAN.md` or `documentation/PLAN.md` — Architecture, project structure, tech stack
+- [ ] `CLAUDE.md` — Project overview, patterns, dev workflow
 
 ### 2.1 Check Labels
 
@@ -173,8 +188,8 @@ Present the refined issue for approval:
 ### Acceptance Criteria
 - [ ] [Specific criterion 1]
 - [ ] [Specific criterion 2]
-- [ ] Build passes (`pnpm build`)
-- [ ] Tests pass (`pnpm test`)
+- [ ] Build passes
+- [ ] Tests pass
 
 ---
 Ready to update issue and proceed with execution? [y/n/edit]
@@ -240,8 +255,8 @@ MANDATORY BEFORE IMPLEMENTATION:
 □ Verify dependencies complete (linked issues)
 □ Check git status is clean
 □ Confirm on correct branch or create feature branch
-□ Run: pnpm build (baseline passing)
-□ Run: pnpm test (if tests configured, capture baseline)
+□ Run: $PKG build (baseline passing)
+□ Run: $PKG test (if tests configured, capture baseline)
 ```
 
 **If pre-flight fails** → Comment blocker on issue, do not proceed.
@@ -362,26 +377,6 @@ When refactoring during implementation, follow these patterns:
 5. Replace original block with function call
 6. Run tests to verify behavior unchanged
 
-**Example:**
-```typescript
-// Before
-const total = items.reduce((sum, item) => {
-  const price = item.price * item.quantity;
-  const discount = item.discount ? price * item.discount : 0;
-  return sum + price - discount;
-}, 0);
-
-// After
-const total = calculateOrderTotal(items);
-
-function calculateOrderTotal(items: OrderItem[]): number {
-  return items.reduce((sum, item) => {
-    const lineTotal = calculateLineTotal(item);
-    return sum + lineTotal;
-  }, 0);
-}
-```
-
 ### Rename for Clarity
 
 **When:** Name doesn't reveal intent
@@ -411,16 +406,6 @@ function calculateOrderTotal(items: OrderItem[]): number {
 3. Create named constant at module/file scope
 4. Replace all occurrences
 5. Run tests
-
-**Example:**
-```typescript
-// Before
-if (Date.now() - lastLogin > 86400000) { ... }
-
-// After
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-if (Date.now() - lastLogin > MILLISECONDS_PER_DAY) { ... }
-```
 
 ### Simplify Conditionals
 
@@ -465,20 +450,8 @@ if (Date.now() - lastLogin > MILLISECONDS_PER_DAY) { ... }
 
 ### Quick validation (all issues):
 ```bash
-pnpm build
-pnpm lint
-```
-
-### Targeted tests (during development iteration):
-
-#### For apps/api changes:
-```bash
-pnpm --filter api test "[affected-area]"
-```
-
-#### For apps/web changes:
-```bash
-pnpm --filter web test "[affected-component]"
+$PKG build
+$PKG lint
 ```
 
 ### TDD Labels (`bug`, `enhancement`, `test`):
@@ -486,13 +459,13 @@ pnpm --filter web test "[affected-component]"
 **Before coding**: Write failing test first
 ```bash
 # Write test that fails
-pnpm test "[new-test-file]"
+$PKG test "[new-test-file]"
 # Expect: FAIL (RED)
 ```
 
 **After implementation**: Verify test passes
 ```bash
-pnpm test "[affected-area]"
+$PKG test "[affected-area]"
 # Expect: PASS (GREEN)
 ```
 
@@ -500,19 +473,19 @@ pnpm test "[affected-area]"
 
 **Before coding**: Capture baseline
 ```bash
-pnpm test --coverage "[affected-area]"
+$PKG test --coverage "[affected-area]"
 # Note coverage %
 ```
 
 **After implementation**: Verify coverage maintained/improved
 ```bash
-pnpm test --coverage "[affected-area]"
+$PKG test --coverage "[affected-area]"
 # Verify: >= baseline % (must not decrease)
 ```
 
 ### Pre-commit validation (REQUIRED):
 ```bash
-pnpm build && pnpm lint && pnpm test
+$PKG build && $PKG lint && $PKG test
 ```
 
 ---
@@ -522,12 +495,12 @@ pnpm build && pnpm lint && pnpm test
 ### 7.1 Run Tests
 
 ```bash
-pnpm test
+$PKG test
 ```
 
 If tests not yet configured, fallback:
 ```bash
-pnpm build && pnpm lint
+$PKG build && $PKG lint
 ```
 
 **All validations must pass before committing.**
@@ -536,7 +509,7 @@ pnpm build && pnpm lint
 
 1. **Analyze failures** - Read test output, identify root cause
 2. **Fix the issue** - Prioritize fixing flaky tests if detected
-3. **Re-run tests** - `pnpm test`
+3. **Re-run tests** - `$PKG test`
 4. **Iteration limit**: If after 5 fix attempts tests still fail, **STOP** and report:
    - What's failing
    - What was attempted
@@ -558,6 +531,345 @@ Where `[type]` is: `fix` (bug), `feat` (enhancement), `refactor` (refactor), `te
 
 ---
 
+## 7.5 E2E Test Execution (Post-Commit)
+
+After the local commit succeeds, run E2E tests to verify the implementation works through the full stack (real browser, real backend, real data flow). E2E is NOT part of the RED-GREEN TDD cycle — it is a post-implementation verification layer.
+
+**Flow:** `TDD (unit) → Commit → E2E + Visual Review (parallel, shared dev server) → Compliance`
+
+### 7.5.1 Detect E2E Capability
+
+```bash
+# Check for Playwright config
+ls playwright.config.{ts,js,mjs} 2>/dev/null
+
+# Check for Playwright in package.json
+grep -q '"@playwright/test"' package.json 2>/dev/null
+
+# Check for E2E test directory
+ls -d e2e/ tests/e2e/ test/e2e/ 2>/dev/null
+```
+
+| Found | State | Action |
+|-------|-------|--------|
+| Playwright config + test files | `e2e_ready` | Run existing E2E tests |
+| Playwright config, no test files | `e2e_scaffold` | Write E2E tests for this issue |
+| No Playwright at all | `e2e_absent` | Auto-scaffold Playwright (see 7.5.2) |
+
+### 7.5.2 Auto-Scaffold Playwright (when `e2e_absent`)
+
+Install and configure Playwright automatically:
+
+```bash
+# Install Playwright
+$PKG install -D @playwright/test
+npx playwright install chromium
+
+# Add test:e2e script to package.json
+# "test:e2e": "playwright test"
+```
+
+Create `playwright.config.ts` with sensible defaults:
+- `baseURL`: detect from `vite.config.ts` (`server.port`) or fall back to `http://localhost:5173`
+- `testDir`: `./e2e`
+- `reporter`: `list`
+- `use.trace`: `on-first-retry`
+
+Create empty `e2e/` directory.
+
+Amend the commit to include scaffold files:
+```bash
+git add playwright.config.ts e2e/ package.json package-lock.json
+git commit --amend --no-edit
+```
+
+Transition to `e2e_scaffold` state.
+
+### 7.5.3 Validate Backend
+
+Before running E2E tests, verify the backend is reachable using Supabase MCP tools:
+
+```
+Use ToolSearch to find Supabase MCP tools
+Call list_tables or get_project to verify connectivity
+```
+
+| Result | Action |
+|--------|--------|
+| MCP responds successfully | Backend reachable, proceed |
+| MCP fails or unavailable | Skip E2E with note: "Backend not reachable via MCP" |
+
+### 7.5.4 Evaluate Risk Triggers
+
+E2E tests are required when the issue involves **ANY** of these triggers:
+
+| # | Trigger | Example |
+|---|---------|---------|
+| 1 | **Data mutation** via API or database | Create/update/delete operations |
+| 2 | **Multi-step user flow** spanning 2+ pages | Create form → detail page → back to list |
+| 3 | **State shared across components** | Zustand stores, React context, prop drilling |
+| 4 | **Navigation/routing changes** | New routes, redirect logic, back button behavior |
+| 5 | **Conditional rendering** paths | Edit vs read-only, empty vs populated, loading vs loaded |
+| 6 | **Async/real-time operations** | SSE, WebSocket, polling, debounced updates |
+
+| Label | E2E Strategy |
+|-------|-------------|
+| `bug` | Write E2E reproducing the bug scenario (if triggers matched) |
+| `enhancement` | Write E2E for the primary user journey (if triggers matched) |
+| `refactor` | Run existing E2E for regression only — do NOT write new E2E |
+| `test` | Run existing E2E if UI-related |
+| `documentation` | Skip E2E entirely |
+
+**If no triggers matched:** Skip E2E writing, run existing E2E suite for regression only.
+
+### 7.5.5 Write E2E Tests
+
+**How many:** 1 E2E test per acceptance criterion that describes user behavior. Typical: 2-4 tests per issue. If the criterion is technical ("function returns X"), no E2E test for that criterion.
+
+**File location:** `e2e/[feature-area].spec.ts`
+
+**Selector strategy — accessibility-first (MANDATORY):**
+- Use `getByRole`, `getByLabel`, `getByText`, `getByPlaceholder`
+- Only fall back to `data-testid` when no accessible name exists (icon-only buttons, canvas elements)
+- NEVER use CSS selectors or XPath
+
+**Test data strategy — API-based setup + teardown:**
+- `beforeEach`: create test data via `@supabase/supabase-js` client directly (NOT through UI)
+- `afterEach`: delete test data via the same client
+- Tests are fully isolated — no shared state between tests
+
+#### E2E Template (Supabase-Specific)
+
+```typescript
+import { test, expect } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
+
+test.describe('Feature: [issue title]', () => {
+  let testRecordId: string;
+
+  test.beforeEach(async () => {
+    const { data } = await supabase
+      .from('table')
+      .insert({ name: 'E2E Test Record' })
+      .select()
+      .single();
+    testRecordId = data!.id;
+  });
+
+  test.afterEach(async () => {
+    await supabase.from('table').delete().eq('id', testRecordId);
+  });
+
+  // Pattern 1: Data roundtrip (catches persistence bugs)
+  test('data persists after page reload', async ({ page }) => {
+    await page.goto(`/record/${testRecordId}`);
+    await expect(page.getByRole('heading', { name: 'E2E Test Record' })).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'E2E Test Record' })).toBeVisible();
+  });
+
+  // Pattern 2: State across navigation (catches stale state bugs)
+  test('state preserved across navigation', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Filter active' }).click();
+    await page.getByRole('link', { name: 'E2E Test Record' }).click();
+    await page.getByRole('link', { name: 'Back' }).click();
+    await expect(page.getByRole('button', { name: 'Filter active' }))
+      .toHaveAttribute('aria-pressed', 'true');
+  });
+
+  // Pattern 3: Conditional rendering (catches missing UI modes)
+  test('renders correctly in [state] mode', async ({ page }) => {
+    await page.goto(`/record/${testRecordId}`);
+    await expect(page.getByRole('region', { name: 'Details' })).toBeVisible();
+  });
+
+  // Pattern 4: Rapid interaction (catches stale closure bugs)
+  test('rapid state changes resolve correctly', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Filter A' }).click();
+    await page.getByRole('button', { name: 'Filter B' }).click();
+    await page.getByRole('button', { name: 'Filter C' }).click();
+    await expect(page.getByRole('button', { name: 'Filter C' }))
+      .toHaveAttribute('aria-pressed', 'true');
+  });
+});
+```
+
+#### E2E Anti-Patterns (DO NOT)
+
+- **DO NOT** mock API responses in E2E tests — use real Supabase
+- **DO NOT** test internal component state — test visible user outcomes
+- **DO NOT** share test data between tests — each test creates and cleans up its own
+- **DO NOT** use CSS selectors or XPath — use accessibility selectors
+- **DO NOT** assert on implementation details (class names, DOM structure)
+
+#### Two-Tier E2E Strategy (Project-Specific)
+
+This project uses a two-tier E2E architecture:
+
+- **Tier 1 (`e2e/`)**: Mock-based UI integration tests. These mock API responses
+  (including Anthropic SSE streams) to test UI rendering, stage transitions, and
+  component behavior. The "DO NOT mock" rule does NOT apply to Tier 1.
+
+- **Tier 2 (`e2e-integration/`)**: Real-backend tests. These use the real API server
+  and Supabase. The "DO NOT mock" rule and Supabase template patterns apply here.
+  Anthropic SDK is mocked at the API layer for deterministic responses.
+
+When writing E2E tests per this section, write them in `e2e-integration/`.
+When running regression E2E, run both tiers.
+
+### 7.5.6 Run E2E Tests
+
+```bash
+# Start dev server in background (keep running for visual review)
+$PKG dev &
+DEV_PID=$!
+
+# Wait for server
+npx wait-on http://localhost:${DEV_PORT:-5173} --timeout 30000
+
+# Run E2E tests
+npx playwright test --reporter=list
+E2E_EXIT=$?
+```
+
+**Do NOT kill the dev server yet** — it will be reused by Section 7.6 (Visual Review).
+
+| Result | Action |
+|--------|--------|
+| E2E pass | Record `e2e_status: passed`, proceed to 7.6 |
+| E2E fail | Fix implementation (NOT the test unless test is clearly wrong), amend commit, re-run |
+
+**Iteration limit: 3 attempts.** After 3 failures, **STOP** and report:
+- Which E2E tests are failing
+- What was attempted
+- Playwright failure screenshots (if available)
+- Record `e2e_status: failed`, do NOT close issue
+
+### 7.5.7 Graceful Degradation
+
+| Missing | E2E Impact | Visual Impact | Action |
+|---------|-----------|---------------|--------|
+| No Playwright | Auto-scaffold (7.5.2) | N/A | Auto-setup |
+| No dev server script | Skip E2E + visual | Skip visual | Note in comment |
+| No browser tool | E2E runs headless | Skip visual | Note in comment |
+| Backend unreachable (MCP) | Skip E2E | Visual still runs | Note in comment |
+| No UI changes | Run existing E2E only | Skip visual | Note: "no UI changes" |
+| `documentation` label | Skip all | Skip all | No note needed |
+
+---
+
+## 7.6 Visual Review (Post-Commit)
+
+After E2E tests pass (or alongside them using the shared dev server), perform a visual review by taking screenshots and analyzing them with Claude's vision capabilities.
+
+**Visual issues BLOCK closure.** If Claude identifies visual problems it cannot resolve, screenshots are attached to the issue comment and the issue remains open for user review.
+
+### 7.6.1 Browser Tool Auto-Detection
+
+```
+Priority 1: ToolSearch("browser_navigate")
+  → If docker-gateway MCP found: BROWSER_MODE = "mcp"
+    Tools: browser_navigate, browser_snapshot, browser_take_screenshot, browser_click, browser_fill_form
+
+Priority 2: npx playwright --version
+  → If Playwright available: BROWSER_MODE = "playwright_cli"
+    Tool: npx playwright screenshot <url> <output.png>
+
+Priority 3: Neither available
+  → BROWSER_MODE = "none"
+  → Skip visual review with note: "Visual review skipped: no browser tool available"
+```
+
+### 7.6.2 Screenshot Strategy
+
+Take 2-6 screenshots per issue, targeting what changed:
+
+| View Type | Screenshots |
+|-----------|-------------|
+| Dashboard / list view | Empty state + populated state |
+| Detail / form view | Populated state + after interaction |
+| Modal / overlay | Open state |
+| All views | 1280x720 viewport |
+
+**If BROWSER_MODE = "mcp":** Use `browser_navigate` → `browser_take_screenshot`. Can also interact (click, fill forms) before screenshotting.
+
+**If BROWSER_MODE = "playwright_cli":**
+```bash
+npx playwright screenshot --viewport-size=1280,720 --wait-for-timeout=3000 \
+  http://localhost:${DEV_PORT} /tmp/screenshot-[view].png
+```
+
+### 7.6.3 Vision Analysis Checklist
+
+Read each screenshot with the Read tool (Claude vision). Analyze against:
+
+```
+VISUAL REVIEW for [page/component]:
+
+Layout & Structure:
+□ Elements properly aligned (no overlapping, no clipping)
+□ Spacing is consistent
+□ No blank/white areas where content should appear
+
+Content & Data:
+□ Text is readable (not truncated, not overflowing)
+□ Data displays correctly (numbers formatted, dates readable)
+□ Empty states show appropriate messaging
+
+Functionality Indicators:
+□ Interactive elements look interactive (buttons styled, links visible)
+□ Current state reflected in UI (active tabs, selected filters)
+□ Error states display user-friendly messages
+
+Regressions:
+□ Existing UI not broken by new changes
+□ No visual artifacts (random borders, miscolored elements)
+□ All icons/images load correctly
+```
+
+### 7.6.4 Fix Loop
+
+**2 attempts.** Visual issues **block closure.**
+
+| Attempt | Action |
+|---------|--------|
+| Issue found | Fix implementation, amend commit, re-screenshot, re-analyze |
+| After 2 failed attempts | Attach screenshots to issue comment, leave issue **open** |
+
+When blocked by visual issues, the issue comment includes:
+```markdown
+### Visual Issues (Blocking)
+- [screenshot description]: [what looks wrong]
+- [screenshot description]: [what looks wrong]
+
+Issue left open for user review. Close manually if these are acceptable.
+```
+
+### 7.6.5 Skip Conditions
+
+Skip visual review entirely if:
+- `documentation` label
+- No UI components changed (pure backend/logic)
+- No dev server script in package.json
+- No browser tool available (`BROWSER_MODE = "none"`)
+
+### 7.6.6 Cleanup
+
+After both E2E and visual review are complete:
+```bash
+kill $DEV_PID 2>/dev/null
+rm -f /tmp/screenshot-*.png
+```
+
+---
+
 ## 8. Compliance Check
 
 ### Process Compliance
@@ -566,8 +878,10 @@ Where `[type]` is: `fix` (bug), `feat` (enhancement), `refactor` (refactor), `te
 □ File size: No files over 500 lines
 □ Security: Input validation on user inputs
 □ Tests: Coverage maintained or improved (if tests configured)
-□ Build: pnpm build passes
-□ Lint: pnpm lint passes
+□ E2E: E2E tests pass (or documented skip reason)
+□ Visual: Visual review passed (or documented skip reason)
+□ Build: $PKG build passes
+□ Lint: $PKG lint passes
 ```
 
 ### Clean Code Compliance
@@ -603,7 +917,7 @@ For files modified/created:
 ### Run Coverage Report (when tests configured):
 
 ```bash
-pnpm test --coverage "[affected-pattern]"
+$PKG test --coverage "[affected-pattern]"
 ```
 
 ### Evaluate Coverage:
@@ -621,16 +935,61 @@ gh issue comment $ARGUMENTS --body "## Implementation Complete (Local Validation
 
 ### Context
 - Labels: [labels]
-- Docs reviewed: documentation/PLAN.md
+- Docs reviewed: [documentation files]
 
 ### Implementation
 - [x] Task 1
 - [x] Task 2
 
 ### Verification
-- [x] Build passes (\`pnpm build\`)
-- [x] Lint clean (\`pnpm lint\`)
-- [x] Tests pass (\`pnpm test\`) [or N/A if not configured]
+- [x] Build passes
+- [x] Lint clean
+- [x] Tests pass [or N/A if not configured]
+- [x] E2E tests: [passed / scaffolded + passed / skipped (reason)]
+- [x] Visual review: [passed / skipped (reason)]
+
+### E2E Results (if applicable)
+- Tests run: [count]
+- Tests passed: [count]
+- Screenshots reviewed: [count]
+- Visual issues: [none / list]
+
+### Commit Status
+- [x] Changes committed locally
+- [ ] NOT pushed (user will push when ready)
+
+### Files Changed
+- \`path/file.tsx\` (modified)
+
+---
+Executed by Claude Code"
+```
+
+**When visual issues block closure**, use this comment format instead:
+
+```bash
+gh issue comment $ARGUMENTS --body "## Implementation Complete — Visual Issues Found
+
+### Context
+- Labels: [labels]
+- Docs reviewed: [documentation files]
+
+### Implementation
+- [x] Task 1
+- [x] Task 2
+
+### Verification
+- [x] Build passes
+- [x] Lint clean
+- [x] Tests pass
+- [x] E2E tests: passed
+- [ ] Visual review: **issues found (blocking)**
+
+### Visual Issues (Blocking)
+- [screenshot description]: [what looks wrong]
+- [screenshot description]: [what looks wrong]
+
+Issue left open for user review. Close manually if these are acceptable.
 
 ### Commit Status
 - [x] Changes committed locally
@@ -698,6 +1057,7 @@ If user aborts refinement: Leave issue unchanged, keep `refine` label, inform us
 3. Implement minimal fix
 4. Run test to confirm GREEN
 5. Verify no regression (coverage maintained)
+6. Commit, then run E2E test reproducing the bug + visual review
 
 ### Enhancement (`enhancement` label) - TDD Required
 1. Write failing test for new behavior (RED)
@@ -705,6 +1065,7 @@ If user aborts refinement: Leave issue unchanged, keep `refine` label, inform us
 3. Implement feature incrementally
 4. Run test to confirm GREEN after each step
 5. Verify coverage improved
+6. Commit, then run E2E for user journey + visual review
 
 ### Refactor (`refactor` label) - Coverage Guard
 1. Capture baseline coverage for affected files
@@ -712,6 +1073,7 @@ If user aborts refinement: Leave issue unchanged, keep `refine` label, inform us
 3. Make incremental changes, test after each
 4. Verify no behavior changes (tests still pass)
 5. Verify coverage maintained or improved
+6. Commit, then run existing E2E for regression + visual review
 
 ### Test (`test` label) - TDD Required
 1. Identify coverage gaps
@@ -719,11 +1081,12 @@ If user aborts refinement: Leave issue unchanged, keep `refine` label, inform us
 3. Verify tests fail appropriately when code is broken
 4. Run full suite to confirm no conflicts
 5. Coverage must improve
+6. Commit, then run E2E if UI-related
 
 ### Documentation (`documentation` label)
 1. Update relevant docs
 2. Verify links work
-3. No tests required
+3. No tests required (E2E and visual review skipped)
 
 ### Refinement (`refine` label) - Interactive Pre-Workflow
 1. Analyze issue completeness (Overview, Tasks, Files, Acceptance Criteria)
@@ -734,4 +1097,17 @@ If user aborts refinement: Leave issue unchanged, keep `refine` label, inform us
 
 ---
 
-**Version**: 1.0.0 (sage-codex)
+## Fix Loop Budget Summary
+
+| Phase | Section | Max Attempts | Blocks Closure |
+|-------|---------|-------------|----------------|
+| Unit tests | 7.2 | 5 | Yes |
+| E2E tests | 7.5 | 3 | Yes |
+| Visual review | 7.6 | 2 | Yes |
+
+Each phase has its own independent budget.
+
+---
+
+**Version**: 2.0.0 (canonical)
+**Changelog**: Added E2E testing (7.5) and visual review (7.6) post-commit verification layers
