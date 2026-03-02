@@ -13,7 +13,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:integration": "playwright test --config playwright.integration.config.ts --pass-with-no-tests",
+    "test:e2e:all": "playwright test && playwright test --config playwright.integration.config.ts --pass-with-no-tests"
   },
   "dependencies": {
     "@sage-codex/shared-types": "workspace:*",
