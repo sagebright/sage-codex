@@ -16,6 +16,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSageStream } from '@/hooks/useSageStream';
 import { useChatStore } from '@/stores/chatStore';
 import { useAdventureStore } from '@/stores/adventureStore';
+import { apiUrl } from '@/services/api';
 import { ATTUNING_DEFAULTS } from '@sage-codex/shared-types';
 import { AppShell } from '@/components/layout/AppShell';
 import { ChatPanel } from '@/components/chat/ChatPanel';
@@ -118,7 +119,7 @@ export function InvokingPage({ sessionId }: InvokingPageProps) {
     if (!isReady) return;
 
     try {
-      const response = await fetch(`/api/session/${sessionId}/advance`, {
+      const response = await fetch(apiUrl(`/api/session/${sessionId}/advance`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -15,6 +15,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { apiUrl } from '@/services/api';
 import { useAdventureStore } from '@/stores/adventureStore';
 import { useChatStore } from '@/stores/chatStore';
 import { InvokingPage } from './InvokingPage';
@@ -91,7 +92,7 @@ export function AdventurePage() {
 
     try {
       // Find the active session
-      const listRes = await fetch('/api/sessions', {
+      const listRes = await fetch(apiUrl('/api/sessions'), {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -109,7 +110,7 @@ export function AdventurePage() {
       }
 
       // Load the full session detail
-      const detailRes = await fetch(`/api/session/${activeSession.id}`, {
+      const detailRes = await fetch(apiUrl(`/api/session/${activeSession.id}`), {
         headers: { Authorization: `Bearer ${token}` },
       });
 

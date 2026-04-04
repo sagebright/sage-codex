@@ -6,6 +6,7 @@
  * for each SageEvent type.
  *
  * Features:
+ * - Configurable API base URL via VITE_API_URL for production
  * - Automatic SSE reconnection on dropped connections
  * - Classified error handling (rate limit, timeout, network)
  * - User-friendly error messages with retry support
@@ -23,6 +24,7 @@
  */
 
 import { useCallback, useRef, useState } from 'react';
+import { apiUrl } from '@/services/api';
 import type {
   ChatStartEvent,
   ChatDeltaEvent,
@@ -156,7 +158,7 @@ export function useSageStream(
       }, timeoutMs);
 
       try {
-        const response = await fetch('/api/chat', {
+        const response = await fetch(apiUrl('/api/chat'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -313,7 +315,7 @@ export function useSageStream(
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
-      const response = await fetch('/api/chat/greet', {
+      const response = await fetch(apiUrl('/api/chat/greet'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -23,6 +23,7 @@ import { useSageGreeting } from '@/hooks/useSageGreeting';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useSageStream } from '@/hooks/useSageStream';
+import { apiUrl } from '@/services/api';
 import { useChatStore } from '@/stores/chatStore';
 import { useAdventureStore } from '@/stores/adventureStore';
 import { AppShell } from '@/components/layout/AppShell';
@@ -403,7 +404,7 @@ export function InscribingPage({ sessionId, onNavigate }: InscribingPageProps) {
 
     // Persist confirmation to backend
     try {
-      await fetch('/api/scene/confirm', {
+      await fetch(apiUrl('/api/scene/confirm'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -419,7 +420,7 @@ export function InscribingPage({ sessionId, onNavigate }: InscribingPageProps) {
   // Advance to Delivering
   const handleAdvance = useCallback(async () => {
     try {
-      const response = await fetch(`/api/session/${sessionId}/advance`, {
+      const response = await fetch(apiUrl(`/api/session/${sessionId}/advance`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSageStream } from '@/hooks/useSageStream';
 import { useChatStore } from '@/stores/chatStore';
 import { useAdventureStore } from '@/stores/adventureStore';
+import { apiUrl } from '@/services/api';
 import { AppShell } from '@/components/layout/AppShell';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { CelebrationPanel } from '@/components/panels/CelebrationPanel';
@@ -221,7 +222,7 @@ async function markSessionCompleted(
   accessToken: string
 ): Promise<void> {
   try {
-    await fetch(`/api/session/${sessionId}/complete`, {
+    await fetch(apiUrl(`/api/session/${sessionId}/complete`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSageStream } from '@/hooks/useSageStream';
 import { useChatStore } from '@/stores/chatStore';
 import { useAdventureStore } from '@/stores/adventureStore';
+import { apiUrl } from '@/services/api';
 import { AppShell } from '@/components/layout/AppShell';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { StageDropdown } from '@/components/layout/StageDropdown';
@@ -189,7 +190,7 @@ export function AttuningPage({ sessionId, onNavigate }: AttuningPageProps) {
     if (!allConfirmed) return;
 
     try {
-      const response = await fetch(`/api/session/${sessionId}/advance`, {
+      const response = await fetch(apiUrl(`/api/session/${sessionId}/advance`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -361,7 +362,7 @@ async function persistComponentSelection(
   componentId: ComponentId,
   value: string | number | string[]
 ): Promise<void> {
-  await fetch('/api/component/select', {
+  await fetch(apiUrl('/api/component/select'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

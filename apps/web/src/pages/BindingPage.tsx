@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSageStream } from '@/hooks/useSageStream';
 import { useChatStore } from '@/stores/chatStore';
 import { useAdventureStore } from '@/stores/adventureStore';
+import { apiUrl } from '@/services/api';
 import { AppShell } from '@/components/layout/AppShell';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { StageDropdown } from '@/components/layout/StageDropdown';
@@ -182,7 +183,7 @@ export function BindingPage({ sessionId, onNavigate }: BindingPageProps) {
     if (!isReady || !activeFrameId) return;
 
     try {
-      const response = await fetch(`/api/session/${sessionId}/advance`, {
+      const response = await fetch(apiUrl(`/api/session/${sessionId}/advance`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -341,7 +342,7 @@ async function persistFrameSelection(
   frameId: string,
   frame: import('@sage-codex/shared-types').BoundFrame | null
 ): Promise<void> {
-  const response = await fetch('/api/frame/select', {
+  const response = await fetch(apiUrl('/api/frame/select'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSageStream } from '@/hooks/useSageStream';
 import { useChatStore } from '@/stores/chatStore';
 import { useAdventureStore } from '@/stores/adventureStore';
+import { apiUrl } from '@/services/api';
 import { AppShell } from '@/components/layout/AppShell';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { StageDropdown } from '@/components/layout/StageDropdown';
@@ -187,7 +188,7 @@ export function WeavingPage({ sessionId, onNavigate }: WeavingPageProps) {
     if (!canAdvance(sceneArcs, isNameApproved)) return;
 
     try {
-      const response = await fetch(`/api/session/${sessionId}/advance`, {
+      const response = await fetch(apiUrl(`/api/session/${sessionId}/advance`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -405,7 +406,7 @@ async function persistSceneConfirmation(
   accessToken: string,
   sceneArcId: string
 ): Promise<void> {
-  await fetch('/api/scene/confirm', {
+  await fetch(apiUrl('/api/scene/confirm'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
